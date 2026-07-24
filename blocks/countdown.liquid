@@ -1,0 +1,435 @@
+{% doc %}
+  @prompt
+    "Create a custom Shopify liquid section for a horizontal announcement bar with a live countdown timer. It should look like this:
+    • Background: A smooth horizontal gradient (from a dark deep red to a lighter brownish-red).
+    • Content: Centered text saying 'ST PATRICK'S DAY SALE' in bold white uppercase, with a sub-line 'Shop Now and Get Up To 70% Off'.
+    • Timer: To the right of the text, include a countdown (Hrs, Mins, Secs) with thin white separators.
+    • Dimensions: It must be low-profile (not too thick, not too thin).
+    • Spacing: Set margin-top: 0; and margin-bottom:
+    0; to ensure it sits flush against the header or top of the page.
+    • Font: Use a clean, sans-serif font similar to the image. 
+    • Functionality: The countdown should be functional using basic JavaScript.”
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-announcement-bar-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ai-announcement-bar-container-{{ ai_gen_id }} {
+    background: linear-gradient(90deg, {{ block.settings.gradient_start_color }} 0%, {{ block.settings.gradient_end_color }} 100%);
+    padding: {{ block.settings.bar_height }}px 20px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .ai-announcement-bar-content-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1400px;
+    width: 100%;
+  }
+
+  .ai-announcement-bar-text-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .ai-announcement-bar-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.font.family }}, sans-serif;
+    font-weight: {{ block.settings.font.weight }};
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.text_color }};
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .ai-announcement-bar-subtitle-{{ ai_gen_id }} {
+    font-family: {{ block.settings.font.family }}, sans-serif;
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .ai-announcement-bar-timer-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ai-announcement-bar-time-unit-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .ai-announcement-bar-time-value-{{ ai_gen_id }} {
+    font-family: {{ block.settings.font.family }}, sans-serif;
+    font-weight: {{ block.settings.font.weight }};
+    font-size: {{ block.settings.timer_size }}px;
+    color: {{ block.settings.text_color }};
+    min-width: 24px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .ai-announcement-bar-time-label-{{ ai_gen_id }} {
+    font-family: {{ block.settings.font.family }}, sans-serif;
+    font-size: {{ block.settings.timer_label_size }}px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.8;
+  }
+
+  .ai-announcement-bar-separator-{{ ai_gen_id }} {
+    font-family: {{ block.settings.font.family }}, sans-serif;
+    font-size: {{ block.settings.timer_size | times: 0.9 }}px;
+    color: {{ block.settings.text_color }};
+    line-height: 1;
+    margin-bottom: 12px; /* Pulls dots up to match image center alignment */
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-announcement-bar-container-{{ ai_gen_id }} {
+      padding: {{ block.settings.mobile_bar_height }}px 8px;
+    }
+
+    /* Fixed single-row responsive alignment matching user image */
+    .ai-announcement-bar-content-{{ ai_gen_id }} {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .ai-announcement-bar-text-{{ ai_gen_id }} {
+      align-items: center;
+      text-align: center;
+    }
+
+    .ai-announcement-bar-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_title_size }}px;
+      letter-spacing: 0.5px;
+    }
+
+    .ai-announcement-bar-subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_subtitle_size }}px;
+    }
+
+    .ai-announcement-bar-timer-{{ ai_gen_id }} {
+      gap: 6px;
+    }
+
+    .ai-announcement-bar-time-value-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_timer_size }}px;
+      min-width: 16px;
+    }
+
+    .ai-announcement-bar-time-label-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_timer_label_size }}px;
+    }
+    
+    .ai-announcement-bar-separator-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_timer_size | times: 0.9 }}px;
+      margin-bottom: 10px;
+    }
+  }
+{% endstyle %}
+
+<announcement-countdown-{{ ai_gen_id }} class="ai-announcement-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-announcement-bar-container-{{ ai_gen_id }}">
+    <div class="ai-announcement-bar-content-{{ ai_gen_id }}">
+      
+      <div class="ai-announcement-bar-text-{{ ai_gen_id }}">
+        {% if block.settings.title != blank %}
+          <h2 class="ai-announcement-bar-title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+        {% endif %}
+        {% if block.settings.subtitle != blank %}
+          <p class="ai-announcement-bar-subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+
+      <div class="ai-announcement-bar-timer-{{ ai_gen_id }}">
+        <div class="ai-announcement-bar-time-unit-{{ ai_gen_id }}">
+          <span class="ai-announcement-bar-time-value-{{ ai_gen_id }}" data-hours>00</span>
+          <span class="ai-announcement-bar-time-label-{{ ai_gen_id }}">Hrs</span>
+        </div>
+        <div class="ai-announcement-bar-separator-{{ ai_gen_id }}">:</div>
+        <div class="ai-announcement-bar-time-unit-{{ ai_gen_id }}">
+          <span class="ai-announcement-bar-time-value-{{ ai_gen_id }}" data-minutes>00</span>
+          <span class="ai-announcement-bar-time-label-{{ ai_gen_id }}">Mins</span>
+        </div>
+        <div class="ai-announcement-bar-separator-{{ ai_gen_id }}">:</div>
+        <div class="ai-announcement-bar-time-unit-{{ ai_gen_id }}">
+          <span class="ai-announcement-bar-time-value-{{ ai_gen_id }}" data-seconds>00</span>
+          <span class="ai-announcement-bar-time-label-{{ ai_gen_id }}">Secs</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</announcement-countdown-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class AnnouncementCountdown{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.endDate = null;
+        this.timerInterval = null;
+      }
+
+      connectedCallback() {
+        const endDateStr = '{{ block.settings.countdown_end_date }}';
+        const endTimeStr = '{{ block.settings.countdown_end_time }}';
+        
+        if (endDateStr && endTimeStr) {
+          this.endDate = new Date(endDateStr + 'T' + endTimeStr);
+        } else if (endDateStr) {
+          this.endDate = new Date(endDateStr + 'T23:59:59');
+        } else {
+          const now = new Date();
+          this.endDate = new Date(now.getTime() + (24 * 60 * 60 * 1000));
+        }
+
+        this.hoursElement = this.querySelector('[data-hours]');
+        this.minutesElement = this.querySelector('[data-minutes]');
+        this.secondsElement = this.querySelector('[data-seconds]');
+
+        this.updateCountdown();
+        this.timerInterval = setInterval(() => this.updateCountdown(), 1000);
+      }
+
+      disconnectedCallback() {
+        if (this.timerInterval) {
+          clearInterval(this.timerInterval);
+        }
+      }
+
+      updateCountdown() {
+        const now = new Date().getTime();
+        const distance = this.endDate.getTime() - now;
+
+        if (distance < 0) {
+          this.hoursElement.textContent = '00';
+          this.minutesElement.textContent = '00';
+          this.secondsElement.textContent = '00';
+          if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+          }
+          return;
+        }
+
+        const hours = Math.floor(distance / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        this.hoursElement.textContent = String(hours).padStart(2, '0');
+        this.minutesElement.textContent = String(minutes).padStart(2, '0');
+        this.secondsElement.textContent = String(seconds).padStart(2, '0');
+      }
+    }
+
+    customElements.define('announcement-countdown-{{ ai_gen_id }}', AnnouncementCountdown{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Announcement countdown",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "SPRING SALE"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Shop Now and Get Up To 70% Off"
+    },
+    {
+      "type": "header",
+      "content": "Countdown timer"
+    },
+    {
+      "type": "text",
+      "id": "countdown_end_date",
+      "label": "End date",
+      "info": "Format: YYYY-MM-DD (e.g., 2026-03-17)"
+    },
+    {
+      "type": "text",
+      "id": "countdown_end_time",
+      "label": "End time",
+      "info": "Format: HH:MM:SS (e.g., 23:59:59). Leave empty for end of day.",
+      "default": "23:59:59"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "gradient_start_color",
+      "label": "Gradient start color",
+      "default": "#8B1A1A"
+    },
+    {
+      "type": "color",
+      "id": "gradient_end_color",
+      "label": "Gradient end color",
+      "default": "#A0522D"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "font",
+      "label": "Font",
+      "default": "helvetica_n7"
+    },
+    {
+      "type": "header",
+      "content": "Desktop sizing"
+    },
+    {
+      "type": "range",
+      "id": "bar_height",
+      "label": "Bar padding",
+      "min": 4,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "timer_size",
+      "label": "Timer number size",
+      "min": 12,
+      "max": 34,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "timer_label_size",
+      "label": "Timer label size",
+      "min": 6,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Mobile sizing"
+    },
+    {
+      "type": "range",
+      "id": "mobile_bar_height",
+      "label": "Bar padding",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "mobile_title_size",
+      "label": "Title size",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "mobile_subtitle_size",
+      "label": "Subtitle size",
+      "min": 6,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "mobile_timer_size",
+      "label": "Timer number size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "mobile_timer_label_size",
+      "label": "Timer label size",
+      "min": 5,
+      "max": 12,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement countdown"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,266 @@
+{% doc %}
+  @prompt
+    Add a full-width announcement bar ticker at the top of the page that scrolls horizontally and loops seamlessly. Display the following items separated by bullet dot dividers:
+    
+    • 600MG CLINICAL DOSE
+    • SUPPORTS LIVER HEALTH
+    • NO SULFUR BURPS
+    • NO MORE TWO-DAY HANGOVERS
+    
+    Style: dark background (#1a1a1a), white uppercase text, 13px font size, letter-spacing 0.08em, font-weight 500. Items separated by small circular dot dividers (5px, 50% opacity). Scroll speed: 28 seconds per loop. Pause on hover. The track should duplicate all items so the loop is seamless with no gap or jump.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-ticker-bar-{{ ai_gen_id }} {
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    overflow: hidden;
+    position: relative;
+    display: block;
+  }
+
+  .ai-ticker-bar-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    width: 100%;
+  }
+
+  .ai-ticker-bar-track-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    animation: ai-ticker-scroll-{{ ai_gen_id }} {{ block.settings.scroll_duration }}s linear infinite;
+    will-change: transform;
+  }
+
+  .ai-ticker-bar-{{ ai_gen_id }}:hover .ai-ticker-bar-track-{{ ai_gen_id }} {
+    animation-play-state: paused;
+  }
+
+  .ai-ticker-bar-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    padding: {{ block.settings.vertical_padding }}px 0;
+  }
+
+  .ai-ticker-bar-text-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.font_size }}px;
+    font-weight: {{ block.settings.font_weight }};
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .ai-ticker-bar-divider-{{ ai_gen_id }} {
+    width: {{ block.settings.divider_size }}px;
+    height: {{ block.settings.divider_size }}px;
+    background-color: {{ block.settings.text_color }};
+    border-radius: 50%;
+    opacity: {{ block.settings.divider_opacity }};
+    margin: 0 {{ block.settings.item_spacing }}px;
+    flex-shrink: 0;
+  }
+
+  @keyframes ai-ticker-scroll-{{ ai_gen_id }} {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+{% endstyle %}
+
+<ticker-bar-{{ ai_gen_id }} class="ai-ticker-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-ticker-bar-wrapper-{{ ai_gen_id }}">
+    <div class="ai-ticker-bar-track-{{ ai_gen_id }}">
+      {% for i in (1..2) %}
+        {% if block.settings.item_1 != blank %}
+          <div class="ai-ticker-bar-item-{{ ai_gen_id }}">
+            <span class="ai-ticker-bar-text-{{ ai_gen_id }}">{{ block.settings.item_1 }}</span>
+            <span class="ai-ticker-bar-divider-{{ ai_gen_id }}"></span>
+          </div>
+        {% endif %}
+        {% if block.settings.item_2 != blank %}
+          <div class="ai-ticker-bar-item-{{ ai_gen_id }}">
+            <span class="ai-ticker-bar-text-{{ ai_gen_id }}">{{ block.settings.item_2 }}</span>
+            <span class="ai-ticker-bar-divider-{{ ai_gen_id }}"></span>
+          </div>
+        {% endif %}
+        {% if block.settings.item_3 != blank %}
+          <div class="ai-ticker-bar-item-{{ ai_gen_id }}">
+            <span class="ai-ticker-bar-text-{{ ai_gen_id }}">{{ block.settings.item_3 }}</span>
+            <span class="ai-ticker-bar-divider-{{ ai_gen_id }}"></span>
+          </div>
+        {% endif %}
+        {% if block.settings.item_4 != blank %}
+          <div class="ai-ticker-bar-item-{{ ai_gen_id }}">
+            <span class="ai-ticker-bar-text-{{ ai_gen_id }}">{{ block.settings.item_4 }}</span>
+            <span class="ai-ticker-bar-divider-{{ ai_gen_id }}"></span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</ticker-bar-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class TickerBar{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.track = this.querySelector('.ai-ticker-bar-track-{{ ai_gen_id }}');
+        this.ensureSeamlessLoop();
+      }
+
+      ensureSeamlessLoop() {
+        if (!this.track) return;
+        
+        const items = this.track.children;
+        if (items.length === 0) return;
+
+        const trackWidth = this.track.scrollWidth / 2;
+        this.track.style.width = trackWidth * 2 + 'px';
+      }
+    }
+
+    customElements.define('ticker-bar-{{ ai_gen_id }}', TickerBar{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Announcement ticker",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Ticker items"
+    },
+    {
+      "type": "text",
+      "id": "item_1",
+      "label": "Item 1",
+      "default": "600MG CLINICAL DOSE"
+    },
+    {
+      "type": "text",
+      "id": "item_2",
+      "label": "Item 2",
+      "default": "SUPPORTS LIVER HEALTH"
+    },
+    {
+      "type": "text",
+      "id": "item_3",
+      "label": "Item 3",
+      "default": "NO SULFUR BURPS"
+    },
+    {
+      "type": "text",
+      "id": "item_4",
+      "label": "Item 4",
+      "default": "NO MORE TWO-DAY HANGOVERS"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "font_weight",
+      "label": "Font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Divider"
+    },
+    {
+      "type": "range",
+      "id": "divider_size",
+      "label": "Divider size",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "divider_opacity",
+      "label": "Divider opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.5
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "label": "Item spacing",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "scroll_duration",
+      "label": "Scroll duration",
+      "min": 10,
+      "max": 60,
+      "step": 2,
+      "unit": "s",
+      "default": 28
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement ticker"
+    }
+  ]
+}
+{% endschema %}

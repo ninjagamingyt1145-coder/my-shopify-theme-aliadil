@@ -1,0 +1,139 @@
+{% comment %} image-text-overlay.liquid {% endcomment %}
+
+<section class="ito-section">
+  {% if section.settings.bg_image %}
+    <img
+      src="{{ section.settings.bg_image | img_url: '2000x' }}"
+      alt=""
+      class="ito-bg-img"
+    >
+  {% endif %}
+  <div class="ito-overlay-box">
+    <h2 class="ito-heading" style="color: {{ section.settings.heading_color }};">{{ section.settings.heading }}</h2>
+    <div class="ito-text" style="color: {{ section.settings.text_color }};">{{ section.settings.text }}</div>
+  </div>
+</section>
+
+<style>
+.ito-section {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ito-bg-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ito-overlay-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 24px;
+  padding: 44px 56px;
+  max-width: 820px;
+  width: 88%;
+  text-align: center;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.06);
+}
+.ito-heading {
+  font-size: clamp(26px, 3.8vw, 48px);
+  font-weight: 900;
+  line-height: 1.15;
+  margin: 0 0 22px;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+.ito-text {
+  font-size: clamp(14px, 1.3vw, 16px);
+  line-height: 1.75;
+  margin: 0;
+  color: #333;
+}
+.ito-text p {
+  margin: 0;
+}
+.ito-text strong {
+  font-weight: 700;
+  color: #111;
+}
+
+/* ── MOBILE: stack image on top, text below ── */
+@media (max-width: 700px) {
+  .ito-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ito-overlay-box {
+    position: static;
+    transform: none;
+    top: auto;
+    left: auto;
+    border-radius: 0;
+    box-shadow: none;
+    background: #f4f4f4;
+    width: 100%;
+    max-width: 100%;
+    padding: 32px 24px 40px;
+    text-align: center;
+  }
+
+  .ito-heading {
+    font-size: 28px;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+
+  .ito-text {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Image Text Overlay",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "From Constant Discomfort To Daily Control"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Body Text",
+      "default": "<p><strong>Six botanicals</strong>, one gummy that actually <strong>tastes good</strong>. Soursop, sea moss, ashwagandha, moringa, turmeric, and black seed, covering immunity, energy, and everyday balance. No handful of pills and no bitter drops.</p>"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#333333"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image Text Overlay"
+    }
+  ]
+}
+{% endschema %}

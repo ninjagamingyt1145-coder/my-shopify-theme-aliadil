@@ -1,0 +1,486 @@
+{% doc %}
+  @prompt
+    Create a premium Shopify Liquid section called "Product Hero Banner" with a full-bleed background image.
+    
+    Layout Requirements:
+    - Desktop: 2-column split layout. Left side should have an image picker for the product (transparent PNG of bottle/box). Right side should contain a text block.
+    - Mobile: Stacked layout with text below the image.
+    
+    Content Elements:
+    - Background Image: A full-width background image picker (ideal for landscape/nature scenes).
+    - Brand Text: A small "Logo" or Brand name text at the top right in green color.
+    - Main Heading: A large, bold heading in dark green (font-size: 48px-60px).
+    - Subheading: A clean tagline text below the heading.
+    
+    Styling:
+    - Background image must cover the entire section (`background-size: cover`).
+    - Content should be vertically centered.
+    - Use clean, modern sans-serif typography.
+    - Provide schema settings for: Background Image, Product Image, Heading Text, Subheading Text, and Brand color., add a button also
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-hero-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .ai-product-hero-container-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: {{ block.settings.section_padding_vertical }}px {{ block.settings.section_padding_horizontal }}px;
+  }
+
+  .ai-product-hero-content-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .ai-product-hero-image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ai-product-hero-image-{{ ai_gen_id }} {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-product-hero-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-product-hero-image-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-product-hero-text-block-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.text_spacing }}px;
+  }
+
+  .ai-product-hero-brand-{{ ai_gen_id }} {
+    font-size: {{ block.settings.brand_font_size }}px;
+    color: {{ block.settings.brand_color }};
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .ai-product-hero-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_font_size }}px;
+    color: {{ block.settings.heading_color }};
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .ai-product-hero-subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_font_size }}px;
+    color: {{ block.settings.subheading_color }};
+    line-height: 1.6;
+  }
+
+  .ai-product-hero-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    border: {{ block.settings.button_border_thickness }}px solid {{ block.settings.button_border_color }};
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-top: {{ block.settings.button_margin_top }}px;
+  }
+
+  .ai-product-hero-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    transform: translateY(-2px);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-hero-{{ ai_gen_id }} {
+      min-height: 400px;
+    }
+
+    .ai-product-hero-content-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .ai-product-hero-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_font_size | times: 0.6 }}px;
+    }
+
+    .ai-product-hero-subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheading_font_size | times: 0.9 }}px;
+    }
+
+    .ai-product-hero-brand-{{ ai_gen_id }} {
+      font-size: {{ block.settings.brand_font_size | times: 0.8 }}px;
+    }
+
+    .ai-product-hero-container-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_vertical | times: 0.7 }}px {{ block.settings.section_padding_horizontal | times: 0.7 }}px;
+    }
+
+    .ai-product-hero-button-{{ ai_gen_id }} {
+      font-size: {{ block.settings.button_font_size | times: 0.9 }}px;
+      padding: {{ block.settings.button_padding_vertical | times: 0.8 }}px {{ block.settings.button_padding_horizontal | times: 0.8 }}px;
+    }
+  }
+{% endstyle %}
+
+<div
+  class="ai-product-hero-{{ ai_gen_id }}"
+  {% if block.settings.background_image %}
+    style="background-image: url('{{ block.settings.background_image | image_url: width: 2000 }}');"
+  {% else %}
+    style="background-color: #f3f3f3;"
+  {% endif %}
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-product-hero-container-{{ ai_gen_id }}">
+    <div class="ai-product-hero-content-{{ ai_gen_id }}">
+      <div class="ai-product-hero-image-wrapper-{{ ai_gen_id }}">
+        {% if block.settings.product_image %}
+          <img
+            src="{{ block.settings.product_image | image_url: width: 800 }}"
+            alt="{{ block.settings.product_image.alt | escape }}"
+            class="ai-product-hero-image-{{ ai_gen_id }}"
+            loading="lazy"
+            width="{{ block.settings.product_image.width }}"
+            height="{{ block.settings.product_image.height }}"
+          >
+        {% else %}
+          <div class="ai-product-hero-image-placeholder-{{ ai_gen_id }}">
+            {{ 'product-1' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="ai-product-hero-text-block-{{ ai_gen_id }}">
+        {% if block.settings.brand_text != blank %}
+          <div class="ai-product-hero-brand-{{ ai_gen_id }}">
+            {{ block.settings.brand_text }}
+          </div>
+        {% endif %}
+
+        {% if block.settings.heading_text != blank %}
+          <h1 class="ai-product-hero-heading-{{ ai_gen_id }}">
+            {{ block.settings.heading_text }}
+          </h1>
+        {% endif %}
+
+        {% if block.settings.subheading_text != blank %}
+          <div class="ai-product-hero-subheading-{{ ai_gen_id }}">
+            {{ block.settings.subheading_text }}
+          </div>
+        {% endif %}
+
+        {% if block.settings.show_button and block.settings.button_text != blank %}
+          <a
+            href="{{ block.settings.button_link }}"
+            class="ai-product-hero-button-{{ ai_gen_id }}"
+          >
+            {{ block.settings.button_text }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product hero banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "header",
+      "content": "Product image"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product image"
+    },
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "text",
+      "id": "brand_text",
+      "label": "Brand text",
+      "default": "Your Brand"
+    },
+    {
+      "type": "range",
+      "id": "brand_font_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "brand_color",
+      "label": "Color",
+      "default": "#315a22"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading text",
+      "default": "Premium Natural Wellness"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Font size",
+      "default": 54
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Color",
+      "default": "#1a3d14"
+    },
+    {
+      "type": "header",
+      "content": "Subheading"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading_text",
+      "label": "Subheading text",
+      "default": "Experience the power of nature with our premium wellness products"
+    },
+    {
+      "type": "range",
+      "id": "subheading_font_size",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Color",
+      "default": "#2d5022"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "label": "Show button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "min": 8,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "min": 16,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "button_margin_top",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Top margin",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "button_border_thickness",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Border thickness",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background color",
+      "default": "#315a22"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Border color",
+      "default": "#315a22"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#1a3d14"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 1000,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Container width",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "section_padding_vertical",
+      "min": 40,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_horizontal",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "text_spacing",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Text spacing",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product hero banner"
+    }
+  ]
+}
+{% endschema %}

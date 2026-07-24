@@ -1,0 +1,502 @@
+{% doc %}
+  @prompt
+    Create a premium, minimalist custom Shopify Liquid section named "Cinematic Wide Trust Strip". 
+    
+    The section must mimic a 21:9 wide aspect ratio layout with low vertical padding and sleek, compact element spacing to maintain an ultra-premium, high-end e-commerce aesthetic.
+    
+    Key Structure & CSS Requirements:
+    1. Outer Container: Full-width layout (`width: 100%;`) but with very tight, elegant top and bottom padding (e.g., 40px to 60px max) to achieve that sleek 21:9 banner feel.
+    2. Alignment: Fully center-align everything horizontally using flexbox (`display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;`).
+    3. Elements with Tight Spacing:
+       - Top Element: An image picker for a trust badge, centered, with a default max-width slider (120px to 250px). Margin-bottom must be tight (12px to 16px).
+       - Heading: Elegant, bold heading directly below the badge. Font size range 28px-48px. Margin-bottom must be compact (8px to 12px).
+       - Subheading: A minimal description paragraph. It must have a restricted max-width (550px to 650px) so the text wraps beautifully just like a premium landing page. Margin-bottom to the button should be around 20px.
+       - CTA Button: A perfectly centered solid button at the bottom with settings for background color, text color, font size, padding, and border radius.
+    
+    Include standard schema settings for all colors (background, text, button), fonts, and custom margins so it stays highly scannable and responsive on mobile without losing the wide cinematic proportions., add entry animation
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-cinematic-trust-strip-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.vertical_padding }}px 20px;
+  }
+
+  .ai-cinematic-trust-strip__container-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-cinematic-trust-strip__badge-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.badge_margin_bottom }}px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .ai-cinematic-trust-strip__badge-{{ ai_gen_id }}.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-cinematic-trust-strip__badge-{{ ai_gen_id }} img {
+    max-width: {{ block.settings.badge_max_width }}px;
+    height: auto;
+    display: block;
+  }
+
+  .ai-cinematic-trust-strip__badge-placeholder-{{ ai_gen_id }} {
+    max-width: {{ block.settings.badge_max_width }}px;
+    height: auto;
+    display: block;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+  }
+
+  .ai-cinematic-trust-strip__badge-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: auto;
+    opacity: 0.3;
+  }
+
+  .ai-cinematic-trust-strip__heading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.heading_margin_bottom }}px 0;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+  }
+
+  .ai-cinematic-trust-strip__heading-{{ ai_gen_id }}.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-cinematic-trust-strip__subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    color: {{ block.settings.subheading_color }};
+    margin: 0 0 {{ block.settings.subheading_margin_bottom }}px 0;
+    max-width: {{ block.settings.subheading_max_width }}px;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s;
+  }
+
+  .ai-cinematic-trust-strip__subheading-{{ ai_gen_id }}.animate {
+    opacity: 0.85;
+    transform: translateY(0);
+  }
+
+  .ai-cinematic-trust-strip__cta-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .ai-cinematic-trust-strip__cta-{{ ai_gen_id }}.animate {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease 0.6s, transform 0.6s ease 0.6s, background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .ai-cinematic-trust-strip__cta-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    transform: translateY(-2px);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-cinematic-trust-strip-{{ ai_gen_id }} {
+      padding: {{ block.settings.mobile_vertical_padding }}px 16px;
+    }
+
+    .ai-cinematic-trust-strip__heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.7 }}px;
+    }
+
+    .ai-cinematic-trust-strip__subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheading_size | times: 0.9 }}px;
+    }
+
+    .ai-cinematic-trust-strip__badge-{{ ai_gen_id }} img,
+    .ai-cinematic-trust-strip__badge-placeholder-{{ ai_gen_id }} {
+      max-width: {{ block.settings.badge_max_width | times: 0.8 }}px;
+    }
+
+    .ai-cinematic-trust-strip__cta-{{ ai_gen_id }} {
+      font-size: {{ block.settings.button_font_size | times: 0.9 }}px;
+      padding: {{ block.settings.button_padding_vertical | times: 0.9 }}px {{ block.settings.button_padding_horizontal | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<cinematic-trust-strip-{{ ai_gen_id }}
+  class="ai-cinematic-trust-strip-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-cinematic-trust-strip__container-{{ ai_gen_id }}">
+    {% if block.settings.trust_badge != blank %}
+      <div class="ai-cinematic-trust-strip__badge-{{ ai_gen_id }}" data-animate>
+        <img
+          src="{{ block.settings.trust_badge | image_url: width: 500 }}"
+          alt="{{ block.settings.trust_badge.alt | escape }}"
+          loading="lazy"
+          width="{{ block.settings.trust_badge.width }}"
+          height="{{ block.settings.trust_badge.height }}"
+        >
+      </div>
+    {% else %}
+      <div class="ai-cinematic-trust-strip__badge-placeholder-{{ ai_gen_id }} ai-cinematic-trust-strip__badge-{{ ai_gen_id }}" data-animate>
+        {{ 'image' | placeholder_svg_tag }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-cinematic-trust-strip__heading-{{ ai_gen_id }}" data-animate>
+        {{ block.settings.heading }}
+      </h2>
+    {% endif %}
+
+    {% if block.settings.subheading != blank %}
+      <div class="ai-cinematic-trust-strip__subheading-{{ ai_gen_id }}" data-animate>
+        {{ block.settings.subheading }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.cta_text != blank %}
+      <a
+        href="{{ block.settings.cta_link }}"
+        class="ai-cinematic-trust-strip__cta-{{ ai_gen_id }}"
+        data-animate
+      >
+        {{ block.settings.cta_text }}
+      </a>
+    {% endif %}
+  </div>
+</cinematic-trust-strip-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CinematicTrustStrip{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.observer = null;
+      }
+
+      connectedCallback() {
+        this.style.display = 'block';
+        this.setupIntersectionObserver();
+      }
+
+      setupIntersectionObserver() {
+        const options = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.2
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.animateElements();
+              this.observer.unobserve(entry.target);
+            }
+          });
+        }, options);
+
+        this.observer.observe(this);
+      }
+
+      animateElements() {
+        const elements = this.querySelectorAll('[data-animate]');
+        elements.forEach((element) => {
+          element.classList.add('animate');
+        });
+      }
+
+      disconnectedCallback() {
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
+
+    customElements.define('cinematic-trust-strip-{{ ai_gen_id }}', CinematicTrustStrip{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Cinematic trust strip",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Trust badge"
+    },
+    {
+      "type": "image_picker",
+      "id": "trust_badge",
+      "label": "Badge image"
+    },
+    {
+      "type": "range",
+      "id": "badge_max_width",
+      "label": "Badge width",
+      "min": 80,
+      "max": 250,
+      "step": 10,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "badge_margin_bottom",
+      "label": "Badge spacing",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading text",
+      "default": "Trusted by 10,000+ Customers Worldwide"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "poppins_n7"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 24,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "label": "Heading spacing",
+      "min": 6,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Subheading"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading text",
+      "default": "<p>Premium quality products backed by our satisfaction guarantee and exceptional customer service.</p>"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Subheading size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "subheading_max_width",
+      "label": "Subheading max width",
+      "min": 400,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "subheading_margin_bottom",
+      "label": "Subheading spacing",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Button font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Button vertical padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Button horizontal padding",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background",
+      "default": "#315a22"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Button hover background",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Button hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Content max width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 1000
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "label": "Desktop vertical padding",
+      "min": 30,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_vertical_padding",
+      "label": "Mobile vertical padding",
+      "min": 20,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 35
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f3f3f3"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cinematic trust strip"
+    }
+  ]
+}
+{% endschema %}

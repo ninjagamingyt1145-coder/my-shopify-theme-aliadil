@@ -1,0 +1,258 @@
+{% comment %} faq-section.liquid {% endcomment %}
+{% if request.page_type == 'product' %}
+<section class="faq-section">
+  <div class="faq-inner">
+    <h2 class="faq-title">{{ section.settings.title }}</h2>
+
+    <div class="faq-list">
+      {% for i in (1..7) %}
+        {% assign q_key = 'q' | append: i %}
+        {% assign a_key = 'a' | append: i %}
+        {% assign question = section.settings[q_key] %}
+        {% assign answer = section.settings[a_key] %}
+        {% if question != blank %}
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>{{ question }}</span>
+              <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">{{ answer }}</div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<style>
+.faq-section {
+  width: 100%;
+  background: #f4f4f4;
+  padding: 30px 24px;
+}
+
+.faq-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.faq-title {
+  text-align: center;
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 800;
+  color: #111;
+  margin: 0 0 40px;
+  letter-spacing: -0.5px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.faq-item {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #2A314C;
+  color: #fff;
+  border: none;
+  padding: 18px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.faq-question:hover {
+  background: #2A314C;
+}
+
+.faq-question[aria-expanded="true"] {
+  border-radius: 8px 8px 0 0;
+  background: #2A314C;
+}
+
+.faq-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.faq-question[aria-expanded="true"] .faq-icon {
+  transform: rotate(90deg);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 0 0 8px 8px;
+  transition: max-height 0.35s ease;
+}
+
+.faq-answer-inner {
+  padding: 24px 22px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #333;
+}
+
+.faq-answer-inner p {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .faq-section {
+    padding: 20px 16px;
+  }
+  .faq-question {
+    font-size: 14px;
+    padding: 16px 18px;
+  }
+  .faq-answer-inner {
+    font-size: 14px;
+    padding: 20px 18px;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.faq-question').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      var answer = this.nextElementSibling;
+
+      document.querySelectorAll('.faq-question').forEach(function(other) {
+        other.setAttribute('aria-expanded', 'false');
+        other.nextElementSibling.style.maxHeight = null;
+      });
+
+      if (!expanded) {
+        this.setAttribute('aria-expanded', 'true');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "FAQ Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "text",
+      "id": "q1",
+      "label": "Question 1",
+      "default": "What are Soursop Gummies?"
+    },
+    {
+      "type": "richtext",
+      "id": "a1",
+      "label": "Answer 1",
+      "default": "<p>Our Soursop Gummies are a daily herbal supplement featuring Soursop Leaf Extract blended with Sea Moss, Ashwagandha, Moringa, Turmeric, Black Seed, and Oregano — designed to support immunity, energy, and whole-body wellness in one delicious chew.</p>"
+    },
+    {
+      "type": "text",
+      "id": "q2",
+      "label": "Question 2",
+      "default": "How do I take them?"
+    },
+    {
+      "type": "richtext",
+      "id": "a2",
+      "label": "Answer 2",
+      "default": "<p>Take 2 gummies daily, preferably with a meal. Consistent daily use is recommended for best results.</p>"
+    },
+    {
+      "type": "text",
+      "id": "q3",
+      "label": "Question 3",
+      "default": "Are they safe to take every day?"
+    },
+    {
+      "type": "richtext",
+      "id": "a3",
+      "label": "Answer 3",
+      "default": "<p>Yes, our gummies are formulated for daily use with natural, carefully selected botanicals. As always, consult your healthcare provider if you have any medical conditions or are taking medications.</p>"
+    },
+    {
+      "type": "text",
+      "id": "q4",
+      "label": "Question 4",
+      "default": "Are they vegan and non-GMO?"
+    },
+    {
+      "type": "richtext",
+      "id": "a4",
+      "label": "Answer 4",
+      "default": "<p>Yes! Our gummies are 100% vegan, non-GMO, and free from artificial colors, flavors, and preservatives.</p>"
+    },
+    {
+      "type": "text",
+      "id": "q5",
+      "label": "Question 5",
+      "default": "How many gummies are in each bottle?"
+    },
+    {
+      "type": "richtext",
+      "id": "a5",
+      "label": "Answer 5",
+      "default": "<p>Each bottle contains 60 gummies, which is a 30-day supply when taking the recommended 2 gummies per day.</p>"
+    },
+    {
+      "type": "text",
+      "id": "q6",
+      "label": "Question 6",
+      "default": "What if they don't work for me?"
+    },
+    {
+      "type": "richtext",
+      "id": "a6",
+      "label": "Answer 6",
+      "default": "<p>We stand behind our product with a 60-day money-back guarantee. If you're not satisfied for any reason, contact our support team for a full refund — no questions asked.</p>"
+    },
+    {
+      "type": "text",
+      "id": "q7",
+      "label": "Question 7",
+      "default": "How long before I see results?"
+    },
+    {
+      "type": "richtext",
+      "id": "a7",
+      "label": "Answer 7",
+      "default": "<p>Most customers begin to notice a difference within 2–4 weeks of consistent use. For optimal results, we recommend taking them daily for at least 60 days.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Sectionpro"
+    }
+  ]
+}
+{% endschema %}

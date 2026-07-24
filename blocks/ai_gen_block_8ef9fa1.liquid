@@ -1,0 +1,607 @@
+{% doc %}
+  @prompt
+    Create a Shopify hero section: two-column layout (text left, product image right, stacks on mobile). Left side has an eyebrow label, bold headline (with highlighted accent text), short subheading, and two CTA buttons (primary solid + secondary outline). Right side shows a large product image on a soft gradient background panel. Premium color palette (cream/off-white, charcoal text, gold or navy accent — all editable). On load, animate text and image in with a fade + slide-up stagger; re-trigger this animation on scroll using Intersection Observer (both directions). Subtle hover effect on buttons. Provide full Liquid section code with schema for all text, images, links, and colors, plus scoped CSS/JS, fully responsive and accessible., remove image container background color, make this section small on mobile, increase horizontal size of button, remove learn more button and on desktop increase horizontal length of shop now button
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-hero-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .ai-hero-container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: {{ block.settings.section_padding_top }}px 40px {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-hero-content-{{ ai_gen_id }} {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .ai-hero-content-{{ ai_gen_id }}.ai-hero-animated-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-hero-eyebrow-{{ ai_gen_id }} {
+    display: inline-block;
+    font-size: {{ block.settings.eyebrow_size }}px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: {{ block.settings.eyebrow_color }};
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s;
+  }
+
+  .ai-hero-content-{{ ai_gen_id }}.ai-hero-animated-{{ ai_gen_id }} .ai-hero-eyebrow-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-hero-headline-{{ ai_gen_id }} {
+    font-size: {{ block.settings.headline_size }}px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: {{ block.settings.headline_color }};
+    margin: 0 0 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+  }
+
+  .ai-hero-content-{{ ai_gen_id }}.ai-hero-animated-{{ ai_gen_id }} .ai-hero-headline-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-hero-accent-{{ ai_gen_id }} {
+    color: {{ block.settings.accent_color }};
+    position: relative;
+    display: inline-block;
+  }
+
+  .ai-hero-accent-{{ ai_gen_id }}::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    background-color: {{ block.settings.accent_highlight_color }};
+    opacity: 0.3;
+    z-index: -1;
+  }
+
+  .ai-hero-subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.subheading_color }};
+    margin: 0 0 32px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+  }
+
+  .ai-hero-content-{{ ai_gen_id }}.ai-hero-animated-{{ ai_gen_id }} .ai-hero-subheading-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-hero-buttons-{{ ai_gen_id }} {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s;
+  }
+
+  .ai-hero-content-{{ ai_gen_id }}.ai-hero-animated-{{ ai_gen_id }} .ai-hero-buttons-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-hero-btn-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 64px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: {{ block.settings.button_radius }}px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .ai-hero-btn-primary-{{ ai_gen_id }} {
+    background-color: {{ block.settings.primary_button_bg }};
+    color: {{ block.settings.primary_button_color }};
+    border: 2px solid {{ block.settings.primary_button_bg }};
+  }
+
+  .ai-hero-btn-primary-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.primary_button_hover_bg }};
+    border-color: {{ block.settings.primary_button_hover_bg }};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-hero-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;
+  }
+
+  .ai-hero-image-wrapper-{{ ai_gen_id }}.ai-hero-animated-{{ ai_gen_id }} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-hero-gradient-panel-{{ ai_gen_id }} {
+    position: relative;
+    border-radius: {{ block.settings.image_radius }}px;
+    padding: 40px;
+    background: {{ block.settings.gradient_background }};
+    overflow: hidden;
+  }
+
+  .ai-hero-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: {{ block.settings.image_radius }}px;
+  }
+
+  .ai-hero-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: transparent;
+    border-radius: {{ block.settings.image_radius }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ai-hero-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+  }
+
+  .ai-hero-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-hero-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      padding: {{ block.settings.section_padding_top | times: 0.7 }}px 24px {{ block.settings.section_padding_bottom | times: 0.7 }}px;
+    }
+
+    .ai-hero-headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.headline_size | times: 0.7 }}px;
+    }
+
+    .ai-hero-subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheading_size | times: 0.9 }}px;
+    }
+
+    .ai-hero-buttons-{{ ai_gen_id }} {
+      flex-direction: column;
+    }
+
+    .ai-hero-btn-{{ ai_gen_id }} {
+      width: 100%;
+    }
+
+    .ai-hero-gradient-panel-{{ ai_gen_id }} {
+      padding: 24px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-hero-container-{{ ai_gen_id }} {
+      gap: 24px;
+      padding: {{ block.settings.section_padding_top | times: 0.4 }}px 16px {{ block.settings.section_padding_bottom | times: 0.4 }}px;
+    }
+
+    .ai-hero-eyebrow-{{ ai_gen_id }} {
+      font-size: {{ block.settings.eyebrow_size | times: 0.8 }}px;
+      margin-bottom: 8px;
+    }
+
+    .ai-hero-headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.headline_size | times: 0.5 }}px;
+      margin-bottom: 12px;
+    }
+
+    .ai-hero-accent-{{ ai_gen_id }}::after {
+      height: 6px;
+      bottom: 2px;
+    }
+
+    .ai-hero-subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheading_size | times: 0.85 }}px;
+      margin-bottom: 20px;
+    }
+
+    .ai-hero-buttons-{{ ai_gen_id }} {
+      gap: 10px;
+    }
+
+    .ai-hero-btn-{{ ai_gen_id }} {
+      padding: 12px 32px;
+      font-size: 14px;
+    }
+
+    .ai-hero-gradient-panel-{{ ai_gen_id }} {
+      padding: 16px;
+    }
+
+    .ai-hero-image-placeholder-{{ ai_gen_id }} svg {
+      max-width: 250px;
+      max-height: 250px;
+    }
+  }
+{% endstyle %}
+{% if request.page_type == 'index' %}
+<ai-hero-{{ ai_gen_id }} class="ai-hero-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-hero-container-{{ ai_gen_id }}">
+    <div class="ai-hero-content-{{ ai_gen_id }}" data-hero-content>
+      {% if block.settings.eyebrow != blank %}
+        <div class="ai-hero-eyebrow-{{ ai_gen_id }}">{{ block.settings.eyebrow }}</div>
+      {% endif %}
+
+      {% if block.settings.headline != blank %}
+        <h1 class="ai-hero-headline-{{ ai_gen_id }}">
+          {% if block.settings.headline_accent != blank %}
+            {{ block.settings.headline | replace: block.settings.headline_accent, '<span class="ai-hero-accent-' | append: ai_gen_id | append: '">' | append: block.settings.headline_accent | append: '</span>' }}
+          {% else %}
+            {{ block.settings.headline }}
+          {% endif %}
+        </h1>
+      {% endif %}
+
+      {% if block.settings.subheading != blank %}
+        <div class="ai-hero-subheading-{{ ai_gen_id }}">{{ block.settings.subheading }}</div>
+      {% endif %}
+
+      <div class="ai-hero-buttons-{{ ai_gen_id }}">
+        {% if block.settings.primary_button_label != blank %}
+          <a
+            href="{{ block.settings.primary_button_link }}"
+            class="ai-hero-btn-{{ ai_gen_id }} ai-hero-btn-primary-{{ ai_gen_id }}"
+          >
+            {{ block.settings.primary_button_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ai-hero-image-wrapper-{{ ai_gen_id }}" data-hero-image>
+      <div class="ai-hero-gradient-panel-{{ ai_gen_id }}">
+        {% if block.settings.product_image %}
+          <img
+            src="{{ block.settings.product_image | image_url: width: 1000 }}"
+            alt="{{ block.settings.product_image.alt | escape }}"
+            class="ai-hero-image-{{ ai_gen_id }}"
+            loading="lazy"
+            width="{{ block.settings.product_image.width }}"
+            height="{{ block.settings.product_image.height }}"
+          >
+        {% else %}
+          <div class="ai-hero-image-placeholder-{{ ai_gen_id }}">
+            {{ 'product-1' | placeholder_svg_tag }}
+            <div class="ai-hero-empty-state-{{ ai_gen_id }}">
+              Add a product image
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</ai-hero-{{ ai_gen_id }}>
+ {% endif %}
+<script>
+  (function() {
+    class AiHero{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.content = this.querySelector('[data-hero-content]');
+        this.image = this.querySelector('[data-hero-image]');
+        this.hasAnimated = false;
+      }
+
+      connectedCallback() {
+        this.setupIntersectionObserver();
+      }
+
+      setupIntersectionObserver() {
+        const options = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.2
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.animateIn();
+            } else {
+              this.animateOut();
+            }
+          });
+        }, options);
+
+        this.observer.observe(this);
+      }
+
+      animateIn() {
+        if (this.content) {
+          this.content.classList.add('ai-hero-animated-{{ ai_gen_id }}');
+        }
+        if (this.image) {
+          this.image.classList.add('ai-hero-animated-{{ ai_gen_id }}');
+        }
+        this.hasAnimated = true;
+      }
+
+      animateOut() {
+        if (this.hasAnimated) {
+          if (this.content) {
+            this.content.classList.remove('ai-hero-animated-{{ ai_gen_id }}');
+          }
+          if (this.image) {
+            this.image.classList.remove('ai-hero-animated-{{ ai_gen_id }}');
+          }
+        }
+      }
+
+      disconnectedCallback() {
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
+
+    customElements.define('ai-hero-{{ ai_gen_id }}', AiHero{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Premium hero",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 1000,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "New Collection"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "label": "Size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Color",
+      "default": "#B8860B"
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Discover Premium Quality"
+    },
+    {
+      "type": "text",
+      "id": "headline_accent",
+      "label": "Accent text",
+      "info": "Enter the exact text from headline to highlight",
+      "default": "Premium"
+    },
+    {
+      "type": "range",
+      "id": "headline_size",
+      "label": "Size",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "color",
+      "id": "headline_color",
+      "label": "Color",
+      "default": "#2E2A39"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent text color",
+      "default": "#000080"
+    },
+    {
+      "type": "color",
+      "id": "accent_highlight_color",
+      "label": "Accent highlight color",
+      "default": "#FFD700"
+    },
+    {
+      "type": "header",
+      "content": "Subheading"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Experience luxury and craftsmanship in every detail. Elevate your style with our exclusive collection."
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Primary button"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_label",
+      "label": "Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_bg",
+      "label": "Background",
+      "default": "#000080"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_color",
+      "label": "Text color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "primary_button_hover_bg",
+      "label": "Hover background",
+      "default": "#000050"
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Product image"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Image"
+    },
+    {
+      "type": "color_background",
+      "id": "gradient_background",
+      "label": "Background gradient",
+      "default": "linear-gradient(135deg, #FAF9F6 0%, #E8E6E1 100%)"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "Premium hero"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,265 @@
+<style>
+  .accfaq-wrapper {
+    padding: 56px 24px 64px;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+  }
+
+  .accfaq-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .accfaq-title {
+    text-align: center;
+    font-size: 38px;
+    font-weight: 800;
+    color: #000000;
+    margin: 0 0 40px;
+  }
+
+  .accfaq-list {
+    border-top: 1px solid #000000;
+  }
+
+  .accfaq-row {
+    border-bottom: 1px solid #000000;
+  }
+
+  .accfaq-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: none;
+    border: none;
+    padding: 22px 0;
+    text-align: left;
+    font-size: 17px;
+    font-weight: 700;
+    color: #000000;
+    cursor: pointer;
+  }
+
+  .accfaq-toggle {
+    position: relative;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+  }
+
+  .accfaq-toggle-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: #000000;
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .accfaq-toggle-h {
+    width: 18px;
+    height: 2px;
+  }
+
+  .accfaq-toggle-v {
+    width: 2px;
+    height: 18px;
+  }
+
+  .accfaq-row.is-active .accfaq-toggle-v {
+    transform: translate(-50%, -50%) rotate(90deg);
+    opacity: 0;
+  }
+
+  .accfaq-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+  }
+
+  .accfaq-panel-inner {
+    padding: 0 0 22px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #333333;
+  }
+
+  .accfaq-panel-inner p {
+    margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    .accfaq-wrapper {
+      padding: 36px 16px 40px;
+    }
+
+    .accfaq-title {
+      font-size: clamp(18px, 6.5vw, 28px);
+      white-space: nowrap;
+      margin: 0 0 24px;
+    }
+
+    .accfaq-btn {
+      padding: 16px 0;
+      font-size: 15px;
+    }
+
+    .accfaq-panel-inner {
+      padding: 0 0 16px;
+      font-size: 14px;
+    }
+  }
+</style>
+
+<div class="accfaq-wrapper" style="background-color: {{ section.settings.bg_color }};">
+  <div class="accfaq-inner">
+    <h2 class="accfaq-title">{{ section.settings.heading }}</h2>
+
+    <div class="accfaq-list">
+      {% for block in section.blocks %}
+        <div class="accfaq-row" {{ block.shopify_attributes }}>
+          <button class="accfaq-btn" type="button" aria-expanded="false">
+            <span>{{ block.settings.question }}</span>
+            <span class="accfaq-toggle">
+              <span class="accfaq-toggle-line accfaq-toggle-h"></span>
+              <span class="accfaq-toggle-line accfaq-toggle-v"></span>
+            </span>
+          </button>
+          <div class="accfaq-panel">
+            <div class="accfaq-panel-inner">
+              {{ block.settings.answer }}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  function initAccfaq(scope) {
+    var rows = scope.querySelectorAll('.accfaq-row');
+
+    rows.forEach(function (row) {
+      if (row.dataset.accfaqBound === 'true') return; // avoid double-binding
+      row.dataset.accfaqBound = 'true';
+
+      var btn = row.querySelector('.accfaq-btn');
+      var panel = row.querySelector('.accfaq-panel');
+
+      btn.addEventListener('click', function () {
+        var isActive = row.classList.contains('is-active');
+        var list = row.closest('.accfaq-list');
+
+        list.querySelectorAll('.accfaq-row.is-active').forEach(function (openRow) {
+          if (openRow !== row) {
+            openRow.classList.remove('is-active');
+            openRow.querySelector('.accfaq-btn').setAttribute('aria-expanded', 'false');
+            openRow.querySelector('.accfaq-panel').style.maxHeight = null;
+          }
+        });
+
+        if (isActive) {
+          row.classList.remove('is-active');
+          btn.setAttribute('aria-expanded', 'false');
+          panel.style.maxHeight = null;
+        } else {
+          row.classList.add('is-active');
+          btn.setAttribute('aria-expanded', 'true');
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+      });
+    });
+  }
+
+  // Run immediately if DOM is already parsed, otherwise wait for it
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      initAccfaq(document);
+    });
+  } else {
+    initAccfaq(document);
+  }
+
+  // Re-init when section is reloaded in the theme editor
+  document.addEventListener('shopify:section:load', function (event) {
+    initAccfaq(event.target);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "FAQ Accordion",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Preguntas Frecuentes"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "¿Qué ingredientes hacen efectivo este shampoo?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Aceite de Romero (inhibidor de DHT natural), Cebolla Morada (quercetina antioxidante), Aceite de Coco (penetra hasta la raiz). Sin sulfatos, sin parabenos, sin perfumes artificiales, sin quimicos.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Accordion",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Qué ingredientes hacen efectivo este shampoo?",
+            "answer": "<p>Aceite de Romero (inhibidor de DHT natural), Cebolla Morada (quercetina antioxidante), Aceite de Coco (penetra hasta la raiz). Sin sulfatos, sin parabenos, sin perfumes artificiales, sin quimicos.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Puedo usarlo todos los días?",
+            "answer": "<p>Sí, es seguro para uso diario gracias a su formula libre de sulfatos y quimicos agresivos.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Y si no me funciona?",
+            "answer": "<p>Ofrecemos garantia de satisfaccion. Si no ves resultados, contactanos para una solucion.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿De verdad el envío es gratis?",
+            "answer": "<p>Sí, el envio es completamente gratis en todos los pedidos.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

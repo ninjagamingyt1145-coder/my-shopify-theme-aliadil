@@ -1,0 +1,322 @@
+{% doc %}
+  @prompt
+    Create a Shopify announcement bar with a horizontal scrolling ticker (marquee effect).
+    
+    Requirements:
+    - Full width sticky top bar
+    - Auto-scrolling text from right to left (infinite loop)
+    - Multiple repeating items like:
+      • Buy 2 Get 1 Free
+      • Up to 70% Off
+      • Subscribe & Save
+    - Add small icons before each text (optional)
+    - Smooth continuous animation (no jump)
+    - Pause on hover
+    - Speed control option
+    - Space between items
+    
+    Customization settings:
+    - Text items (editable list)
+    - Font size and color
+    - Background color
+    - Scroll speed
+    - Enable/disable icons
+    - Padding top/bottom
+    
+    Design:
+    - Clean minimal
+    - Same spacing as ecommerce stores
+    - Mobile responsive (slightly slower on mobile) , when i click on dropdown this shows on that why please fix it., still not fixed why it shows on dropdown menu when its open
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-ticker-bar-{{ ai_gen_id }} {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_vertical }}px 0;
+    overflow: hidden;
+    z-index: 4; 
+    display: block;
+  }
+
+  .ai-ticker-bar-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    width: 100%;
+  }
+
+  .ai-ticker-bar-track-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: {{ block.settings.item_spacing }}px;
+    animation: ai-ticker-scroll-{{ ai_gen_id }} {{ block.settings.scroll_speed }}s linear infinite;
+    will-change: transform;
+  }
+
+  .ai-ticker-bar-{{ ai_gen_id }}:hover .ai-ticker-bar-track-{{ ai_gen_id }} {
+    animation-play-state: paused;
+  }
+
+  .ai-ticker-bar-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.font_size }}px;
+  }
+
+  .ai-ticker-bar-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.font_size }}px;
+    height: {{ block.settings.font_size }}px;
+    flex-shrink: 0;
+  }
+
+  @keyframes ai-ticker-scroll-{{ ai_gen_id }} {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-ticker-bar-track-{{ ai_gen_id }} {
+      animation-duration: {{ block.settings.scroll_speed | times: 1.5 }}s;
+    }
+    
+    .ai-ticker-bar-item-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<ticker-bar-{{ ai_gen_id }} class="ai-ticker-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-ticker-bar-wrapper-{{ ai_gen_id }}">
+    <div class="ai-ticker-bar-track-{{ ai_gen_id }}">
+      {% liquid
+        assign items_array = ''
+        if block.settings.item_1 != blank
+          assign items_array = items_array | append: block.settings.item_1 | append: '||'
+        endif
+        if block.settings.item_2 != blank
+          assign items_array = items_array | append: block.settings.item_2 | append: '||'
+        endif
+        if block.settings.item_3 != blank
+          assign items_array = items_array | append: block.settings.item_3 | append: '||'
+        endif
+        if block.settings.item_4 != blank
+          assign items_array = items_array | append: block.settings.item_4 | append: '||'
+        endif
+        if block.settings.item_5 != blank
+          assign items_array = items_array | append: block.settings.item_5 | append: '||'
+        endif
+
+        assign items = items_array | split: '||'
+      %}
+
+      {% for i in (1..2) %}
+        {% for item in items %}
+          {% if item != blank %}
+            <div class="ai-ticker-bar-item-{{ ai_gen_id }}">
+              {% if block.settings.show_icons %}
+                
+                {% assign downcase_item = item | downcase %}
+                
+                {% if downcase_item contains 'buy 2' or downcase_item contains '70%' %}
+                  {% comment %} Percentage Discount Icon {% endcomment %}
+                  <svg class="ai-ticker-bar-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{{ block.settings.text_color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="5" x2="5" y2="19"></line>
+                    <circle cx="6.5" cy="6.5" r="2.5"></circle>
+                    <circle cx="17.5" cy="17.5" r="2.5"></circle>
+                  </svg>
+                
+                {% elsif downcase_item contains 'save' or downcase_item contains 'subscribe' %}
+                  {% comment %} Tag / Label Icon {% endcomment %}
+                  <svg class="ai-ticker-bar-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{{ block.settings.text_color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                    <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                  </svg>
+
+                {% else %}
+                  {% comment %} Standard Default Clock Icon {% endcomment %}
+                  <svg class="ai-ticker-bar-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="{{ block.settings.text_color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 6v6l4 2"></path>
+                  </svg>
+                {% endif %}
+
+              {% endif %}
+              <span>{{ item }}</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</ticker-bar-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class TickerBar{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.track = this.querySelector('.ai-ticker-bar-track-{{ ai_gen_id }}');
+        this.ensureSmoothLoop();
+      }
+
+      ensureSmoothLoop() {
+        if (!this.track) return;
+
+        const trackWidth = this.track.scrollWidth / 2;
+        const containerWidth = this.offsetWidth;
+
+        if (trackWidth < containerWidth * 2) {
+          const itemsNeeded = Math.ceil((containerWidth * 4) / trackWidth);
+          const originalContent = this.track.innerHTML;
+
+          for (let i = 0; i < itemsNeeded; i++) {
+            this.track.innerHTML += originalContent;
+          }
+        }
+      }
+    }
+
+    customElements.define('ticker-bar-{{ ai_gen_id }}', TickerBar{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Announcement ticker",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Ticker items"
+    },
+    {
+      "type": "text",
+      "id": "item_1",
+      "label": "Item 1",
+      "default": "Buy 2 Get 1 Free"
+    },
+    {
+      "type": "text",
+      "id": "item_2",
+      "label": "Item 2",
+      "default": "Limited Time Offer"
+    },
+    {
+      "type": "text",
+      "id": "item_3",
+      "label": "Item 3",
+      "default": "Subscribe & Save"
+    },
+    {
+      "type": "text",
+      "id": "item_4",
+      "label": "Item 4",
+      "default": "Free Shipping Over $50"
+    },
+    {
+      "type": "text",
+      "id": "item_5",
+      "label": "Item 5",
+      "default": "Up to 70% Off"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#4dc46a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Padding top and bottom",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "label": "Scroll speed",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "label": "Space between items",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Icons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icons",
+      "label": "Show icons",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement ticker"
+    }
+  ]
+}
+{% endschema %}

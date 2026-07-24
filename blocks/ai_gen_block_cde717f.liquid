@@ -1,0 +1,496 @@
+{% doc %}
+  @prompt
+    Create a custom premium Shopify Liquid section called "Product Feature Split Hero" that features a 2-column layout on desktop and stacks into 1 column on mobile. 
+    
+    Design and Layout Specifications:
+    1. BACKGROUND & OVERLAY:
+       - Provide a setting to upload a custom background image (`image_picker`).
+       - The background image must be full-bleed, responsive (`background-size: cover`), and centered.
+       - Include a customizable background color overlay setting with adjustable opacity (e.g., dark tint or colored wash) to ensure white text overlay remains perfectly legible over any image.
+    
+    2. STRUCTURE (2 COLUMNS ON DESKTOP):
+       - Left Column (Grid Features): A 2x2 grid displaying 4 distinct features. 
+         - Between the top 2 features and bottom 2 features, there must be a thin, subtle horizontal divider line (1px wide, semi-transparent white).
+         - Each feature item should have a small bold heading (font-size: 14px-16px) and a short muted description block below it.
+       - Right Column (Action Box): A vertically centered layout containing:
+         - A large, prominent heading (font-size: 32px-40px, bold).
+         - A secondary paragraph description underneath.
+         - A full-width, clean primary Call-to-Action (CTA) button with slightly rounded corners, custom background color, and dark text.
+         - A smaller trust badge indicator below the button (e.g., a shield/check icon with text like "30-day money back guarantee").
+    
+    3. TYPOGRAPHY & STYLING:
+       - All text inside this section defaults to white (#ffffff) or ultra-light cream to contrast against the dark overlay.
+       - Clean sans-serif modern typography with crisp line-heights (1.4 for headings, 1.5 for body text).
+       - Premium, clean spacing with generous top/bottom inner section padding.
+    
+    4. SHOPIFY SCHEMA Settings:
+       - Configuration settings for: Background Image, Background Overlay Color & Opacity slider, Custom Text fields for all 4 features, Right Side Main Heading, Description text, Button text, Button Link, and Section Padding.
+       - Include a standard default preset so it can be added to any template directly from the theme editor., add a entry animation
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-split-hero-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+    {% if block.settings.background_image %}
+      background-image: url('{{ block.settings.background_image | image_url: width: 2000 }}');
+    {% else %}
+      background-color: {{ block.settings.background_color }};
+    {% endif %}
+  }
+
+  .ai-split-hero-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: {{ block.settings.overlay_color }};
+    opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
+    pointer-events: none;
+  }
+
+  .ai-split-hero-container-{{ ai_gen_id }} {
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+    z-index: 1;
+  }
+
+  .ai-split-hero-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .ai-split-hero-features-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    opacity: 0;
+    transform: translateX(-40px);
+    animation: ai-split-hero-slide-in-left-{{ ai_gen_id }} 0.8s ease-out 0.2s forwards;
+  }
+
+  .ai-split-hero-feature-row-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  .ai-split-hero-divider-{{ ai_gen_id }} {
+    width: 100%;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 30px 0;
+  }
+
+  .ai-split-hero-feature-{{ ai_gen_id }} {
+    color: #ffffff;
+  }
+
+  .ai-split-hero-feature-heading-{{ ai_gen_id }} {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+    color: #ffffff;
+  }
+
+  .ai-split-hero-feature-desc-{{ ai_gen_id }} {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .ai-split-hero-action-box-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    opacity: 0;
+    transform: translateX(40px);
+    animation: ai-split-hero-slide-in-right-{{ ai_gen_id }} 0.8s ease-out 0.4s forwards;
+  }
+
+  .ai-split-hero-main-heading-{{ ai_gen_id }} {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0;
+    color: #ffffff;
+  }
+
+  .ai-split-hero-description-{{ ai_gen_id }} {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .ai-split-hero-cta-button-{{ ai_gen_id }} {
+    width: 100%;
+    padding: 16px 32px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .ai-split-hero-cta-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+    transform: translateY(-2px);
+  }
+
+  .ai-split-hero-trust-badge-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+  }
+
+  .ai-split-hero-trust-icon-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  @keyframes ai-split-hero-slide-in-left-{{ ai_gen_id }} {
+    from {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes ai-split-hero-slide-in-right-{{ ai_gen_id }} {
+    from {
+      opacity: 0;
+      transform: translateX(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-split-hero-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .ai-split-hero-main-heading-{{ ai_gen_id }} {
+      font-size: 28px;
+    }
+
+    .ai-split-hero-container-{{ ai_gen_id }} {
+      padding: 0 20px;
+    }
+
+    .ai-split-hero-features-{{ ai_gen_id }},
+    .ai-split-hero-action-box-{{ ai_gen_id }} {
+      transform: translateY(30px);
+      animation: ai-split-hero-slide-in-up-{{ ai_gen_id }} 0.8s ease-out 0.2s forwards;
+    }
+
+    .ai-split-hero-action-box-{{ ai_gen_id }} {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes ai-split-hero-slide-in-up-{{ ai_gen_id }} {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-split-hero-feature-row-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .ai-split-hero-main-heading-{{ ai_gen_id }} {
+      font-size: 24px;
+    }
+
+    .ai-split-hero-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_top | times: 0.6 }}px 0 {{ block.settings.section_padding_bottom | times: 0.6 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-split-hero-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-split-hero-overlay-{{ ai_gen_id }}"></div>
+  
+  <div class="ai-split-hero-container-{{ ai_gen_id }}">
+    <div class="ai-split-hero-grid-{{ ai_gen_id }}">
+      <div class="ai-split-hero-features-{{ ai_gen_id }}">
+        <div class="ai-split-hero-feature-row-{{ ai_gen_id }}">
+          <div class="ai-split-hero-feature-{{ ai_gen_id }}">
+            <h3 class="ai-split-hero-feature-heading-{{ ai_gen_id }}">{{ block.settings.feature_1_heading }}</h3>
+            <p class="ai-split-hero-feature-desc-{{ ai_gen_id }}">{{ block.settings.feature_1_description }}</p>
+          </div>
+          <div class="ai-split-hero-feature-{{ ai_gen_id }}">
+            <h3 class="ai-split-hero-feature-heading-{{ ai_gen_id }}">{{ block.settings.feature_2_heading }}</h3>
+            <p class="ai-split-hero-feature-desc-{{ ai_gen_id }}">{{ block.settings.feature_2_description }}</p>
+          </div>
+        </div>
+
+        <div class="ai-split-hero-divider-{{ ai_gen_id }}"></div>
+
+        <div class="ai-split-hero-feature-row-{{ ai_gen_id }}">
+          <div class="ai-split-hero-feature-{{ ai_gen_id }}">
+            <h3 class="ai-split-hero-feature-heading-{{ ai_gen_id }}">{{ block.settings.feature_3_heading }}</h3>
+            <p class="ai-split-hero-feature-desc-{{ ai_gen_id }}">{{ block.settings.feature_3_description }}</p>
+          </div>
+          <div class="ai-split-hero-feature-{{ ai_gen_id }}">
+            <h3 class="ai-split-hero-feature-heading-{{ ai_gen_id }}">{{ block.settings.feature_4_heading }}</h3>
+            <p class="ai-split-hero-feature-desc-{{ ai_gen_id }}">{{ block.settings.feature_4_description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-split-hero-action-box-{{ ai_gen_id }}">
+        <h1 class="ai-split-hero-main-heading-{{ ai_gen_id }}">{{ block.settings.main_heading }}</h1>
+        <p class="ai-split-hero-description-{{ ai_gen_id }}">{{ block.settings.main_description }}</p>
+        
+        {% if block.settings.button_link != blank %}
+          <a href="{{ block.settings.button_link }}" class="ai-split-hero-cta-button-{{ ai_gen_id }}">
+            {{ block.settings.button_text }}
+          </a>
+        {% else %}
+          <button class="ai-split-hero-cta-button-{{ ai_gen_id }}">
+            {{ block.settings.button_text }}
+          </button>
+        {% endif %}
+
+        <div class="ai-split-hero-trust-badge-{{ ai_gen_id }}">
+          <svg class="ai-split-hero-trust-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <polyline points="9 12 11 14 15 10"></polyline>
+          </svg>
+          <span>{{ block.settings.trust_badge_text }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Feature split hero",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#2E2A39"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Feature 1"
+    },
+    {
+      "type": "text",
+      "id": "feature_1_heading",
+      "label": "Heading",
+      "default": "Premium Quality"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_1_description",
+      "label": "Description",
+      "default": "Crafted with the finest ingredients for maximum effectiveness"
+    },
+    {
+      "type": "header",
+      "content": "Feature 2"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_heading",
+      "label": "Heading",
+      "default": "Clinically Tested"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_2_description",
+      "label": "Description",
+      "default": "Backed by scientific research and clinical studies"
+    },
+    {
+      "type": "header",
+      "content": "Feature 3"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_heading",
+      "label": "Heading",
+      "default": "Fast Results"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_3_description",
+      "label": "Description",
+      "default": "See noticeable improvements within the first few weeks"
+    },
+    {
+      "type": "header",
+      "content": "Feature 4"
+    },
+    {
+      "type": "text",
+      "id": "feature_4_heading",
+      "label": "Heading",
+      "default": "100% Natural"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_4_description",
+      "label": "Description",
+      "default": "Made from pure, natural ingredients with no artificial additives"
+    },
+    {
+      "type": "header",
+      "content": "Main content"
+    },
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Main heading",
+      "default": "Transform Your Health Today"
+    },
+    {
+      "type": "textarea",
+      "id": "main_description",
+      "label": "Description",
+      "default": "Experience the power of nature with our premium blood sugar support formula. Designed to help you maintain healthy glucose levels naturally."
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#2E2A39"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Button hover background",
+      "default": "#f3f3f3"
+    },
+    {
+      "type": "header",
+      "content": "Trust badge"
+    },
+    {
+      "type": "text",
+      "id": "trust_badge_text",
+      "label": "Trust badge text",
+      "default": "30-day money back guarantee"
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature split hero"
+    }
+  ]
+}
+{% endschema %}

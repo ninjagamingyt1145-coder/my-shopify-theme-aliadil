@@ -1,0 +1,327 @@
+{% doc %}
+  @prompt
+    Create a Shopify custom section called "Announcement Countdown Bar" that replicates this exact design:
+    Layout & Background:
+    
+    Full-width very thin bar section. Solid blue background #1a5fbe. No top or bottom padding beyond 10px — extremely compact single-line bar. Total height approximately 44px. Everything on one single horizontal line centered in the middle of the bar.
+    Content Layout:
+    
+    All content centered horizontally in one line using display: flex align-items: center justify-content: center gap: 16px. Two elements side by side: the sale text label on the left and the countdown timer boxes on the right.
+    Sale Text Label:
+    
+    Bold all-caps white text. font-size: 13px font-weight: 700 color: #ffffff letter-spacing: 1.5px white-space: nowrap. Example: "FATHER'S DAY SALE". Merchant editable. No icon, no emoji — plain bold caps text only.
+    Countdown Timer:
+    
+    Four boxes side by side separated by colon separators : between each box. Boxes show DAYS, HRS, MIN, SEC. Each box: white background #ffffff border-radius: 4px padding: 4px 8px min-width: 36px text-align: center. Inside each box: large bold number on top font-size: 16px font-weight: 700 color: #111 line-height: 1. Below the number a tiny all-caps label font-size: 8px font-weight: 600 color: #555 letter-spacing: 0.5px — "DAYS", "HRS", "MIN", "SEC". Box has no border. Colon separator between boxes: white #ffffff font-size: 16px font-weight: 700 margin: 0 4px vertically centered.
+    Countdown Logic:
+    
+    Merchant sets a target end date and time in schema. JS calculates remaining days, hours, minutes, seconds from new Date() to target date. Updates every second using setInterval. When countdown reaches zero all boxes show 00. Numbers always display 2 digits with leading zero (e.g. 01, 09). No redirect or hide on zero — just shows 00 00 00 00.
+    No Animation — No Scroll Effect:
+    
+    Bar is always visible. No entry animation. No Intersection Observer. No fade. Appears instantly on page load always.
+    Mobile (max-width: 749px):
+    
+    Bar stays single line. Sale text font size 11px. Number boxes font-size: 13px min-width: 28px padding: 3px 6px. Label below number font-size: 7px. Gap reduced to 10px. Everything still fits on one line — no stacking.
+    Shopify Schema Settings:
+    
+    Sale label text (default "FATHER'S DAY SALE")
+    Countdown target date (text field — merchant enters date string e.g. "2026-06-15T23:59:00")
+    Bar background color (default #1a5fbe)
+    Sale text color (default #ffffff)
+    Timer box background color (default #ffffff)
+    Timer number color (default #111111)
+    Timer label color (default #555555)
+    Colon separator color (default #ffffff)
+    
+    Technical:
+    
+    Vanilla JS only. setInterval every 1000ms. Parse target date with new Date(targetDate). Calculate diff in ms then extract days hours minutes seconds. padStart(2, '0') for leading zeros. No jQuery. No libraries. Semantic HTML5. Mobile breakpoint 749px., make this section small on mobile, make this section small on desktop
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-countdown-bar-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.bar_bg_color }};
+    padding: 6px 0;
+    min-height: 32px;
+  }
+
+  .ai-countdown-bar-container-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 100%;
+  }
+
+  .ai-countdown-bar-label-{{ ai_gen_id }} {
+    font-size: 11px;
+    font-weight: 700;
+    color: {{ block.settings.sale_text_color }};
+    letter-spacing: 1px;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .ai-countdown-bar-timer-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .ai-countdown-bar-box-{{ ai_gen_id }} {
+    background-color: {{ block.settings.timer_box_bg_color }};
+    border-radius: 3px;
+    padding: 3px 6px;
+    min-width: 28px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-countdown-bar-number-{{ ai_gen_id }} {
+    font-size: 13px;
+    font-weight: 700;
+    color: {{ block.settings.timer_number_color }};
+    line-height: 1;
+  }
+
+  .ai-countdown-bar-unit-{{ ai_gen_id }} {
+    font-size: 7px;
+    font-weight: 600;
+    color: {{ block.settings.timer_label_color }};
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .ai-countdown-bar-separator-{{ ai_gen_id }} {
+    color: {{ block.settings.colon_color }};
+    font-size: 13px;
+    font-weight: 700;
+    margin: 0 2px;
+    line-height: 1;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-countdown-bar-{{ ai_gen_id }} {
+      padding: 5px 0;
+      min-height: 28px;
+    }
+
+    .ai-countdown-bar-container-{{ ai_gen_id }} {
+      gap: 6px;
+    }
+
+    .ai-countdown-bar-label-{{ ai_gen_id }} {
+      font-size: 9px;
+      letter-spacing: 0.8px;
+    }
+
+    .ai-countdown-bar-timer-{{ ai_gen_id }} {
+      gap: 2px;
+    }
+
+    .ai-countdown-bar-box-{{ ai_gen_id }} {
+      min-width: 24px;
+      padding: 2px 5px;
+      border-radius: 2px;
+    }
+
+    .ai-countdown-bar-number-{{ ai_gen_id }} {
+      font-size: 11px;
+    }
+
+    .ai-countdown-bar-unit-{{ ai_gen_id }} {
+      font-size: 6px;
+      letter-spacing: 0.2px;
+      margin-top: 1px;
+    }
+
+    .ai-countdown-bar-separator-{{ ai_gen_id }} {
+      font-size: 11px;
+      margin: 0 1px;
+    }
+  }
+{% endstyle %}
+
+<countdown-bar-{{ ai_gen_id }}
+  class="ai-countdown-bar-{{ ai_gen_id }}"
+  data-target-date="{{ block.settings.target_date }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-countdown-bar-container-{{ ai_gen_id }}">
+    {% if block.settings.sale_label != blank %}
+      <div class="ai-countdown-bar-label-{{ ai_gen_id }}">
+        {{ block.settings.sale_label }}
+      </div>
+    {% endif %}
+
+    <div class="ai-countdown-bar-timer-{{ ai_gen_id }}">
+      <div class="ai-countdown-bar-box-{{ ai_gen_id }}">
+        <div class="ai-countdown-bar-number-{{ ai_gen_id }}" data-days>00</div>
+        <div class="ai-countdown-bar-unit-{{ ai_gen_id }}">DAYS</div>
+      </div>
+
+      <div class="ai-countdown-bar-separator-{{ ai_gen_id }}">:</div>
+
+      <div class="ai-countdown-bar-box-{{ ai_gen_id }}">
+        <div class="ai-countdown-bar-number-{{ ai_gen_id }}" data-hours>00</div>
+        <div class="ai-countdown-bar-unit-{{ ai_gen_id }}">HRS</div>
+      </div>
+
+      <div class="ai-countdown-bar-separator-{{ ai_gen_id }}">:</div>
+
+      <div class="ai-countdown-bar-box-{{ ai_gen_id }}">
+        <div class="ai-countdown-bar-number-{{ ai_gen_id }}" data-minutes>00</div>
+        <div class="ai-countdown-bar-unit-{{ ai_gen_id }}">MIN</div>
+      </div>
+
+      <div class="ai-countdown-bar-separator-{{ ai_gen_id }}">:</div>
+
+      <div class="ai-countdown-bar-box-{{ ai_gen_id }}">
+        <div class="ai-countdown-bar-number-{{ ai_gen_id }}" data-seconds>00</div>
+        <div class="ai-countdown-bar-unit-{{ ai_gen_id }}">SEC</div>
+      </div>
+    </div>
+  </div>
+</countdown-bar-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CountdownBar{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.targetDate = null;
+        this.intervalId = null;
+      }
+
+      connectedCallback() {
+        const targetDateString = this.dataset.targetDate;
+        if (!targetDateString) return;
+
+        this.targetDate = new Date(targetDateString);
+        
+        this.daysElement = this.querySelector('[data-days]');
+        this.hoursElement = this.querySelector('[data-hours]');
+        this.minutesElement = this.querySelector('[data-minutes]');
+        this.secondsElement = this.querySelector('[data-seconds]');
+
+        this.updateCountdown();
+        this.intervalId = setInterval(() => this.updateCountdown(), 1000);
+      }
+
+      disconnectedCallback() {
+        if (this.intervalId) {
+          clearInterval(this.intervalId);
+        }
+      }
+
+      updateCountdown() {
+        const now = new Date();
+        const diff = this.targetDate - now;
+
+        if (diff <= 0) {
+          this.daysElement.textContent = '00';
+          this.hoursElement.textContent = '00';
+          this.minutesElement.textContent = '00';
+          this.secondsElement.textContent = '00';
+          if (this.intervalId) {
+            clearInterval(this.intervalId);
+          }
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        this.daysElement.textContent = String(days).padStart(2, '0');
+        this.hoursElement.textContent = String(hours).padStart(2, '0');
+        this.minutesElement.textContent = String(minutes).padStart(2, '0');
+        this.secondsElement.textContent = String(seconds).padStart(2, '0');
+      }
+    }
+
+    customElements.define('countdown-bar-{{ ai_gen_id }}', CountdownBar{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Countdown bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "sale_label",
+      "label": "Sale label",
+      "default": "FATHER'S DAY SALE"
+    },
+    {
+      "type": "text",
+      "id": "target_date",
+      "label": "Countdown target date",
+      "default": "2026-06-21T23:59:00",
+      "info": "Format: YYYY-MM-DDTHH:MM:SS (e.g., 2026-06-21T23:59:00)"
+    },
+    {
+      "type": "header",
+      "content": "Bar style"
+    },
+    {
+      "type": "color",
+      "id": "bar_bg_color",
+      "label": "Background color",
+      "default": "#1a5fbe"
+    },
+    {
+      "type": "color",
+      "id": "sale_text_color",
+      "label": "Sale text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Timer style"
+    },
+    {
+      "type": "color",
+      "id": "timer_box_bg_color",
+      "label": "Box background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "timer_number_color",
+      "label": "Number color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "timer_label_color",
+      "label": "Label color",
+      "default": "#555555"
+    },
+    {
+      "type": "color",
+      "id": "colon_color",
+      "label": "Colon separator color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Countdown bar"
+    }
+  ]
+}
+{% endschema %}

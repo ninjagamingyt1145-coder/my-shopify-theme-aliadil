@@ -1,0 +1,605 @@
+{% doc %}
+  @prompt
+    Create a Shopify section for a supplement product landing page.
+    
+    Layout:
+    - Two column layout on desktop.
+    - Left side: 4 benefit icons arranged in a 2x2 grid with text below each icon.
+    - Right side: a product image displayed in the center.
+    
+    Section content:
+    
+    Heading: Feel Better. Every Day.
+    
+    Subheading: From consistent heart support to easy daily use, here’s what makes aged garlic extract different.
+    
+    Benefits with icons:
+    1. Heart Health Support  
+    2. Daily Immune Support  
+    3. Gentle on the Stomach  
+    4. Third-Party Lab Tested  
+    
+    Design requirements:
+    - Background color: black
+    - White text
+    - Clean minimal supplement style
+    - Icons should be medium size and placed above the benefit text
+    - Product image should appear centered inside decorative circular lines or rings
+    - Circular lines should appear behind the product image to create a focus effect
+    - Allow uploading and resizing the product image in the section settings
+    - No margin-top and no margin-bottom for the section
+    - Mobile responsive: icons stack and image appears below
+    - Clean spacing and modern layout
+{% enddoc %}
+ {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-supplement-landing-{{ ai_gen_id }} {
+    display: block;
+    background-color: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+    padding: {{ block.settings.padding_top }}px 20px {{ block.settings.padding_bottom }}px;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .ai-supplement-landing__container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-supplement-landing__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: {{ block.settings.column_gap }}px;
+    align-items: center;
+  }
+
+  .ai-supplement-landing__content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ai-supplement-landing__heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 16px 0;
+    color: {{ block.settings.text_color }};
+    letter-spacing: -0.02em;
+  }
+
+  .ai-supplement-landing__subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    line-height: 1.6;
+    margin: 0 0 40px 0;
+    color: {{ block.settings.text_color }};
+    opacity: 0.85;
+    max-width: 540px;
+  }
+
+  .ai-supplement-landing__benefits-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px {{ block.settings.benefits_gap }}px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 40px;
+  }
+
+  .ai-supplement-landing__benefit-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: {{ block.settings.benefit_icon_text_gap }}px;
+  }
+
+  .ai-supplement-landing__benefit-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: {{ block.settings.icon_color }};
+    margin: 0 auto;
+  }
+
+  .ai-supplement-landing__benefit-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-supplement-landing__benefit-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.benefit_text_size }}px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0;
+    color: {{ block.settings.text_color }};
+    letter-spacing: -0.01em;
+    max-width: 220px;
+  }
+
+  /* Right Side Image & Ring Framework */
+  .ai-supplement-landing__image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    min-height: 550px;
+  }
+
+  .ai-supplement-landing__decorative-rings-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    max-width: 600px; /* Rings scale up with the image */
+    max-height: 600px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .ai-supplement-landing__ring-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: {{ block.settings.ring_thickness }}px dashed {{ block.settings.ring_color }};
+    opacity: {{ block.settings.ring_opacity | divided_by: 100.0 }};
+  }
+
+  .ai-supplement-landing__ring-1-{{ ai_gen_id }} {
+    width: 65%;
+    height: 65%;
+  }
+
+  .ai-supplement-landing__ring-2-{{ ai_gen_id }} {
+    width: 85%;
+    height: 85%;
+    border-style: solid;
+    opacity: calc({{ block.settings.ring_opacity | divided_by: 100.0 }} * 0.6);
+  }
+
+  .ai-supplement-landing__ring-3-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ai-supplement-landing__product-image-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    filter: drop-shadow(0px 20px 40px rgba(0,0,0,0.4));
+  }
+
+  .ai-supplement-landing__product-image-{{ ai_gen_id }} img {
+    width: 100%;
+    max-width: {{ block.settings.image_width }}px; /* Control via Slider */
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .ai-supplement-landing__image-placeholder-{{ ai_gen_id }} {
+    background-color: rgba(255, 255, 255, 0.05);
+    width: 100%;
+    max-width: {{ block.settings.image_width }}px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 2;
+  }
+
+  @media screen and (max-width: 990px) {
+    .ai-supplement-landing__grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.mobile_gap }}px;
+    }
+    
+    .ai-supplement-landing__content-{{ ai_gen_id }} {
+      order: 1;
+    }
+
+    .ai-supplement-landing__image-wrapper-{{ ai_gen_id }} {
+      order: 2;
+      padding: 40px;
+      min-height: auto;
+    }
+
+    .ai-supplement-landing__heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.75);
+    }
+    
+    .ai-supplement-landing__subheading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.subheading_size }}px * 0.95);
+      margin-bottom: 30px;
+    }
+
+    .ai-supplement-landing__benefits-{{ ai_gen_id }} {
+      padding-top: 30px;
+      gap: 36px 20px;
+    }
+
+    .ai-supplement-landing__product-image-{{ ai_gen_id }} img {
+      max-width: calc({{ block.settings.image_width }}px * 0.8);
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .ai-supplement-landing__benefits-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .ai-supplement-landing__decorative-rings-{{ ai_gen_id }} {
+      max-width: 280px;
+      max-height: 280px;
+    }
+    .ai-supplement-landing__product-image-{{ ai_gen_id }} img {
+      max-width: 240px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-supplement-landing-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-supplement-landing__container-{{ ai_gen_id }}">
+    <div class="ai-supplement-landing__grid-{{ ai_gen_id }}">
+      
+      <div class="ai-supplement-landing__content-{{ ai_gen_id }}">
+        {% if block.settings.heading != blank %}
+          <h2 class="ai-supplement-landing__heading-{{ ai_gen_id }}">
+            {{ block.settings.heading }}
+          </h2>
+        {% endif %}
+
+        {% if block.settings.subheading != blank %}
+          <p class="ai-supplement-landing__subheading-{{ ai_gen_id }}">
+            {{ block.settings.subheading }}
+          </p>
+        {% endif %}
+
+        <div class="ai-supplement-landing__benefits-{{ ai_gen_id }}">
+          {% if block.settings.benefit_1_text != blank %}
+            <div class="ai-supplement-landing__benefit-{{ ai_gen_id }}">
+              <div class="ai-supplement-landing__benefit-icon-{{ ai_gen_id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </div>
+              <p class="ai-supplement-landing__benefit-text-{{ ai_gen_id }}">
+                {{ block.settings.benefit_1_text }}
+              </p>
+            </div>
+          {% endif %}
+
+          {% if block.settings.benefit_2_text != blank %}
+            <div class="ai-supplement-landing__benefit-{{ ai_gen_id }}">
+              <div class="ai-supplement-landing__benefit-icon-{{ ai_gen_id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+              <p class="ai-supplement-landing__benefit-text-{{ ai_gen_id }}">
+                {{ block.settings.benefit_2_text }}
+              </p>
+            </div>
+          {% endif %}
+
+          {% if block.settings.benefit_3_text != blank %}
+            <div class="ai-supplement-landing__benefit-{{ ai_gen_id }}">
+              <div class="ai-supplement-landing__benefit-icon-{{ ai_gen_id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                  <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                  <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                </svg>
+              </div>
+              <p class="ai-supplement-landing__benefit-text-{{ ai_gen_id }}">
+                {{ block.settings.benefit_3_text }}
+              </p>
+            </div>
+          {% endif %}
+
+          {% if block.settings.benefit_4_text != blank %}
+            <div class="ai-supplement-landing__benefit-{{ ai_gen_id }}">
+              <div class="ai-supplement-landing__benefit-icon-{{ ai_gen_id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v1"></path>
+                  <path d="M18 8h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4"></path>
+                  <line x1="10" y1="9" x2="10" y2="15"></line>
+                </svg>
+              </div>
+              <p class="ai-supplement-landing__benefit-text-{{ ai_gen_id }}">
+                {{ block.settings.benefit_4_text }}
+              </p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="ai-supplement-landing__image-wrapper-{{ ai_gen_id }}">
+        <div class="ai-supplement-landing__decorative-rings-{{ ai_gen_id }}">
+          <div class="ai-supplement-landing__ring-{{ ai_gen_id }} ai-supplement-landing__ring-1-{{ ai_gen_id }}"></div>
+          <div class="ai-supplement-landing__ring-{{ ai_gen_id }} ai-supplement-landing__ring-2-{{ ai_gen_id }}"></div>
+          <div class="ai-supplement-landing__ring-{{ ai_gen_id }} ai-supplement-landing__ring-3-{{ ai_gen_id }}"></div>
+        </div>
+
+        {% if block.settings.product_image %}
+          <div class="ai-supplement-landing__product-image-{{ ai_gen_id }}">
+            <img
+              src="{{ block.settings.product_image | image_url: width: 1200 }}"
+              alt="{{ block.settings.product_image.alt | escape }}"
+              loading="lazy"
+              width="{{ block.settings.product_image.width }}"
+              height="{{ block.settings.product_image.height }}"
+            >
+          </div>
+        {% else %}
+          <div class="ai-supplement-landing__image-placeholder-{{ ai_gen_id }}">
+            {{ 'product-1' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Supplement landing",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Feel Better. Every Day."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "From consistent heart support to easy daily use, here's what makes aged garlic extract different."
+    },
+    {
+      "type": "header",
+      "content": "Benefits"
+    },
+    {
+      "type": "text",
+      "id": "benefit_1_text",
+      "label": "Benefit 1",
+      "default": "Heart Health Support"
+    },
+    {
+      "type": "text",
+      "id": "benefit_2_text",
+      "label": "Benefit 2",
+      "default": "Daily Immune Support"
+    },
+    {
+      "type": "text",
+      "id": "benefit_3_text",
+      "label": "Benefit 3",
+      "default": "Gentle on the Stomach"
+    },
+    {
+      "type": "text",
+      "id": "benefit_4_text",
+      "label": "Benefit 4",
+      "default": "Third-Party Lab Tested"
+    },
+    {
+      "type": "header",
+      "content": "Product image"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Image"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Image width",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "ring_color",
+      "label": "Decorative rings",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "ring_opacity",
+      "label": "Ring opacity",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "unit": "%",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Subheading size",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "benefit_text_size",
+      "label": "Benefit text size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 24,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 1000,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "benefits_gap",
+      "label": "Benefits Horizontal gap",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "benefit_icon_text_gap",
+      "label": "Icon to text gap",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Mobile gap",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Decorative rings"
+    },
+    {
+      "type": "range",
+      "id": "ring_thickness",
+      "label": "Ring thickness",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Supplement landing"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,225 @@
+<style>
+  .xinv-wrapper {
+    background-color: #ffffff;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    padding-bottom: 16px;
+  }
+
+  .xinv-grid {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 0;
+  }
+
+  .xinv-content {
+    padding: 64px 64px;
+  }
+
+  .xinv-heading {
+    font-size: 36px;
+    font-weight: 800;
+    color: #000000;
+    line-height: 1.2;
+    margin: 0 0 36px;
+  }
+
+  .xinv-feature {
+    margin-bottom: 28px;
+  }
+
+  .xinv-feature-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0 0 6px;
+  }
+
+  .xinv-feature-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #444444;
+    margin: 0;
+  }
+
+  .xinv-btn {
+    display: inline-block;
+    background-color: #000000;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: 999px;
+    margin-top: 12px;
+  }
+
+  .xinv-image {
+    width: 100%;
+    padding: 48px 48px 48px 0;
+  }
+
+  .xinv-image img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    border-radius: 20px;
+  }
+
+  @media (max-width: 900px) {
+    .xinv-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .xinv-content {
+      order: 2;
+      padding: 24px 20px 8px;
+    }
+
+    .xinv-heading {
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .xinv-feature {
+      margin-bottom: 14px;
+    }
+
+    .xinv-feature-title {
+      font-size: 14px;
+    }
+
+    .xinv-feature-desc {
+      font-size: 12px;
+    }
+
+    .xinv-btn {
+      font-size: 13px;
+      padding: 13px 26px;
+      margin-top: 6px;
+    }
+
+    .xinv-image {
+      order: 1;
+      padding: 16px 20px 12px;
+    }
+
+    .xinv-image img {
+      border-radius: 14px;
+    }
+  }
+</style>
+
+<div class="xinv-wrapper">
+  <div class="xinv-grid">
+    <div class="xinv-content">
+      <h2 class="xinv-heading">{{ section.settings.heading }}</h2>
+
+      {% for block in section.blocks %}
+        <div class="xinv-feature" {{ block.shopify_attributes }}>
+          <p class="xinv-feature-title">{{ block.settings.title }}</p>
+          <p class="xinv-feature-desc">{{ block.settings.description }}</p>
+        </div>
+      {% endfor %}
+
+      {% if section.settings.button_text != blank %}
+        <a href="{{ section.settings.button_link }}" class="xinv-btn">{{ section.settings.button_text }}</a>
+      {% endif %}
+    </div>
+
+    <div class="xinv-image">
+      {% if section.settings.image %}
+        <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.image_alt | escape }}" loading="lazy">
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Research Features",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "10 Años de Investigación"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Photo"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Photo alt text",
+      "default": "Tienda Excalvo"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Comprar Ahora"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Feature title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Feature description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Research Features",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "10 Años de Investigación",
+            "description": "Formulado por un tricólogo de Los Ángeles tras una década de trabajo clínico con pacientes con caída."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Concentraciones Clínicas",
+            "description": "Ingredientes activos dosificados a niveles probados en estudios revisados por pares — no trazas de marketing."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Suave Para Uso Diario",
+            "description": "Libre de sulfatos, parabenos y SLS. No irritante, no hormonal y seguro para uso diario a largo plazo — sin dependencia ni caída de rebote al dejarlo."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,133 @@
+<style>
+  .xrzn-wrapper {
+    background-color: #ffffff;
+    padding: 60px 24px;
+    border-bottom: 1px solid #000000;
+  }
+
+  .xrzn-pill {
+    max-width: 1100px;
+    margin: 0 auto;
+    background-color: #000000;
+    border-radius: 200px;
+    padding: 70px 60px;
+    text-align: center;
+  }
+
+  .xrzn-heading {
+    font-size: 32px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .xrzn-heading-italic {
+    display: block;
+    font-style: italic;
+    font-weight: 800;
+  }
+
+  .xrzn-paragraph {
+    max-width: 640px;
+    margin: 28px auto 36px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #cccccc;
+  }
+
+  .xrzn-btn {
+    display: inline-block;
+    background-color: #ffffff;
+    color: #000000;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .xrzn-wrapper {
+      padding: 32px 16px;
+    }
+
+    .xrzn-pill {
+      border-radius: 28px;
+      padding: 36px 20px;
+    }
+
+    .xrzn-heading {
+      font-size: 20px;
+    }
+
+    .xrzn-paragraph {
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 16px auto 22px;
+    }
+
+    .xrzn-btn {
+      font-size: 12px;
+      padding: 13px 24px;
+    }
+  }
+</style>
+
+<div class="xrzn-wrapper">
+  <div class="xrzn-pill">
+    <h2 class="xrzn-heading">
+      {{ section.settings.heading_line1 }}
+      <span class="xrzn-heading-italic">{{ section.settings.heading_line2 }}</span>
+    </h2>
+
+    <p class="xrzn-paragraph">{{ section.settings.paragraph }}</p>
+
+    {% if section.settings.button_text != blank %}
+      <a href="{{ section.settings.button_link }}" class="xrzn-btn">{{ section.settings.button_text }}</a>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Reason Pill Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading_line1",
+      "label": "Heading line 1",
+      "default": "Lo has probado todo. Nada funcionó."
+    },
+    {
+      "type": "text",
+      "id": "heading_line2",
+      "label": "Heading line 2 (italic)",
+      "default": "Hay una razón."
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph",
+      "label": "Paragraph",
+      "default": "La mayoría de productos enmascaran el síntoma. Engrosan lo que ya hay, frenan la caída unos meses y luego te dejan peor que al principio — cuero cabelludo irritado, dependencia y la misma coronilla fina mirándote al espejo. Excalvo no hace nada de eso. Bloquea el DHT — la hormona detrás del 95% de la calvicie masculina — y nutre el folículo con lo que realmente necesita para reconstruirse. Sin dependencia. Sin efectos secundarios. Solo cabello."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Empieza tus 90 días"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reason Pill Section"
+    }
+  ]
+}
+{% endschema %}

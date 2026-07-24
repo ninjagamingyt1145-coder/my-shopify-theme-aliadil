@@ -1,0 +1,136 @@
+<style>
+  .xguar-wrapper {
+    background-color: #ffffff;
+    padding: 70px 24px;
+    text-align: center;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+  }
+
+  .xguar-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .xguar-icon {
+    display: block;
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 20px;
+  }
+
+  .xguar-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke: #000000;
+    fill: none;
+  }
+
+  .xguar-heading {
+    font-size: 30px;
+    font-weight: 800;
+    color: #000000;
+    margin: 0 0 18px;
+    line-height: 1.3;
+  }
+
+  .xguar-paragraph {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #444444;
+    margin: 0 0 32px;
+  }
+
+  .xguar-btn {
+    display: inline-block;
+    background-color: #000000;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    padding: 16px 36px;
+    border-radius: 999px;
+  }
+
+  @media (max-width: 600px) {
+    .xguar-wrapper {
+      padding: 40px 16px;
+    }
+
+    .xguar-icon {
+      width: 36px;
+      height: 36px;
+      margin-bottom: 14px;
+    }
+
+    .xguar-heading {
+      font-size: 21px;
+      margin-bottom: 12px;
+    }
+
+    .xguar-paragraph {
+      font-size: 13px;
+      margin-bottom: 22px;
+    }
+
+    .xguar-btn {
+      font-size: 13px;
+      padding: 13px 28px;
+    }
+  }
+</style>
+
+<div class="xguar-wrapper">
+  <div class="xguar-inner">
+    <span class="xguar-icon">
+      <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
+    </span>
+
+    <h2 class="xguar-heading">{{ section.settings.heading }}</h2>
+    <p class="xguar-paragraph">{{ section.settings.paragraph }}</p>
+
+    {% if section.settings.button_text != blank %}
+      <a href="{{ section.settings.button_link }}" class="xguar-btn">{{ section.settings.button_text }}</a>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Guarantee Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "90 Días · 100% Garantía de Devolución"
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph",
+      "label": "Paragraph",
+      "default": "Prueba Excalvo Shampoo Clínico para el Crecimiento del Cabello sin riesgo. Si no estás satisfecho por cualquier motivo, devuélvelo en 90 días y te reembolsamos el 100%. Envío gratis en ambos sentidos. Sin cargos. Sin preguntas."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Comprar Ahora"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Guarantee Section"
+    }
+  ]
+}
+{% endschema %}

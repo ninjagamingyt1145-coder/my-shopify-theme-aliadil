@@ -1,0 +1,429 @@
+{% doc %}
+  @prompt
+    "Create a premium, responsive Shopify Liquid section titled 'Product Hero Banner'.
+    
+    Layout & Design:
+    
+    Desktop: A 2-column split layout. The left column should contain a product image picker. The right column should contain a text block with left-aligned text.
+    
+    Mobile: A stacked layout where the image appears above the text block.
+    
+    The entire section should have a clean, modern aesthetic with ample spacing (padding) to ensure content is balanced and easy to read.
+    
+    Content Elements:
+    
+    Image Column (Left): Include an image picker for the product bottle/package. If no image is selected, the container should not render or take up space, allowing the text to center automatically.
+    
+    Text Column (Right):
+    
+    Heading: A bold, large H1-style text (e.g., 'Daily Wellness Support').
+    
+    Subheading/Description: A text area field for the product description.
+    
+    Call to Action: A prominent button with customizable text and link.
+    
+    Trust Element: A small text line below the button for a '30-day money-back guarantee' or similar trust indicator.
+    
+    Schema Settings:
+    
+    Provide settings for: Background color, Product image, Heading text/color/size, Description text/color, Button text/link/colors, and section padding.
+    
+    Use modern sans-serif typography.", put image on left and all text on right, align all the text on mobile on center, make this section little bit small on mobile
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-hero-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_top }}px 0 {{ block.settings.padding_bottom }}px;
+  }
+
+  .ai-product-hero__container-{{ ai_gen_id }} {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-product-hero__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .ai-product-hero__image-column-{{ ai_gen_id }} {
+    width: 100%;
+    order: 1;
+  }
+
+  .ai-product-hero__image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    position: relative;
+  }
+
+  .ai-product-hero__image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+  }
+
+  .ai-product-hero__image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #f4f4f4;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-product-hero__image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+  }
+
+  .ai-product-hero__text-column-{{ ai_gen_id }} {
+    width: 100%;
+    order: 2;
+  }
+
+  .ai-product-hero__heading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 20px 0;
+    text-align: left;
+  }
+
+  .ai-product-hero__description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.description_color }};
+    margin: 0 0 30px 0;
+    text-align: left;
+  }
+
+  .ai-product-hero__button-wrapper-{{ ai_gen_id }} {
+    text-align: left;
+    margin-bottom: 16px;
+  }
+
+  .ai-product-hero__button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 40px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid {{ block.settings.button_bg_color }};
+  }
+
+  .ai-product-hero__button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+    border-color: {{ block.settings.button_hover_bg_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    transform: translateY(-2px);
+  }
+
+  .ai-product-hero__trust-text-{{ ai_gen_id }} {
+    font-size: 14px;
+    color: {{ block.settings.trust_text_color }};
+    text-align: left;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-product-hero__grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .ai-product-hero__image-column-{{ ai_gen_id }} {
+      order: 1;
+    }
+
+    .ai-product-hero__text-column-{{ ai_gen_id }} {
+      order: 2;
+    }
+
+    .ai-product-hero__heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.8);
+    }
+
+    .ai-product-hero__description-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.description_size }}px * 0.95);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-hero-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_top | times: 0.5 }}px 0 {{ block.settings.padding_bottom | times: 0.5 }}px;
+    }
+
+    .ai-product-hero__container-{{ ai_gen_id }} {
+      padding: 0 16px;
+    }
+
+    .ai-product-hero__grid-{{ ai_gen_id }} {
+      gap: 24px;
+    }
+
+    .ai-product-hero__image-wrapper-{{ ai_gen_id }} {
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .ai-product-hero__heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.55);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .ai-product-hero__description-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.description_size }}px * 0.85);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .ai-product-hero__button-wrapper-{{ ai_gen_id }} {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .ai-product-hero__button-{{ ai_gen_id }} {
+      padding: 12px 28px;
+      font-size: 14px;
+    }
+
+    .ai-product-hero__trust-text-{{ ai_gen_id }} {
+      text-align: center;
+      font-size: 13px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-product-hero-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-product-hero__container-{{ ai_gen_id }}">
+    <div class="ai-product-hero__grid-{{ ai_gen_id }}">
+      {% if block.settings.product_image %}
+        <div class="ai-product-hero__image-column-{{ ai_gen_id }}">
+          <div class="ai-product-hero__image-wrapper-{{ ai_gen_id }}">
+            <img
+              src="{{ block.settings.product_image | image_url: width: 1200 }}"
+              alt="{{ block.settings.product_image.alt | escape }}"
+              loading="lazy"
+              width="{{ block.settings.product_image.width }}"
+              height="{{ block.settings.product_image.height }}"
+              class="ai-product-hero__image-{{ ai_gen_id }}"
+            >
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="ai-product-hero__text-column-{{ ai_gen_id }}">
+        {% if block.settings.heading != blank %}
+          <h1 class="ai-product-hero__heading-{{ ai_gen_id }}">
+            {{ block.settings.heading }}
+          </h1>
+        {% endif %}
+
+        {% if block.settings.description != blank %}
+          <div class="ai-product-hero__description-{{ ai_gen_id }}">
+            {{ block.settings.description }}
+          </div>
+        {% endif %}
+
+        {% if block.settings.button_text != blank %}
+          <div class="ai-product-hero__button-wrapper-{{ ai_gen_id }}">
+            <a
+              href="{{ block.settings.button_link }}"
+              class="ai-product-hero__button-{{ ai_gen_id }}"
+            >
+              {{ block.settings.button_text }}
+            </a>
+          </div>
+        {% endif %}
+
+        {% if block.settings.trust_text != blank %}
+          <p class="ai-product-hero__trust-text-{{ ai_gen_id }}">
+            {{ block.settings.trust_text }}
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product hero banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product image"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Daily Wellness Support"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Experience the power of nature with our premium wellness formula. Carefully crafted with the finest ingredients to support your daily health and vitality."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "trust_text",
+      "label": "Trust text",
+      "default": "✓ 30-day money-back guarantee"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "poppins_n7"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#555555"
+    },
+    {
+      "type": "color",
+      "id": "trust_text_color",
+      "label": "Trust text color",
+      "default": "#315a22"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background",
+      "default": "#315a22"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Hover background",
+      "default": "#254118"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Hover text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product hero banner"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}

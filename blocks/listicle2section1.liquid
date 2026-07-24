@@ -1,0 +1,597 @@
+{% doc %}
+  @prompt
+    "Create a split-screen Shopify section with a 50/50 layout. On one side, include a high-quality product image with rounded corners and a subtle drop shadow. On the other side, add a bold heading in a clean sans-serif font, followed by multiple short paragraphs with high line-height for readability. Below the text, add a centered, full-width call-to-action button with a contrasting background color and capitalized text. The entire section should have a dark background with light text, a clean modern aesthetic, and be fully mobile-responsive, stacking the image on top of the text for smaller screens.", "Create a custom liquid section for a premium, clean product showcase. The section should feature a symmetrical, 50/50 two-column grid.
+    
+    Right Column (Image):
+    
+    A container with a very subtle, light background (like a light silver or subtle pattern).
+    
+    Place a high-quality product image inside it.
+    
+    The image must have clearly rounded corners.
+    
+    Add a soft, clean drop shadow for depth.
+    
+    Left Column (Text):
+    
+    Use a bold, modern, sans-serif heading at the top.
+    
+    Maintain a clear margin below the heading before the body text.
+    
+    Use a maximum of two body text paragraphs.
+    
+    Crucial for the look: Add significant line-height (e.g., 2.0 or 2.2) and margin-bottom to each paragraph to create a sense of airy, clean space.
+    
+    Overall (Layout and Button):
+    
+    Place a single call-to-action button, centering it perfectly within the width of the entire section.
+    
+    Crucial for the look: The text column should be perfectly center-aligned vertically relative to the image container.
+    
+    The entire section should have a premium, spacious feel with plenty of vertical padding.**", remove image container background, remove margin top of button, remove margin top and bottom, add 10px margin top and bottom, margin top and bottom should be customizable
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-premium-showcase-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.section_background }};
+    padding: {{ block.settings.margin_top }}px 0 {{ block.settings.margin_bottom }}px 0;
+  }
+
+  .ai-premium-showcase-container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ block.settings.column_gap }}px;
+    row-gap: 0 !important;
+    align-items: center;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 {{ block.settings.horizontal_padding }}px;
+  }
+
+  .ai-premium-showcase-text-column-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ai-premium-showcase-heading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.heading_margin_bottom }}px 0;
+    line-height: 1.2;
+  }
+
+  .ai-premium-showcase-paragraph-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    line-height: {{ block.settings.line_height }};
+    margin: 0 0 {{ block.settings.paragraph_margin }}px 0;
+  }
+
+  .ai-premium-showcase-paragraph-{{ ai_gen_id }}:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .ai-premium-showcase-image-column-{{ ai_gen_id }} {
+    padding: {{ block.settings.image_container_padding }}px;
+  }
+
+  .ai-premium-showcase-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    margin-bottom: 0 !important; /* Forcefully margin remove karein */
+    padding-bottom: 0 !important; /* Agar padding hai toh wo bhi hatayein */
+    width: 100%;
+  }
+
+  .ai-premium-showcase-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    box-shadow: {{ block.settings.shadow_horizontal }}px {{ block.settings.shadow_vertical }}px {{ block.settings.shadow_blur }}px rgba(0, 0, 0, {{ block.settings.shadow_opacity | divided_by: 100.0 }});
+    display: block;
+  }
+
+  .ai-premium-showcase-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #f8f8f8;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    box-shadow: {{ block.settings.shadow_horizontal }}px {{ block.settings.shadow_vertical }}px {{ block.settings.shadow_blur }}px rgba(0, 0, 0, {{ block.settings.shadow_opacity | divided_by: 100.0 }});
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-premium-showcase-image-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+  }
+
+  .ai-premium-showcase-button-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    margin-top: 0 !important;
+    padding-top: 10px;
+    grid-column: 1 / -1;
+  }
+
+  .ai-premium-showcase-button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: {{ block.settings.button_text_size }}px;
+    letter-spacing: 1px;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-premium-showcase-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg }};
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-premium-showcase-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.mobile_gap }}px;
+      width: 100%;
+      padding: 0 20px;
+    }
+
+    {% if block.settings.mobile_layout == 'image_top' %}
+      .ai-premium-showcase-image-column-{{ ai_gen_id }} {
+        order: 1;
+      }
+      .ai-premium-showcase-text-column-{{ ai_gen_id }} {
+        order: 2;
+      }
+      .ai-premium-showcase-button-wrapper-{{ ai_gen_id }} {
+        order: 3;
+      }
+    {% else %}
+      .ai-premium-showcase-text-column-{{ ai_gen_id }} {
+        order: 1;
+      }
+      .ai-premium-showcase-image-column-{{ ai_gen_id }} {
+        order: 2;
+      }
+      .ai-premium-showcase-button-wrapper-{{ ai_gen_id }} {
+        order: 3;
+      }
+    {% endif %}
+
+    .ai-premium-showcase-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.75 }}px;
+    }
+
+    .ai-premium-showcase-paragraph-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.9 }}px;
+    }
+
+    .ai-premium-showcase-button-{{ ai_gen_id }} {
+      font-size: {{ block.settings.button_text_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+{% if request.page_type == 'page' and handle == 'listicle-2' %}
+<premium-showcase-{{ ai_gen_id }} class="ai-premium-showcase-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-premium-showcase-container-{{ ai_gen_id }}">
+    <div class="ai-premium-showcase-text-column-{{ ai_gen_id }}">
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-premium-showcase-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+      {% endif %}
+
+      {% if block.settings.paragraph_1 != blank %}
+        <p class="ai-premium-showcase-paragraph-{{ ai_gen_id }}">{{ block.settings.paragraph_1 }}</p>
+      {% endif %}
+
+      {% if block.settings.paragraph_2 != blank %}
+        <p class="ai-premium-showcase-paragraph-{{ ai_gen_id }}">{{ block.settings.paragraph_2 }}</p>
+      {% endif %}
+    </div>
+
+    <div class="ai-premium-showcase-image-column-{{ ai_gen_id }}">
+      <div class="ai-premium-showcase-image-wrapper-{{ ai_gen_id }}">
+        {% if block.settings.product_image %}
+          <img
+            src="{{ block.settings.product_image | image_url: width: 1200 }}"
+            alt="{{ block.settings.product_image.alt | escape }}"
+            class="ai-premium-showcase-image-{{ ai_gen_id }}"
+            loading="lazy"
+            width="{{ block.settings.product_image.width }}"
+            height="{{ block.settings.product_image.height }}"
+          >
+        {% else %}
+          <div class="ai-premium-showcase-image-placeholder-{{ ai_gen_id }}">
+            {{ 'product-1' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if block.settings.button_text != blank %}
+      <div class="ai-premium-showcase-button-wrapper-{{ ai_gen_id }}">
+        <a
+          href="{{ block.settings.button_link }}"
+          class="ai-premium-showcase-button-{{ ai_gen_id }}"
+        >
+          {{ block.settings.button_text }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</premium-showcase-{{ ai_gen_id }}>
+ {% endif %}
+<script>
+  (function() {
+    class PremiumShowcase{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+      }
+    }
+
+    customElements.define('premium-showcase-{{ ai_gen_id }}', PremiumShowcase{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Premium product showcase",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Premium Quality Craftsmanship"
+    },
+    {
+      "type": "text",
+      "id": "paragraph_1",
+      "label": "Paragraph 1",
+      "default": "Experience unparalleled excellence with our meticulously crafted products, designed to elevate your lifestyle and exceed your expectations."
+    },
+    {
+      "type": "text",
+      "id": "paragraph_2",
+      "label": "Paragraph 2",
+      "default": "Each piece is thoughtfully created using premium materials and innovative techniques, ensuring lasting quality and timeless appeal."
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Explore Collection"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin top",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin bottom",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "horizontal_padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "min": 30,
+      "max": 120,
+      "step": 10,
+      "unit": "px",
+      "label": "Column gap",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Mobile gap",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile layout",
+      "options": [
+        {
+          "value": "image_top",
+          "label": "Image on top"
+        },
+        {
+          "value": "text_top",
+          "label": "Text on top"
+        }
+      ],
+      "default": "image_top"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#4a4a4a"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "poppins_n7"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Heading margin bottom",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "line_height",
+      "min": 1.5,
+      "max": 2.5,
+      "step": 0.1,
+      "label": "Line height",
+      "default": 2.2
+    },
+    {
+      "type": "range",
+      "id": "paragraph_margin",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Paragraph margin bottom",
+      "default": 35
+    },
+    {
+      "type": "header",
+      "content": "Image container"
+    },
+    {
+      "type": "range",
+      "id": "image_container_padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Container padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Image shadow"
+    },
+    {
+      "type": "range",
+      "id": "shadow_opacity",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "%",
+      "label": "Opacity",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "shadow_horizontal",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Horizontal offset",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "shadow_vertical",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical offset",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "shadow_blur",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Blur",
+      "default": 35
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background",
+      "default": "#ff5600"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg",
+      "label": "Hover background",
+      "default": "#e04d00"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "min": 12,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "min": 30,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 6
+    }
+  ],
+  "presets": [
+    {
+      "name": "Premium product showcase"
+    }
+  ]
+}
+{% endschema %}

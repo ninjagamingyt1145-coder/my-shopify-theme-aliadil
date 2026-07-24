@@ -1,0 +1,124 @@
+<style>
+  .xstat-wrapper {
+    background-color: #ffffff;
+    padding: 50px 24px;
+    border-bottom: 1px solid #000000;
+  }
+
+  .xstat-pill {
+    max-width: 1300px;
+    margin: 0 auto;
+    background-color: #000000;
+    border-radius: 200px;
+    padding: 44px 60px;
+  }
+
+  .xstat-grid {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .xstat-item {
+    text-align: center;
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .xstat-number {
+    font-size: 36px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 8px;
+    line-height: 1.1;
+  }
+
+  .xstat-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #cccccc;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .xstat-wrapper {
+      padding: 24px 16px;
+    }
+
+    .xstat-pill {
+      border-radius: 28px;
+      padding: 24px 16px;
+    }
+
+    .xstat-grid {
+      gap: 16px;
+    }
+
+    .xstat-item {
+      min-width: 42%;
+    }
+
+    .xstat-number {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .xstat-label {
+      font-size: 9px;
+    }
+  }
+</style>
+
+<div class="xstat-wrapper">
+  <div class="xstat-pill">
+    <div class="xstat-grid">
+      {% for block in section.blocks %}
+        <div class="xstat-item" {{ block.shopify_attributes }}>
+          <p class="xstat-number">{{ block.settings.number }}</p>
+          <p class="xstat-label">{{ block.settings.label }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Stats Pill",
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number",
+          "default": "100+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Stats Pill",
+      "blocks": [
+        { "type": "stat", "settings": { "number": "13,000+", "label": "Clientes" } },
+        { "type": "stat", "settings": { "number": "4.8 ★", "label": "Calificación Promedio" } },
+        { "type": "stat", "settings": { "number": "87%", "label": "Vieron Resultados en 90 Días" } },
+        { "type": "stat", "settings": { "number": "100%", "label": "Garantía Devolución" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

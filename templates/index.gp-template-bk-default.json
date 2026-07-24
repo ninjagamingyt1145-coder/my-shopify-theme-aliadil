@@ -1,0 +1,42 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "cfca4268-6358-426c-98ab-d292aeef11e5": {
+      "type": "slideshow",
+      "settings": {
+        "visibility": "always-display",
+        "layout": "full_bleed",
+        "slide_height": "medium",
+        "slider_visual": "dots",
+        "desktop_pagination_position": "over",
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "show_text_below": true,
+        "mobile_pagination_position": "under",
+        "accessibility_info": "Slideshow about our brand"
+      }
+    },
+    "blocks_J7CNVz": {
+      "type": "_blocks",
+      "name": "Comparison split grid",
+      "settings": {}
+    },
+    "1781039450e83a19ec": {
+      "type": "_blocks",
+      "settings": {}
+    }
+  },
+  "order": [
+    "cfca4268-6358-426c-98ab-d292aeef11e5",
+    "blocks_J7CNVz",
+    "1781039450e83a19ec"
+  ]
+}

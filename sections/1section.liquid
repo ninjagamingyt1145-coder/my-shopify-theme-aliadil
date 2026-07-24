@@ -1,0 +1,297 @@
+<style>
+  .xcmp-wrapper {
+    background-color: {{ section.settings.bg_color }};
+    padding: 64px 24px 56px;
+    border-bottom: 1px solid #000000;
+  }
+
+  .xcmp-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .xcmp-heading {
+    text-align: center;
+    font-size: 34px;
+    font-weight: 800;
+    color: #000000;
+    margin: 0 0 12px;
+    line-height: 1.2;
+  }
+
+  .xcmp-subheading {
+    text-align: center;
+    font-size: 16px;
+    color: #333333;
+    margin: 0 0 36px;
+  }
+
+  .xcmp-table-scroll {
+    overflow-x: auto;
+    border: 1px solid #000000;
+    border-radius: 6px;
+  }
+
+  .xcmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 560px;
+  }
+
+  .xcmp-table thead th {
+    background-color: #000000;
+    color: #ffffff;
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    padding: 16px 20px;
+    white-space: nowrap;
+  }
+
+  .xcmp-table thead th:not(:first-child) {
+    text-align: center;
+  }
+
+  .xcmp-table tbody td {
+    padding: 16px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #000000;
+    border-bottom: 1px solid #000000;
+    background-color: #ffffff;
+  }
+
+  .xcmp-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .xcmp-table tbody td:first-child {
+    font-weight: 600;
+  }
+
+  .xcmp-table tbody td:not(:first-child) {
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .xcmp-table tbody td.xcmp-value-yes {
+    color: #000000;
+  }
+
+  .xcmp-table tbody td.xcmp-value-no {
+    color: #e53935;
+  }
+
+  .xcmp-cta {
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .xcmp-btn {
+    display: inline-block;
+    background-color: #000000;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    padding: 16px 36px;
+    border-radius: 999px;
+  }
+
+  @media (max-width: 600px) {
+    .xcmp-wrapper {
+      padding: 40px 16px 40px;
+    }
+
+    .xcmp-heading {
+      font-size: 24px;
+    }
+
+    .xcmp-subheading {
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .xcmp-table thead th,
+    .xcmp-table tbody td {
+      padding: 12px 14px;
+      font-size: 13px;
+    }
+  }
+</style>
+
+<div class="xcmp-wrapper">
+  <div class="xcmp-inner">
+    <h2 class="xcmp-heading">{{ section.settings.heading }}</h2>
+    <p class="xcmp-subheading">{{ section.settings.subheading }}</p>
+
+    <div class="xcmp-table-scroll">
+      <table class="xcmp-table">
+        <thead>
+          <tr>
+            <th>{{ section.settings.col_feature }}</th>
+            <th>{{ section.settings.col_excalvo }}</th>
+            <th>{{ section.settings.col_minoxidil }}</th>
+            <th>{{ section.settings.col_finasterida }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for block in section.blocks %}
+            <tr {{ block.shopify_attributes }}>
+              <td>{{ block.settings.feature }}</td>
+              <td class="xcmp-value-{{ block.settings.excalvo }}">
+                {% if block.settings.excalvo == 'yes' %}Sí{% else %}No{% endif %}
+              </td>
+              <td class="xcmp-value-{{ block.settings.minoxidil }}">
+                {% if block.settings.minoxidil == 'yes' %}Sí{% else %}No{% endif %}
+              </td>
+              <td class="xcmp-value-{{ block.settings.finasterida }}">
+                {% if block.settings.finasterida == 'yes' %}Sí{% else %}No{% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if section.settings.button_text != blank %}
+      <div class="xcmp-cta">
+        <a href="{{ section.settings.button_link }}" class="xcmp-btn">{{ section.settings.button_text }}</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Comparison Table",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Por Qué Excalvo Gana Donde Otros Fallan."
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Cómo se compara Excalvo con Minoxidil y Finasterida."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "text",
+      "id": "col_feature",
+      "label": "Column 1 label",
+      "default": "Característica"
+    },
+    {
+      "type": "text",
+      "id": "col_excalvo",
+      "label": "Column 2 label",
+      "default": "Excalvo"
+    },
+    {
+      "type": "text",
+      "id": "col_minoxidil",
+      "label": "Column 3 label",
+      "default": "Minoxidil"
+    },
+    {
+      "type": "text",
+      "id": "col_finasterida",
+      "label": "Column 4 label",
+      "default": "Finasterida"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Comprar Excalvo"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "comparison_row",
+      "name": "Comparison Row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "feature",
+          "label": "Feature name",
+          "default": "Ingredientes 100% Naturales"
+        },
+        {
+          "type": "select",
+          "id": "excalvo",
+          "label": "Excalvo value",
+          "options": [
+            { "value": "yes", "label": "Sí" },
+            { "value": "no", "label": "No" }
+          ],
+          "default": "yes"
+        },
+        {
+          "type": "select",
+          "id": "minoxidil",
+          "label": "Minoxidil value",
+          "options": [
+            { "value": "yes", "label": "Sí" },
+            { "value": "no", "label": "No" }
+          ],
+          "default": "no"
+        },
+        {
+          "type": "select",
+          "id": "finasterida",
+          "label": "Finasterida value",
+          "options": [
+            { "value": "yes", "label": "Sí" },
+            { "value": "no", "label": "No" }
+          ],
+          "default": "no"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison Table",
+      "blocks": [
+        {
+          "type": "comparison_row",
+          "settings": { "feature": "Ingredientes 100% Naturales", "excalvo": "yes", "minoxidil": "no", "finasterida": "no" }
+        },
+        {
+          "type": "comparison_row",
+          "settings": { "feature": "Sin Efectos Secundarios", "excalvo": "yes", "minoxidil": "no", "finasterida": "no" }
+        },
+        {
+          "type": "comparison_row",
+          "settings": { "feature": "Sin Disfunción Sexual", "excalvo": "yes", "minoxidil": "yes", "finasterida": "no" }
+        },
+        {
+          "type": "comparison_row",
+          "settings": { "feature": "Sin Dependencia / Caída de Rebote", "excalvo": "yes", "minoxidil": "no", "finasterida": "no" }
+        },
+        {
+          "type": "comparison_row",
+          "settings": { "feature": "Garantía 90 Días", "excalvo": "yes", "minoxidil": "no", "finasterida": "no" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

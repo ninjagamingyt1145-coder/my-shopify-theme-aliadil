@@ -1,0 +1,153 @@
+<style>
+  .xdoc-wrapper {
+    background-color: #ffffff;
+    padding: 0;
+  }
+
+  .xdoc-grid {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 0;
+  }
+
+  .xdoc-image {
+    width: 100%;
+    padding: 48px 48px 32px;
+  }
+
+  .xdoc-image img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    border-radius: 20px;
+  }
+
+  .xdoc-content {
+    padding: 60px 64px 40px;
+  }
+
+  .xdoc-heading {
+    font-size: 38px;
+    font-weight: 800;
+    color: #000000;
+    line-height: 1.2;
+    margin: 0 0 20px;
+  }
+
+  .xdoc-paragraph {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #333333;
+    margin: 0 0 32px;
+    max-width: 480px;
+  }
+
+  .xdoc-btn {
+    display: inline-block;
+    background-color: #000000;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: 999px;
+  }
+
+  @media (max-width: 900px) {
+    .xdoc-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .xdoc-image {
+      padding: 24px 24px 16px;
+    }
+
+    .xdoc-image img {
+      border-radius: 16px;
+    }
+
+    .xdoc-content {
+      padding: 12px 24px 24px;
+    }
+
+    .xdoc-heading {
+      font-size: 26px;
+    }
+
+    .xdoc-paragraph {
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+  }
+</style>
+
+<div class="xdoc-wrapper">
+  <div class="xdoc-grid">
+    <div class="xdoc-image">
+      {% if section.settings.image %}
+        <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.image_alt | escape }}" loading="lazy">
+      {% endif %}
+    </div>
+
+    <div class="xdoc-content">
+      <h2 class="xdoc-heading">{{ section.settings.heading }}</h2>
+      <p class="xdoc-paragraph">{{ section.settings.paragraph }}</p>
+
+      {% if section.settings.button_text != blank %}
+        <a href="{{ section.settings.button_link }}" class="xdoc-btn">{{ section.settings.button_text }}</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Doctor Image + Text",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Photo"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Photo alt text",
+      "default": "Doctor sosteniendo Excalvo Shampoo"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "10x Más Potente Que el Minoxidil."
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph",
+      "label": "Paragraph",
+      "default": "El Minoxidil genera dependencia, irritación y caída en cuanto lo dejas. El Shampoo Excalvo no. Romero 40% y Cebolla Roja 30% — las concentraciones exactas usadas en ensayos clínicos — llegan al cuero cabelludo, penetran el folículo y lo alimentan desde adentro."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Comprar Ahora"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Doctor Image + Text"
+    }
+  ]
+}
+{% endschema %}

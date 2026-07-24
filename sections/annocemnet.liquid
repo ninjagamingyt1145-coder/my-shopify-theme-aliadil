@@ -1,0 +1,296 @@
+<style>
+  .xann-wrapper {
+    background-color: {{ section.settings.bg_color }};
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .xann-text-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .xann-icon {
+    font-size: 20px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .xann-labels {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .xann-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: {{ section.settings.text_color }};
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .xann-subtitle {
+    font-size: 11px;
+    font-weight: 700;
+    color: {{ section.settings.text_color }};
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0;
+    opacity: 0.9;
+    line-height: 1.2;
+  }
+
+  .xann-timer {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background-color: {{ section.settings.timer_bg_color }};
+    border-radius: 12px;
+    padding: 6px 16px;
+    flex-shrink: 0;
+  }
+
+  .xann-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 32px;
+  }
+
+  .xann-number {
+    font-size: 20px;
+    font-weight: 900;
+    color: {{ section.settings.timer_text_color }};
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .xann-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: {{ section.settings.timer_text_color }};
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+
+  .xann-sep {
+    font-size: 18px;
+    font-weight: 900;
+    color: {{ section.settings.timer_text_color }};
+    line-height: 1;
+    padding-bottom: 10px;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 600px) {
+    .xann-wrapper {
+      padding: 7px 12px;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+
+    .xann-text-block {
+      gap: 6px;
+      flex: 0 1 auto;
+      min-width: 0;
+    }
+
+    .xann-icon {
+      font-size: 17px;
+    }
+
+    .xann-labels {
+      min-width: 0;
+    }
+
+    .xann-title {
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      white-space: normal;
+      line-height: 1.2;
+    }
+
+    .xann-subtitle {
+      font-size: 9px;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+
+    .xann-timer {
+      border-radius: 8px;
+      padding: 6px 9px;
+      gap: 2px;
+    }
+
+    .xann-unit {
+      min-width: 26px;
+    }
+
+    .xann-number {
+      font-size: 20px;
+    }
+
+    .xann-label {
+      font-size: 8px;
+      margin-top: 2px;
+    }
+
+    .xann-sep {
+      font-size: 17px;
+      padding-bottom: 9px;
+    }
+  }
+</style>
+
+<div class="xann-wrapper" id="xann-{{ section.id }}">
+  <div class="xann-text-block">
+    {% if section.settings.icon != blank %}
+      <span class="xann-icon">{{ section.settings.icon }}</span>
+    {% endif %}
+    <div class="xann-labels">
+      <p class="xann-title">{{ section.settings.title }}</p>
+      {% if section.settings.subtitle != blank %}
+        <p class="xann-subtitle">{{ section.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="xann-timer">
+    <div class="xann-unit">
+      <span class="xann-number" id="xann-hrs-{{ section.id }}">00</span>
+      <span class="xann-label">HRS</span>
+    </div>
+    <span class="xann-sep">:</span>
+    <div class="xann-unit">
+      <span class="xann-number" id="xann-min-{{ section.id }}">00</span>
+      <span class="xann-label">MIN</span>
+    </div>
+    <span class="xann-sep">:</span>
+    <div class="xann-unit">
+      <span class="xann-number" id="xann-sec-{{ section.id }}">00</span>
+      <span class="xann-label">SEC</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var sectionId = '{{ section.id }}';
+    var hoursTotal = {{ section.settings.countdown_hours }};
+    var storageKey = 'xann_deadline_' + sectionId;
+
+    var hrsEl = document.getElementById('xann-hrs-' + sectionId);
+    var minEl = document.getElementById('xann-min-' + sectionId);
+    var secEl = document.getElementById('xann-sec-' + sectionId);
+
+    if (!hrsEl || !minEl || !secEl) return;
+
+    var stored = localStorage.getItem(storageKey);
+    var deadline;
+
+    if (stored && !isNaN(parseInt(stored, 10))) {
+      deadline = parseInt(stored, 10);
+      if (deadline < Date.now()) {
+        deadline = Date.now() + hoursTotal * 60 * 60 * 1000;
+        localStorage.setItem(storageKey, deadline);
+      }
+    } else {
+      deadline = Date.now() + hoursTotal * 60 * 60 * 1000;
+      localStorage.setItem(storageKey, deadline);
+    }
+
+    function pad(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function tick() {
+      var diff = deadline - Date.now();
+      if (diff <= 0) {
+        hrsEl.textContent = '00';
+        minEl.textContent = '00';
+        secEl.textContent = '00';
+        return;
+      }
+      var totalSecs = Math.floor(diff / 1000);
+      hrsEl.textContent = pad(Math.floor(totalSecs / 3600));
+      minEl.textContent = pad(Math.floor((totalSecs % 3600) / 60));
+      secEl.textContent = pad(totalSecs % 60);
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#cc3328"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "icon",
+      "label": "Icon / Emoji",
+      "default": "⚡"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Main title",
+      "default": "Summer Shred Sale"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Up to 62% off + Free Gifts"
+    },
+    {
+      "type": "color",
+      "id": "timer_bg_color",
+      "label": "Timer background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "timer_text_color",
+      "label": "Timer text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "number",
+      "id": "countdown_hours",
+      "label": "Countdown duration (hours)",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar"
+    }
+  ]
+}
+{% endschema %}

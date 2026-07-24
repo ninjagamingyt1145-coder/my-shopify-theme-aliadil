@@ -1,0 +1,169 @@
+<style>
+  .xprf-wrapper {
+    background-color: #000000;
+    padding: 64px 24px 56px;
+  }
+  .xprf-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .xprf-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #999999;
+    margin: 0 0 14px;
+  }
+  .xprf-heading {
+    font-size: 32px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.25;
+    margin: 0 0 40px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .xprf-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .xprf-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background-color: #1a1a1a;
+  }
+  .xprf-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .xprf-cta {
+    margin-top: 40px;
+  }
+  .xprf-btn {
+    display: inline-block;
+    background-color: #ffffff;
+    color: #000000;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: 999px;
+  }
+  @media (max-width: 768px) {
+    .xprf-wrapper {
+      padding: 24px 16px 18px;
+    }
+    .xprf-eyebrow {
+      font-size: 11px;
+      margin-bottom: 10px;
+    }
+    .xprf-heading {
+      font-size: 26px;
+      line-height: 1.3;
+      margin-bottom: 24px;
+    }
+    .xprf-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .xprf-card {
+      border-radius: 14px;
+      aspect-ratio: 4 / 5;
+    }
+    .xprf-cta {
+      margin-top: 12px;
+    }
+    .xprf-btn {
+      font-size: 11px;
+      padding: 10px 20px;
+    }
+  }
+</style>
+<div class="xprf-wrapper">
+  <div class="xprf-inner">
+    <p class="xprf-eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2 class="xprf-heading">{{ section.settings.heading }}</h2>
+    <div class="xprf-grid">
+      {% for block in section.blocks %}
+        <div class="xprf-card" {{ block.shopify_attributes }}>
+          {% if block.settings.image %}
+            <img src="{{ block.settings.image | image_url: width: 700 }}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    {% if section.settings.button_text != blank %}
+      <div class="xprf-cta">
+        <a href="{{ section.settings.button_link }}" class="xprf-btn">{{ section.settings.button_text }}</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Customer Proof Photos",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Clientes Reales · Resultados Reales"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Ve Excalvo Shampoo Clínico para el Crecimiento del Cabello en Acción"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Comprar Ahora"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "photo",
+      "name": "Customer Photo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Photo"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text (for accessibility)",
+          "default": "Cliente usando Excalvo Shampoo"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customer Proof Photos",
+      "blocks": [
+        { "type": "photo" },
+        { "type": "photo" },
+        { "type": "photo" }
+      ]
+    }
+  ]
+}
+{% endschema %}

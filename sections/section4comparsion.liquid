@@ -1,0 +1,462 @@
+<style>
+  .xcmp2-wrapper {
+    background-color: {{ section.settings.bg_color }};
+    padding: 64px 24px 48px;
+  }
+
+  .xcmp2-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .xcmp2-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .xcmp2-heading {
+    font-size: 48px;
+    font-weight: 900;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    margin: 0 0 10px;
+    line-height: 1.1;
+  }
+
+  .xcmp2-subheading {
+    font-size: 16px;
+    color: #888888;
+    margin: 0;
+    font-style: italic;
+  }
+
+  .xcmp2-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .xcmp2-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 640px;
+    background: #ffffff;
+  }
+
+  .xcmp2-table thead tr {
+    background-color: {{ section.settings.header_color }};
+  }
+
+  .xcmp2-table thead th {
+    padding: 28px 20px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .xcmp2-table thead th:first-child {
+    text-align: left;
+    width: 34%;
+  }
+
+  .xcmp2-th-hero {
+    position: relative;
+    vertical-align: middle !important;
+    width: 22%;
+  }
+
+  .xcmp2-best-badge {
+    display: inline-block;
+    background-color: #ffffff;
+    color: {{ section.settings.header_color }};
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+
+  .xcmp2-hero-brand {
+    font-size: 26px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 0.04em;
+    display: block;
+    line-height: 1;
+  }
+
+  .xcmp2-table tbody tr {
+    border-bottom: 1px solid rgba(180, 30, 30, 0.15);
+  }
+
+  .xcmp2-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .xcmp2-table tbody td {
+    padding: 22px 20px;
+    font-size: 15px;
+    color: #999999;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .xcmp2-table tbody td:first-child {
+    text-align: left;
+    color: #333333;
+    font-size: 15px;
+    font-weight: 500;
+    border-right: none;
+  }
+
+  .xcmp2-feature-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .xcmp2-feature-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .xcmp2-hero-col {
+    background-color: {{ section.settings.hero_col_bg }};
+    font-weight: 800;
+    color: #1a1a1a !important;
+    font-size: 15px !important;
+    border-left: 2px solid {{ section.settings.header_color }};
+    border-right: 2px solid {{ section.settings.header_color }};
+  }
+
+  @media (max-width: 768px) {
+    .xcmp2-wrapper {
+      padding: 40px 16px 32px;
+    }
+
+    .xcmp2-heading {
+      font-size: 26px;
+    }
+
+    .xcmp2-subheading {
+      font-size: 13px;
+    }
+
+    .xcmp2-table-wrap {
+      border-radius: 12px;
+    }
+
+    .xcmp2-table {
+      min-width: unset;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    .xcmp2-table thead th {
+      padding: 12px 8px;
+      font-size: 9px;
+      letter-spacing: 0.03em;
+      word-break: break-word;
+    }
+
+    .xcmp2-table thead th:first-child {
+      width: 26%;
+    }
+
+    .xcmp2-th-hero {
+      width: 24%;
+    }
+
+    .xcmp2-best-badge {
+      font-size: 7px;
+      padding: 3px 7px;
+      margin-bottom: 5px;
+      letter-spacing: 0.05em;
+    }
+
+    .xcmp2-hero-brand {
+      font-size: 15px;
+    }
+
+    .xcmp2-table tbody td {
+      padding: 12px 8px;
+      font-size: 11px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .xcmp2-table tbody td:first-child {
+      font-size: 11px;
+      padding: 12px 8px;
+    }
+
+    .xcmp2-hero-col {
+      font-size: 11px !important;
+    }
+
+    .xcmp2-feature-cell {
+      gap: 6px;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .xcmp2-feature-icon {
+      font-size: 18px;
+    }
+  }
+</style>
+
+<div class="xcmp2-wrapper">
+  <div class="xcmp2-inner">
+    <div class="xcmp2-header">
+      <h2 class="xcmp2-heading">{{ section.settings.heading }}</h2>
+      <p class="xcmp2-subheading">{{ section.settings.subheading }}</p>
+    </div>
+
+    <div class="xcmp2-table-wrap">
+      <table class="xcmp2-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;">{{ section.settings.col_features }}</th>
+            <th class="xcmp2-th-hero">
+              <span class="xcmp2-best-badge">{{ section.settings.best_badge }}</span>
+              <span class="xcmp2-hero-brand">{{ section.settings.col_hero }}</span>
+            </th>
+            <th>{{ section.settings.col_2 }}</th>
+            <th>{{ section.settings.col_3 }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for block in section.blocks %}
+            <tr {{ block.shopify_attributes }}>
+              <td>
+                <div class="xcmp2-feature-cell">
+                  {% if block.settings.icon != blank %}
+                    <span class="xcmp2-feature-icon">{{ block.settings.icon }}</span>
+                  {% endif %}
+                  {{ block.settings.feature }}
+                </div>
+              </td>
+              <td class="xcmp2-hero-col">{{ block.settings.value_hero }}</td>
+              <td>{{ block.settings.value_2 }}</td>
+              <td>{{ block.settings.value_3 }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Comparison Table",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "header_color",
+      "label": "Header row color",
+      "default": "#8b1a1a"
+    },
+    {
+      "type": "color",
+      "id": "hero_col_bg",
+      "label": "Hero column body background",
+      "default": "#f0ece3"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "See The Difference"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Why JCKED L-Carnitine outperforms the competition"
+    },
+    {
+      "type": "text",
+      "id": "best_badge",
+      "label": "Best choice badge text",
+      "default": "Best Choice"
+    },
+    {
+      "type": "text",
+      "id": "col_features",
+      "label": "Column 1 label (Features)",
+      "default": "Features"
+    },
+    {
+      "type": "text",
+      "id": "col_hero",
+      "label": "Column 2 label (Your brand)",
+      "default": "JCKED"
+    },
+    {
+      "type": "text",
+      "id": "col_2",
+      "label": "Column 3 label",
+      "default": "Other Brands"
+    },
+    {
+      "type": "text",
+      "id": "col_3",
+      "label": "Column 4 label",
+      "default": "Pills/Capsules"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Comparison Row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon / Emoji",
+          "default": "💪"
+        },
+        {
+          "type": "text",
+          "id": "feature",
+          "label": "Feature name",
+          "default": "Dosage"
+        },
+        {
+          "type": "text",
+          "id": "value_hero",
+          "label": "Your brand value",
+          "default": "4000mg"
+        },
+        {
+          "type": "text",
+          "id": "value_2",
+          "label": "Other brands value",
+          "default": "500-1000mg"
+        },
+        {
+          "type": "text",
+          "id": "value_3",
+          "label": "Pills/Capsules value",
+          "default": "500mg"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison Table",
+      "blocks": [
+        {
+          "type": "row",
+          "settings": {
+            "icon": "💪",
+            "feature": "Dosage",
+            "value_hero": "4000mg",
+            "value_2": "500-1000mg",
+            "value_3": "500mg"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "⚡",
+            "feature": "Formula",
+            "value_hero": "Liquid Fast-Absorb",
+            "value_2": "Powder/Liquid",
+            "value_3": "Pills (Slow Absorb)"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "🔥",
+            "feature": "Carnitine Types",
+            "value_hero": "Premium L-Carnitine",
+            "value_2": "Basic L-Carnitine",
+            "value_3": "Low-Grade Mix"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "🌿",
+            "feature": "Stimulants",
+            "value_hero": "Zero Caffeine",
+            "value_2": "Often Has Caffeine",
+            "value_3": "Usually Has Caffeine"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "😊",
+            "feature": "Taste",
+            "value_hero": "6 Delicious Flavors",
+            "value_2": "Limited Flavors",
+            "value_3": "Tasteless Pills"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "📦",
+            "feature": "Servings",
+            "value_hero": "28 (4 Weeks)",
+            "value_2": "20-25 Servings",
+            "value_3": "60-120 Pills"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "💰",
+            "feature": "Price Per Serving",
+            "value_hero": "$1.29",
+            "value_2": "$1.50-$2.50",
+            "value_3": "$0.80-$1.20"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "✅",
+            "feature": "Money-Back Guarantee",
+            "value_hero": "365 Days",
+            "value_2": "30 Days or None",
+            "value_3": "None"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "icon": "⭐",
+            "feature": "Customer Reviews",
+            "value_hero": "4.9/5 (55,000+)",
+            "value_2": "3.5-4.2/5",
+            "value_3": "3.0-4.0/5"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

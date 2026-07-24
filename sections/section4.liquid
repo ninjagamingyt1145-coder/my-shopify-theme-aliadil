@@ -1,0 +1,149 @@
+<style>
+  .xtrust-wrapper {
+    background-color: #ffffff;
+    padding: 32px 24px;
+    border-bottom: 1px solid #000000;
+  }
+
+  .xtrust-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 48px;
+  }
+
+  .xtrust-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 110px;
+  }
+
+  .xtrust-icon {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 10px;
+    color: #000000;
+  }
+
+  .xtrust-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke: #000000;
+    fill: none;
+  }
+
+  .xtrust-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #000000;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 768px) {
+    .xtrust-wrapper {
+      padding: 20px 16px;
+    }
+
+    .xtrust-inner {
+      gap: 20px 16px;
+    }
+
+    .xtrust-item {
+      width: 80px;
+    }
+
+    .xtrust-icon {
+      width: 22px;
+      height: 22px;
+      margin-bottom: 6px;
+    }
+
+    .xtrust-label {
+      font-size: 9px;
+    }
+  }
+</style>
+
+<div class="xtrust-wrapper">
+  <div class="xtrust-inner">
+    {% for block in section.blocks %}
+      <div class="xtrust-item" {{ block.shopify_attributes }}>
+        <span class="xtrust-icon">
+          {% case block.settings.icon %}
+            {% when 'location' %}
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-7.5-7-12a7 7 0 1 1 14 0c0 4.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            {% when 'shield' %}
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+            {% when 'flask' %}
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6l-5.5 9a1.5 1.5 0 0 0 1.3 2.2h12.4a1.5 1.5 0 0 0 1.3-2.2L14 9V3"/><path d="M8 15h8"/></svg>
+            {% when 'award' %}
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5.5"/><path d="M9 13.5l-1.5 6.5L12 18l4.5 2-1.5-6.5"/><path d="M9.5 9l1.8 1.8 3.2-3.6"/></svg>
+            {% when 'truck' %}
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h11v8H2z"/><path d="M13 10h4l3 3v2h-7z"/><circle cx="6" cy="17.5" r="1.5"/><circle cx="17" cy="17.5" r="1.5"/></svg>
+            {% when 'check' %}
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.3 2.3 4.7-5.1"/></svg>
+            {% when 'sparkle' %}
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 5L18 9.5 13.5 11 12 16l-1.5-5L5 9.5 9.5 8 12 3z"/><path d="M19 16l.7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16z"/></svg>
+          {% endcase %}
+        </span>
+        <span class="xtrust-label">{{ block.settings.label }}</span>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Trust Badges Row",
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "location", "label": "Location pin" },
+            { "value": "shield", "label": "Shield check" },
+            { "value": "flask", "label": "Flask" },
+            { "value": "award", "label": "Award / badge" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "check", "label": "Check circle" },
+            { "value": "sparkle", "label": "Sparkle" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust Badges Row",
+      "blocks": [
+        { "type": "badge", "settings": { "icon": "location", "label": "100% Natural" } },
+        { "type": "badge", "settings": { "icon": "shield", "label": "Bloquea DHT" } },
+        { "type": "badge", "settings": { "icon": "flask", "label": "Probado Clínicamente" } },
+        { "type": "badge", "settings": { "icon": "award", "label": "Aprobado FDA" } },
+        { "type": "badge", "settings": { "icon": "truck", "label": "Envío Gratis" } },
+        { "type": "badge", "settings": { "icon": "check", "label": "Sin Sulfatos" } },
+        { "type": "badge", "settings": { "icon": "sparkle", "label": "Sin Parabenos" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

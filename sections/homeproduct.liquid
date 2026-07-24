@@ -1,0 +1,300 @@
+{% comment %} featured-product-section.liquid {% endcomment %}
+{% if request.page_type == 'index' %}
+<section class="fp2-section">
+  <div class="fp2-inner">
+    <h2 class="fp2-heading">{{ section.settings.heading }}</h2>
+
+    <div class="fp2-grid">
+
+      {% assign products = section.settings.featured_product | append: ',' | append: section.settings.featured_product_2 | append: ',' | append: section.settings.featured_product_3 %}
+
+      {% for i in (1..3) %}
+        {% if i == 1 %}
+          {% assign fp = section.settings.featured_product %}
+        {% elsif i == 2 %}
+          {% assign fp = section.settings.featured_product_2 %}
+        {% else %}
+          {% assign fp = section.settings.featured_product_3 %}
+        {% endif %}
+
+        {% if fp != blank %}
+          {% assign current_variant = fp.selected_or_first_available_variant %}
+          <div class="fp2-card">
+            <a href="{{ fp.url }}" class="fp2-image-wrap">
+              {% if fp.compare_at_price > fp.price %}
+                <span class="fp2-badge">Sale</span>
+              {% endif %}
+              <img
+                src="{{ fp.featured_image | img_url: '600x600' }}"
+                alt="{{ fp.title | escape }}"
+                class="fp2-img"
+                loading="lazy"
+              >
+            </a>
+
+            <div class="fp2-info">
+              <a href="{{ fp.url }}" class="fp2-title">{{ fp.title }}</a>
+              <p class="fp2-vendor">{{ fp.vendor | upcase }}</p>
+
+              {% if fp.metafields.reviews.rating_count > 0 %}
+                <div class="fp2-stars">
+                  {% assign rating = fp.metafields.reviews.rating.value %}
+                  {% for j in (1..5) %}
+                    {% if j <= rating %}★{% else %}☆{% endif %}
+                  {% endfor %}
+                  <span class="fp2-review-count">({{ fp.metafields.reviews.rating_count }})</span>
+                </div>
+              {% endif %}
+
+              <div class="fp2-price">
+                {% if fp.compare_at_price > fp.price %}
+                  <s class="fp2-compare">{{ fp.compare_at_price | money }}</s>
+                {% endif %}
+                <span class="fp2-current">{{ fp.price | money }}</span>
+              </div>
+
+              <form action="/cart/add" method="post" class="fp2-form">
+                <input type="hidden" name="id" value="{{ current_variant.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="fp2-btn" {% unless current_variant.available %}disabled{% endunless %}>
+                  {% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}
+                </button>
+              </form>
+            </div>
+          </div>
+        {% endif %}
+
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap');
+
+.fp2-section {
+  width: 100%;
+  background: #f5f5f5;
+  padding: 40px 24px;
+}
+
+.fp2-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.fp2-heading {
+  font-family: 'Lora', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 28px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fp2-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.fp2-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.fp2-image-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.fp2-img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+  transition: transform 0.3s ease;
+}
+
+.fp2-image-wrap:hover .fp2-img {
+  transform: scale(1.03);
+}
+
+.fp2-badge {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  background: #2d6a4f;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  z-index: 1;
+}
+
+.fp2-info {
+  width: 100%;
+  padding: 16px 4px 0;
+}
+
+.fp2-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
+  text-decoration: none;
+  text-align: center;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.fp2-title:hover {
+  text-decoration: underline;
+}
+
+.fp2-vendor {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin: 0 0 6px;
+}
+
+.fp2-stars {
+  text-align: center;
+  font-size: 15px;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.fp2-review-count {
+  font-size: 13px;
+  color: #555;
+  margin-left: 4px;
+}
+
+.fp2-price {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.fp2-compare {
+  font-size: 14px;
+  color: #999;
+  margin-right: 8px;
+  text-decoration: line-through;
+}
+
+.fp2-current {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+
+.fp2-form {
+  width: 100%;
+}
+
+.fp2-btn {
+  width: 100%;
+  padding: 14px;
+  background: #fff;
+  color: #111;
+  border: 1.5px solid #ccc;
+  border-radius: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.fp2-btn:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #999;
+}
+
+.fp2-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .fp2-grid {
+    flex-wrap: wrap;
+  }
+  .fp2-card {
+    width: calc(50% - 12px);
+  }
+}
+
+@media (max-width: 600px) {
+  .fp2-section {
+    padding: 28px 16px;
+  }
+  .fp2-inner {
+    padding: 0;
+  }
+  .fp2-heading {
+    font-size: 18px;
+    white-space: normal;
+  }
+  .fp2-grid {
+    flex-direction: column;
+    gap: 32px;
+  }
+  .fp2-card {
+    width: 100%;
+    max-width: 340px;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Featured Product V2",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Try our Award Winning Sour Soup Gummies!"
+    },
+    {
+      "type": "product",
+      "id": "featured_product",
+      "label": "Featured Product 1"
+    },
+    {
+      "type": "product",
+      "id": "featured_product_2",
+      "label": "Featured Product 2"
+    },
+    {
+      "type": "product",
+      "id": "featured_product_3",
+      "label": "Featured Product 3"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Product V2"
+    }
+  ]
+}
+{% endschema %}

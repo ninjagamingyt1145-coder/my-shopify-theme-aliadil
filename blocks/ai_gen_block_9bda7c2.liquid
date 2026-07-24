@@ -1,0 +1,741 @@
+{% doc %}
+  @prompt
+    Create a premium, custom Shopify Liquid section named "Product Comparison Split Grid". 
+    
+    The section layout must feature a 2-column split layout on desktop (approx. 55% left for comparison table, 45% right for marketing copy) and stack vertically on mobile. 
+    
+    Key Structural Requirements:
+    1. Section Settings: Custom background color picker (e.g., deep maroon/burgundy), text color control, and top/bottom padding sliders to keep it tight and high-end.
+    2. Left Side - Comparison Table:
+       - It must contain two vertical cards side-by-side: "Our Brand" and "Other Brands".
+       - Our Brand Card: Must feature an Image Picker at the absolute top for a floating product pouch/bottle image that overlaps the top border. Background color must be distinct (semi-transparent or slightly lighter tone). It must have 5 rows, each with an icon picker and text input.
+       - Other Brands Card: Background color must be distinct (e.g., solid white) with a text title. It must have 5 corresponding rows, each featuring a negative icon (like an 'X' close icon) and text input.
+    3. Right Side - Content & Marketing Block:
+       - A large, clean heading ("Why Customers Choose Elaré").
+       - A block-based or text-based list of 3 key benefits, each preceded by a premium checkmark icon.
+       - A prominent, centered solid Call-To-Action (CTA) button with full styling controls (text, link, font size, background color, text color, padding, and border radius).
+       - A tiny trust/guarantee text block below the button with a selectable shield/lock icon.
+    
+    Ensure the entire layout uses clean flexbox alignments, behaves responsively on mobile viewports, and maintains a premium, minimal, non-cluttered space. Include standard schema presets., make other brand card text color black, add entry animation
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-comparison-split-grid-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+    padding: {{ block.settings.padding_top }}px 0 {{ block.settings.padding_bottom }}px;
+  }
+
+  .ai-comparison-split-grid__container-{{ ai_gen_id }} {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-comparison-split-grid__layout-{{ ai_gen_id }} {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+  }
+
+  .ai-comparison-split-grid__left-{{ ai_gen_id }} {
+    flex: 0 0 55%;
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .ai-comparison-split-grid__left-{{ ai_gen_id }}.animate-in {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .ai-comparison-split-grid__right-{{ ai_gen_id }} {
+    flex: 0 0 calc(45% - 40px);
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+  }
+
+  .ai-comparison-split-grid__right-{{ ai_gen_id }}.animate-in {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .ai-comparison-split-grid__table-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    gap: 20px;
+  }
+
+  .ai-comparison-split-grid__card-{{ ai_gen_id }} {
+    flex: 1;
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+  }
+
+  .ai-comparison-split-grid__card--our-brand-{{ ai_gen_id }} {
+    background-color: {{ block.settings.our_brand_bg_color }};
+    padding-top: 80px;
+  }
+
+  .ai-comparison-split-grid__card--other-brands-{{ ai_gen_id }} {
+    background-color: {{ block.settings.other_brands_bg_color }};
+  }
+
+  .ai-comparison-split-grid__product-image-{{ ai_gen_id }} {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 120px;
+    z-index: 2;
+  }
+
+  .ai-comparison-split-grid__product-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-comparison-split-grid__card-title-{{ ai_gen_id }} {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 24px;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-comparison-split-grid__card--other-brands-{{ ai_gen_id }} .ai-comparison-split-grid__card-title-{{ ai_gen_id }} {
+    color: #000000;
+  }
+
+  .ai-comparison-split-grid__row-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .ai-comparison-split-grid__row-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .ai-comparison-split-grid__icon-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-comparison-split-grid__icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ai-comparison-split-grid__row-text-{{ ai_gen_id }} {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.5;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-comparison-split-grid__card--other-brands-{{ ai_gen_id }} .ai-comparison-split-grid__row-text-{{ ai_gen_id }} {
+    color: #000000;
+  }
+
+  .ai-comparison-split-grid__heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    font-weight: 700;
+    margin: 0 0 32px;
+    line-height: 1.2;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-comparison-split-grid__benefits-{{ ai_gen_id }} {
+    margin-bottom: 32px;
+  }
+
+  .ai-comparison-split-grid__benefit-{{ ai_gen_id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .ai-comparison-split-grid__benefit-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-comparison-split-grid__benefit-icon-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    color: {{ block.settings.benefit_check_color }};
+  }
+
+  .ai-comparison-split-grid__benefit-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ai-comparison-split-grid__benefit-text-{{ ai_gen_id }} {
+    flex: 1;
+    font-size: 16px;
+    line-height: 1.6;
+    color: {{ block.settings.text_color }};
+  }
+
+  .ai-comparison-split-grid__cta-wrapper-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .ai-comparison-split-grid__cta-button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: {{ block.settings.button_padding }}px {{ block.settings.button_padding | times: 2 }}px;
+    background-color: {{ block.settings.button_bg_color }};
+    color: {{ block.settings.button_text_color }};
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .ai-comparison-split-grid__cta-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_bg_color }};
+    transform: translateY(-2px);
+  }
+
+  .ai-comparison-split-grid__trust-badge-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    color: {{ block.settings.text_color }};
+    opacity: 0.8;
+  }
+
+  .ai-comparison-split-grid__trust-icon-{{ ai_gen_id }} {
+    width: 18px;
+    height: 18px;
+  }
+
+  .ai-comparison-split-grid__trust-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-comparison-split-grid__layout-{{ ai_gen_id }} {
+      flex-direction: column;
+    }
+
+    .ai-comparison-split-grid__left-{{ ai_gen_id }},
+    .ai-comparison-split-grid__right-{{ ai_gen_id }} {
+      flex: 1 1 100%;
+      width: 100%;
+    }
+
+    .ai-comparison-split-grid__heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-comparison-split-grid__table-wrapper-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .ai-comparison-split-grid__card--our-brand-{{ ai_gen_id }} {
+      padding-top: 100px;
+    }
+
+    .ai-comparison-split-grid__product-image-{{ ai_gen_id }} {
+      width: 100px;
+      height: 100px;
+      top: -30px;
+    }
+  }
+{% endstyle %}
+
+<product-comparison-split-grid-{{ ai_gen_id }}
+  class="ai-comparison-split-grid-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-comparison-split-grid__container-{{ ai_gen_id }}">
+    <div class="ai-comparison-split-grid__layout-{{ ai_gen_id }}">
+      <div class="ai-comparison-split-grid__left-{{ ai_gen_id }}" data-animate>
+        <div class="ai-comparison-split-grid__table-wrapper-{{ ai_gen_id }}">
+          <div class="ai-comparison-split-grid__card-{{ ai_gen_id }} ai-comparison-split-grid__card--our-brand-{{ ai_gen_id }}">
+            {% if block.settings.our_brand_image %}
+              <div class="ai-comparison-split-grid__product-image-{{ ai_gen_id }}">
+                <img
+                  src="{{ block.settings.our_brand_image | image_url: width: 240 }}"
+                  alt="{{ block.settings.our_brand_image.alt | escape }}"
+                  loading="lazy"
+                  width="120"
+                  height="120"
+                >
+              </div>
+            {% endif %}
+
+            <h3 class="ai-comparison-split-grid__card-title-{{ ai_gen_id }}">
+              {{ block.settings.our_brand_title }}
+            </h3>
+
+            {% for i in (1..5) %}
+              {% liquid
+                assign row_text_key = 'our_brand_row_' | append: i | append: '_text'
+                assign row_text = block.settings[row_text_key]
+              %}
+              {% if row_text != blank %}
+                <div class="ai-comparison-split-grid__row-{{ ai_gen_id }}">
+                  <div class="ai-comparison-split-grid__icon-{{ ai_gen_id }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="{{ block.settings.positive_icon_color }}">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                    </svg>
+                  </div>
+                  <div class="ai-comparison-split-grid__row-text-{{ ai_gen_id }}">
+                    {{ row_text }}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <div class="ai-comparison-split-grid__card-{{ ai_gen_id }} ai-comparison-split-grid__card--other-brands-{{ ai_gen_id }}">
+            <h3 class="ai-comparison-split-grid__card-title-{{ ai_gen_id }}">
+              {{ block.settings.other_brands_title }}
+            </h3>
+
+            {% for i in (1..5) %}
+              {% liquid
+                assign row_text_key = 'other_brands_row_' | append: i | append: '_text'
+                assign row_text = block.settings[row_text_key]
+              %}
+              {% if row_text != blank %}
+                <div class="ai-comparison-split-grid__row-{{ ai_gen_id }}">
+                  <div class="ai-comparison-split-grid__icon-{{ ai_gen_id }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="{{ block.settings.negative_icon_color }}">
+                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                    </svg>
+                  </div>
+                  <div class="ai-comparison-split-grid__row-text-{{ ai_gen_id }}">
+                    {{ row_text }}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-comparison-split-grid__right-{{ ai_gen_id }}" data-animate>
+        {% if block.settings.heading != blank %}
+          <h2 class="ai-comparison-split-grid__heading-{{ ai_gen_id }}">
+            {{ block.settings.heading }}
+          </h2>
+        {% endif %}
+
+        <div class="ai-comparison-split-grid__benefits-{{ ai_gen_id }}">
+          {% for i in (1..3) %}
+            {% liquid
+              assign benefit_key = 'benefit_' | append: i
+              assign benefit_text = block.settings[benefit_key]
+            %}
+            {% if benefit_text != blank %}
+              <div class="ai-comparison-split-grid__benefit-{{ ai_gen_id }}">
+                <div class="ai-comparison-split-grid__benefit-icon-{{ ai_gen_id }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                  </svg>
+                </div>
+                <div class="ai-comparison-split-grid__benefit-text-{{ ai_gen_id }}">
+                  {{ benefit_text }}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        {% if block.settings.cta_text != blank %}
+          <div class="ai-comparison-split-grid__cta-wrapper-{{ ai_gen_id }}">
+            <a
+              href="{{ block.settings.cta_link }}"
+              class="ai-comparison-split-grid__cta-button-{{ ai_gen_id }}"
+            >
+              {{ block.settings.cta_text }}
+            </a>
+          </div>
+        {% endif %}
+
+        {% if block.settings.trust_text != blank %}
+          <div class="ai-comparison-split-grid__trust-badge-{{ ai_gen_id }}">
+            <div class="ai-comparison-split-grid__trust-icon-{{ ai_gen_id }}">
+              {% if block.settings.trust_icon == 'shield' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                </svg>
+              {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+                </svg>
+              {% endif %}
+            </div>
+            <span>{{ block.settings.trust_text }}</span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</product-comparison-split-grid-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ProductComparisonSplitGrid{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.observer = null;
+      }
+
+      connectedCallback() {
+        this.initializeAnimation();
+      }
+
+      initializeAnimation() {
+        const animateElements = this.querySelectorAll('[data-animate]');
+        
+        const observerOptions = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.15
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('animate-in');
+              this.observer.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+
+        animateElements.forEach(element => {
+          this.observer.observe(element);
+        });
+      }
+
+      disconnectedCallback() {
+        if (this.observer) {
+          this.observer.disconnect();
+        }
+      }
+    }
+
+    customElements.define('product-comparison-split-grid-{{ ai_gen_id }}', ProductComparisonSplitGrid{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Comparison split grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#5a1f2e"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Our brand card"
+    },
+    {
+      "type": "image_picker",
+      "id": "our_brand_image",
+      "label": "Product image"
+    },
+    {
+      "type": "text",
+      "id": "our_brand_title",
+      "label": "Card title",
+      "default": "Our Brand"
+    },
+    {
+      "type": "color",
+      "id": "our_brand_bg_color",
+      "label": "Background color",
+      "default": "rgba(255, 255, 255, 0.15)"
+    },
+    {
+      "type": "text",
+      "id": "our_brand_row_1_text",
+      "label": "Row 1 text",
+      "default": "Premium organic ingredients"
+    },
+    {
+      "type": "text",
+      "id": "our_brand_row_2_text",
+      "label": "Row 2 text",
+      "default": "Third-party tested for purity"
+    },
+    {
+      "type": "text",
+      "id": "our_brand_row_3_text",
+      "label": "Row 3 text",
+      "default": "Clinically proven results"
+    },
+    {
+      "type": "text",
+      "id": "our_brand_row_4_text",
+      "label": "Row 4 text",
+      "default": "60-day money-back guarantee"
+    },
+    {
+      "type": "text",
+      "id": "our_brand_row_5_text",
+      "label": "Row 5 text",
+      "default": "Made in USA, GMP certified"
+    },
+    {
+      "type": "color",
+      "id": "positive_icon_color",
+      "label": "Checkmark color",
+      "default": "#4caf50"
+    },
+    {
+      "type": "header",
+      "content": "Other brands card"
+    },
+    {
+      "type": "text",
+      "id": "other_brands_title",
+      "label": "Card title",
+      "default": "Other Brands"
+    },
+    {
+      "type": "color",
+      "id": "other_brands_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "other_brands_row_1_text",
+      "label": "Row 1 text",
+      "default": "Synthetic fillers and additives"
+    },
+    {
+      "type": "text",
+      "id": "other_brands_row_2_text",
+      "label": "Row 2 text",
+      "default": "No third-party testing"
+    },
+    {
+      "type": "text",
+      "id": "other_brands_row_3_text",
+      "label": "Row 3 text",
+      "default": "Unverified claims"
+    },
+    {
+      "type": "text",
+      "id": "other_brands_row_4_text",
+      "label": "Row 4 text",
+      "default": "Limited or no guarantee"
+    },
+    {
+      "type": "text",
+      "id": "other_brands_row_5_text",
+      "label": "Row 5 text",
+      "default": "Unknown manufacturing standards"
+    },
+    {
+      "type": "color",
+      "id": "negative_icon_color",
+      "label": "Negative icon color",
+      "default": "#f44336"
+    },
+    {
+      "type": "header",
+      "content": "Marketing content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why Customers Choose Us"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 36
+    },
+    {
+      "type": "text",
+      "id": "benefit_1",
+      "label": "Benefit 1",
+      "default": "Backed by science and trusted by thousands of satisfied customers"
+    },
+    {
+      "type": "text",
+      "id": "benefit_2",
+      "label": "Benefit 2",
+      "default": "Premium quality ingredients sourced from certified organic farms"
+    },
+    {
+      "type": "text",
+      "id": "benefit_3",
+      "label": "Benefit 3",
+      "default": "Risk-free 60-day money-back guarantee on all orders"
+    },
+    {
+      "type": "color",
+      "id": "benefit_check_color",
+      "label": "Benefit checkmark color",
+      "default": "#4caf50"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Background color",
+      "default": "#315a22"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Hover background color",
+      "default": "#254517"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Trust badge"
+    },
+    {
+      "type": "text",
+      "id": "trust_text",
+      "label": "Trust text",
+      "default": "100% Satisfaction Guaranteed"
+    },
+    {
+      "type": "select",
+      "id": "trust_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "shield",
+          "label": "Shield"
+        },
+        {
+          "value": "lock",
+          "label": "Lock"
+        }
+      ],
+      "default": "shield"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison split grid"
+    }
+  ]
+}
+{% endschema %}

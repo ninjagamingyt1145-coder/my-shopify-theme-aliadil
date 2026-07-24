@@ -1,0 +1,611 @@
+{% doc %}
+  @prompt
+    Create a Shopify section called "4 Clinically Studied Benefits" with the following requirements:
+    Layout:
+    
+    Section heading at top left: "4 Clinically Studied Benefits of [Product Name]" — make "[Product Name]" part bold/colored (blue accent) and the rest dark, using a clean sans-serif font (similar to Poppins or Inter).
+    Below the heading, display a 4-column responsive grid (4 columns desktop, 2 columns tablet, 1 column mobile) of benefit cards.
+    Each card contains: a circular image at the top (centered, ~250px diameter), a bold heading below it, and a short paragraph of description text below that.
+    No navigation arrows — remove any carousel/slider arrows entirely; this should be a static grid.
+    Make all text and images editable via Shopify theme customizer (image picker, rich text fields for heading and body, repeatable blocks for each of the 4 benefit cards using section blocks/schema).
+    
+    Entry animation:
+    
+    On page load, each card should fade in and slide up slightly (e.g., translateY 30px to 0, opacity 0 to 1) with a staggered delay between cards (e.g., 0.15s stagger).
+    
+    Scroll animation:
+    
+    Use Intersection Observer so that each time a card scrolls into view (both scrolling down AND scrolling back up), it re-triggers the fade-up animation.
+    Cards should animate out (fade/slide slightly) when they leave the viewport so the animation can replay when they re-enter, creating a smooth re-trigger effect on every scroll direction.
+    
+    Technical requirements:
+    
+    Provide full Shopify Liquid section code (.liquid file) with schema for customization (heading text, accent text, and 4 blocks each with image, title, description).
+    Include CSS (scoped to the section) and vanilla JavaScript for the Intersection Observer animations — no external libraries.
+    Ensure responsive design and accessible markup (alt text fields for images)., remove Title margin bottom, remove description margin top and align heading in the center, make this section small on mobile show heading in 2 lines not 3, remove gap between title and description, on mobile decrease little bit margin bottom of heading
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-benefits-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: 30px 20px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-benefits-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-benefits-heading-{{ ai_gen_id }} {
+    font-family: {{ block.settings.heading_font.family }}, sans-serif;
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-size: {{ block.settings.heading_size }}px;
+    line-height: 1.3;
+    margin: 0 0 {{ block.settings.heading_spacing }}px 0;
+    color: {{ block.settings.heading_color }};
+    text-align: center;
+  }
+
+  .ai-benefits-heading-{{ ai_gen_id }} .accent {
+    color: {{ block.settings.accent_color }};
+    font-weight: {{ block.settings.heading_font.weight }};
+  }
+
+  .ai-benefits-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: {{ block.settings.card_gap }}px;
+    margin-top: 16px;
+  }
+
+  .ai-benefit-card-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity {{ block.settings.animation_duration }}ms ease-out,
+                transform {{ block.settings.animation_duration }}ms ease-out;
+  }
+
+  .ai-benefit-card-{{ ai_gen_id }}.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ai-benefit-card-{{ ai_gen_id }}.animate-out {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .ai-benefit-image-wrapper-{{ ai_gen_id }} {
+    width: {{ block.settings.image_size | times: 0.65 }}px;
+    height: {{ block.settings.image_size | times: 0.65 }}px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: {{ block.settings.image_spacing }}px;
+    flex-shrink: 0;
+  }
+
+  .ai-benefit-image-wrapper-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-benefit-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-benefit-image-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-benefit-title-{{ ai_gen_id }} {
+    font-family: {{ block.settings.title_font.family }}, sans-serif;
+    font-weight: {{ block.settings.title_font.weight }};
+    font-size: {{ block.settings.title_size }}px;
+    line-height: 1.4;
+    color: {{ block.settings.title_color }};
+    margin: 0;
+  }
+
+  .ai-benefit-description-{{ ai_gen_id }} {
+    font-family: {{ block.settings.description_font.family }}, sans-serif;
+    font-weight: {{ block.settings.description_font.weight }};
+    font-size: {{ block.settings.description_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.description_color }};
+    margin: 0;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-benefits-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(3, 1fr);
+      gap: {{ block.settings.card_gap | times: 0.8 }}px;
+    }
+
+    .ai-benefits-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
+    }
+
+    .ai-benefit-image-wrapper-{{ ai_gen_id }} {
+      width: {{ block.settings.image_size | times: 0.75 }}px;
+      height: {{ block.settings.image_size | times: 0.75 }}px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-benefits-section-{{ ai_gen_id }} {
+      padding: 30px 16px;
+    }
+
+    .ai-benefits-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .ai-benefits-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.55 }}px;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .ai-benefit-image-wrapper-{{ ai_gen_id }} {
+      width: {{ block.settings.image_size | times: 0.6 }}px;
+      height: {{ block.settings.image_size | times: 0.6 }}px;
+      margin-bottom: 10px;
+    }
+
+    .ai-benefit-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.85 }}px;
+    }
+
+    .ai-benefit-description-{{ ai_gen_id }} {
+      font-size: {{ block.settings.description_size | times: 0.85 }}px;
+    }
+  }
+{% endstyle %}
+
+<ai-benefits-{{ ai_gen_id }}
+  class="ai-benefits-section-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+  data-stagger-delay="{{ block.settings.stagger_delay }}"
+  data-animation-duration="{{ block.settings.animation_duration }}"
+>
+  <div class="ai-benefits-container-{{ ai_gen_id }}">
+    {% if block.settings.heading_text != blank or block.settings.heading_accent != blank %}
+      <h2 class="ai-benefits-heading-{{ ai_gen_id }}">
+        {{ block.settings.heading_text }}
+        {% if block.settings.heading_accent != blank %}
+          <span class="accent">{{ block.settings.heading_accent }}</span>
+        {% endif %}
+      </h2>
+    {% endif %}
+
+    <div class="ai-benefits-grid-{{ ai_gen_id }}">
+      {% assign benefit_count = 6 %}
+      {% for i in (1..benefit_count) %}
+        {% assign img_key = 'benefit_' | append: i | append: '_image' %}
+        {% assign title_key = 'benefit_' | append: i | append: '_title' %}
+        {% assign desc_key = 'benefit_' | append: i | append: '_description' %}
+        <div class="ai-benefit-card-{{ ai_gen_id }}" data-card-index="{{ forloop.index0 }}">
+          <div class="ai-benefit-image-wrapper-{{ ai_gen_id }}">
+            {% if block.settings[img_key] %}
+              <img
+                src="{{ block.settings[img_key] | image_url: width: 500 }}"
+                alt="{{ block.settings[img_key].alt | default: block.settings[title_key] | escape }}"
+                loading="lazy"
+                width="500"
+                height="500"
+              >
+            {% else %}
+              <div class="ai-benefit-image-placeholder-{{ ai_gen_id }}">
+                {{ 'image' | placeholder_svg_tag }}
+              </div>
+            {% endif %}
+          </div>
+          {% if block.settings[title_key] != blank %}
+            <h3 class="ai-benefit-title-{{ ai_gen_id }}">{{ block.settings[title_key] }}</h3>
+          {% endif %}
+          {% if block.settings[desc_key] != blank %}
+            <div class="ai-benefit-description-{{ ai_gen_id }}">{{ block.settings[desc_key] }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</ai-benefits-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class AiBenefits{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.cards = [];
+        this.observers = [];
+        this.staggerDelay = parseInt(this.dataset.staggerDelay) || 150;
+        this.animationDuration = parseInt(this.dataset.animationDuration) || 600;
+      }
+
+      connectedCallback() {
+        this.cards = Array.from(this.querySelectorAll('.ai-benefit-card-{{ ai_gen_id }}'));
+        this.setupIntersectionObservers();
+        this.playInitialAnimation();
+      }
+
+      playInitialAnimation() {
+        this.cards.forEach((card, index) => {
+          setTimeout(() => {
+            card.classList.add('animate-in');
+          }, index * this.staggerDelay);
+        });
+      }
+
+      setupIntersectionObservers() {
+        this.cards.forEach((card, index) => {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  setTimeout(() => {
+                    card.classList.remove('animate-out');
+                    card.classList.add('animate-in');
+                  }, index * this.staggerDelay);
+                } else {
+                  card.classList.remove('animate-in');
+                  card.classList.add('animate-out');
+                }
+              });
+            },
+            { threshold: 0.2, rootMargin: '0px' }
+          );
+          observer.observe(card);
+          this.observers.push(observer);
+        });
+      }
+
+      disconnectedCallback() {
+        this.observers.forEach(observer => observer.disconnect());
+        this.observers = [];
+      }
+    }
+
+    customElements.define('ai-benefits-{{ ai_gen_id }}', AiBenefits{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Clinical benefits",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading_text",
+      "label": "Heading text",
+      "default": "6 Clinically Studied Benefits of"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading_accent",
+      "label": "Heading accent text",
+      "default": "Product Name"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "poppins_n6"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#0066cc"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "label": "Heading bottom spacing",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Gap between cards",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Card image"
+    },
+    {
+      "type": "range",
+      "id": "image_size",
+      "label": "Image size",
+      "min": 100,
+      "max": 350,
+      "step": 10,
+      "unit": "px",
+      "default": 250
+    },
+    {
+      "type": "range",
+      "id": "image_spacing",
+      "label": "Image bottom spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Card title"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Title font",
+      "default": "poppins_n6"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#121212"
+    },
+    {
+      "type": "header",
+      "content": "Card description"
+    },
+    {
+      "type": "font_picker",
+      "id": "description_font",
+      "label": "Description font",
+      "default": "harmonia_sans_n4"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "animation_duration",
+      "label": "Animation duration",
+      "min": 300,
+      "max": 1000,
+      "step": 50,
+      "unit": "ms",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "stagger_delay",
+      "label": "Stagger delay",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "unit": "ms",
+      "default": 150
+    },
+    {
+      "type": "header",
+      "content": "Benefit 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "benefit_1_image",
+      "label": "Image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "benefit_1_title",
+      "label": "Title",
+      "default": "Supports Heart Health"
+    },
+    {
+      "type": "richtext",
+      "id": "benefit_1_description",
+      "label": "Description",
+      "default": "<p>Clinically proven to improve cardiovascular function.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Benefit 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "benefit_2_image",
+      "label": "Image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "benefit_2_title",
+      "label": "Title",
+      "default": "Boosts Energy Levels"
+    },
+    {
+      "type": "richtext",
+      "id": "benefit_2_description",
+      "label": "Description",
+      "default": "<p>Increases natural energy production at the cellular level.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Benefit 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "benefit_3_image",
+      "label": "Image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "benefit_3_title",
+      "label": "Title",
+      "default": "Enhances Mental Clarity"
+    },
+    {
+      "type": "richtext",
+      "id": "benefit_3_description",
+      "label": "Description",
+      "default": "<p>Supports cognitive function and mental focus daily.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Benefit 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "benefit_4_image",
+      "label": "Image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "benefit_4_title",
+      "label": "Title",
+      "default": "Strengthens Immunity"
+    },
+    {
+      "type": "richtext",
+      "id": "benefit_4_description",
+      "label": "Description",
+      "default": "<p>Fortifies your body's natural defense system.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Benefit 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "benefit_5_image",
+      "label": "Image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "benefit_5_title",
+      "label": "Title",
+      "default": "Reduces Inflammation"
+    },
+    {
+      "type": "richtext",
+      "id": "benefit_5_description",
+      "label": "Description",
+      "default": "<p>Helps reduce chronic inflammation throughout the body.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Benefit 6"
+    },
+    {
+      "type": "image_picker",
+      "id": "benefit_6_image",
+      "label": "Image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "benefit_6_title",
+      "label": "Title",
+      "default": "Improves Sleep Quality"
+    },
+    {
+      "type": "richtext",
+      "id": "benefit_6_description",
+      "label": "Description",
+      "default": "<p>Promotes deeper, more restorative sleep each night.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Clinical benefits"
+    }
+  ]
+}
+{% endschema %}
