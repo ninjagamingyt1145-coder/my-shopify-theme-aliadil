@@ -1,0 +1,129 @@
+{% comment %} reniva-trust-badges.liquid {% endcomment %}
+<section class="rv-trust" id="rv-trust-{{ section.id }}">
+  <div class="rv-trust__inner">
+    {% for block in section.blocks %}
+      <div class="rv-trust__item" {{ block.shopify_attributes }}>
+        <span class="rv-trust__icon">
+          {% case block.settings.icon %}
+            {% when 'leaf' %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20c8-1 13-6 15-15-9 1-14 6-15 15Z" stroke-linejoin="round"/><path d="M6 18c3-4 6-7 12-11" stroke-linecap="round"/></svg>
+            {% when 'shield' %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3Z" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {% when 'no-drop' %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3c4 5 6 8.5 6 11.5A6 6 0 0 1 6 14.5C6 11.5 8 8 12 3Z" stroke-linejoin="round"/><path d="M4 4l16 16" stroke-linecap="round"/></svg>
+            {% when 'flask' %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3h6" stroke-linecap="round"/><path d="M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3" stroke-linejoin="round"/><path d="M8 15h8" stroke-linecap="round"/></svg>
+            {% else %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/></svg>
+          {% endcase %}
+        </span>
+        <span class="rv-trust__label">{{ block.settings.label }}</span>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% style %}
+  #rv-trust-{{ section.id }} {
+    background: #FFF9EF;
+    border-top: 1px solid #EEDFC0;
+    border-bottom: 1px solid #EEDFC0;
+    padding: 28px 20px;
+  }
+
+  #rv-trust-{{ section.id }} .rv-trust__inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 16px;
+  }
+
+  #rv-trust-{{ section.id }} .rv-trust__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+
+  #rv-trust-{{ section.id }} .rv-trust__icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #F3E4C8;
+    color: #A87F2A;
+    flex-shrink: 0;
+  }
+
+  #rv-trust-{{ section.id }} .rv-trust__icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  #rv-trust-{{ section.id }} .rv-trust__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3E2A1E;
+    line-height: 1.35;
+  }
+
+  @media screen and (min-width: 750px) {
+    #rv-trust-{{ section.id }} .rv-trust__inner {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    #rv-trust-{{ section.id }} .rv-trust__item {
+      flex-direction: row;
+      text-align: left;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Trust Badges",
+  "tag": "section",
+  "class": "section",
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "no-drop", "label": "No drop" },
+            { "value": "flask", "label": "Flask" }
+          ],
+          "default": "leaf"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Rich Botanical Extracts"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Trust Badges",
+      "blocks": [
+        { "type": "badge", "settings": { "icon": "leaf", "label": "Rich Botanical Extracts" } },
+        { "type": "badge", "settings": { "icon": "shield", "label": "Dermatologically Formulated" } },
+        { "type": "badge", "settings": { "icon": "no-drop", "label": "No Harsh Sulfates" } },
+        { "type": "badge", "settings": { "icon": "flask", "label": "Backed by Studies" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

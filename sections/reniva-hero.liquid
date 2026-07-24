@@ -1,0 +1,283 @@
+{% comment %} reniva-hero.liquid {% endcomment %}
+<section class="rv-hero" id="rv-hero-{{ section.id }}">
+  <div class="rv-hero__inner">
+    <div class="rv-hero__text">
+      {% if section.settings.eyebrow != blank %}
+        <p class="rv-hero__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      <h1 class="rv-hero__headline">{{ section.settings.headline }}</h1>
+      {% if section.settings.subheadline != blank %}
+        <p class="rv-hero__subheadline">{{ section.settings.subheadline }}</p>
+      {% endif %}
+      <div class="rv-hero__cta-row">
+        <a
+          {% if section.settings.button_link != blank %}
+            href="{{ section.settings.button_link }}"
+          {% else %}
+            href="#"
+          {% endif %}
+          class="rv-btn rv-btn--primary"
+        >
+          {{ section.settings.button_label }}
+        </a>
+        {% if section.settings.show_size_badge %}
+          <span class="rv-hero__badge">{{ section.settings.size_badge_text }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="rv-hero__media">
+      {% if section.settings.image != blank %}
+        {{
+          section.settings.image
+          | image_url: width: 1400
+          | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            class: 'rv-hero__img',
+            sizes: '(min-width: 990px) 560px, 90vw',
+            widths: '400, 600, 800, 1000, 1400'
+        }}
+      {% else %}
+        <div class="rv-placeholder" role="img" aria-label="Product image placeholder">
+          <svg viewBox="0 0 24 24" class="rv-placeholder__icon" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M8 3h8l1 3v2a5 5 0 0 1-2 4v6a3 3 0 0 1-3 3h-0a3 3 0 0 1-3-3v-6a5 5 0 0 1-2-4V6l1-3Z" stroke-linejoin="round"/>
+            <path d="M9 8h6" stroke-linecap="round"/>
+          </svg>
+          <span>Add Reniva product photo here</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  #rv-hero-{{ section.id }} {
+    --rv-cream: #FBF3E4;
+    --rv-cream-deep: #F3E4C8;
+    --rv-gold: #C69B3B;
+    --rv-gold-dark: #A87F2A;
+    --rv-brown: #3E2A1E;
+    --rv-brown-soft: #6B4F3B;
+    --rv-border: #E7D6AF;
+
+    background: linear-gradient(180deg, var(--rv-cream) 0%, var(--rv-cream-deep) 100%);
+    padding: 48px 20px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__text {
+    order: 1;
+    text-align: center;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__media {
+    order: 2;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rv-gold-dark);
+    margin: 0 0 14px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__headline {
+    font-size: clamp(30px, 6vw, 52px);
+    line-height: 1.12;
+    font-weight: 800;
+    color: var(--rv-brown);
+    margin: 0 0 16px;
+    letter-spacing: -0.5px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__subheadline {
+    font-size: clamp(15px, 2vw, 18px);
+    line-height: 1.6;
+    color: var(--rv-brown-soft);
+    max-width: 520px;
+    margin: 0 auto 28px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__cta-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-btn {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 16px 34px;
+    border-radius: 999px;
+    transition: transform 0.15s ease, background 0.2s ease;
+  }
+
+  #rv-hero-{{ section.id }} .rv-btn--primary {
+    background: var(--rv-gold);
+    color: #FFF9EF;
+  }
+
+  #rv-hero-{{ section.id }} .rv-btn--primary:hover {
+    background: var(--rv-gold-dark);
+    transform: translateY(-1px);
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__badge {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--rv-brown-soft);
+    background: #FFF;
+    border: 1px solid var(--rv-border);
+    padding: 6px 14px;
+    border-radius: 999px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(62, 42, 30, 0.15);
+  }
+
+  #rv-hero-{{ section.id }} .rv-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    aspect-ratio: 4 / 5;
+    max-width: 420px;
+    margin: 0 auto;
+    border: 2px dashed var(--rv-border);
+    border-radius: 24px;
+    background: #FFFDF8;
+    color: var(--rv-brown-soft);
+    font-size: 14px;
+    text-align: center;
+    padding: 24px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-placeholder__icon {
+    width: 48px;
+    height: 48px;
+    opacity: 0.6;
+  }
+
+  @media screen and (min-width: 750px) {
+    #rv-hero-{{ section.id }} .rv-hero__cta-row {
+      flex-direction: row;
+      justify-content: center;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    #rv-hero-{{ section.id }} {
+      padding: 80px 40px;
+    }
+    #rv-hero-{{ section.id }} .rv-hero__inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      text-align: left;
+    }
+    #rv-hero-{{ section.id }} .rv-hero__text {
+      text-align: left;
+      order: {% if section.settings.image_position == 'left' %}2{% else %}1{% endif %};
+    }
+    #rv-hero-{{ section.id }} .rv-hero__media {
+      order: {% if section.settings.image_position == 'left' %}1{% else %}2{% endif %};
+    }
+    #rv-hero-{{ section.id }} .rv-hero__subheadline {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    #rv-hero-{{ section.id }} .rv-hero__cta-row {
+      justify-content: flex-start;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Hero",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Product image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position (desktop)",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "RENIVA · ANTI-HAIR FALL SHAMPOO"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Stop the Fall. Start the Regrowth."
+    },
+    {
+      "type": "textarea",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "A botanical-powered formula that strengthens roots, calms an irritated scalp, and helps you hold onto the hair you have — one wash at a time."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Reniva — 300ml"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_size_badge",
+      "label": "Show size badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "size_badge_text",
+      "label": "Size badge text",
+      "default": "300ml Pouch"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Hero"
+    }
+  ]
+}
+{% endschema %}

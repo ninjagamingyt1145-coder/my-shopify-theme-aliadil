@@ -1,0 +1,194 @@
+{% comment %} reniva-lifestyle.liquid {% endcomment %}
+<section class="rv-lifestyle" id="rv-lifestyle-{{ section.id }}">
+  <div class="rv-lifestyle__inner">
+    <div class="rv-lifestyle__media">
+      {% if section.settings.image != blank %}
+        {{
+          section.settings.image
+          | image_url: width: 1200
+          | image_tag:
+            loading: 'lazy',
+            class: 'rv-lifestyle__img',
+            sizes: '(min-width: 990px) 540px, 90vw',
+            widths: '400, 600, 800, 1000, 1200'
+        }}
+      {% else %}
+        <div class="rv-placeholder" role="img" aria-label="Lifestyle image placeholder">
+          <svg viewBox="0 0 24 24" class="rv-placeholder__icon" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="4" width="18" height="16" rx="2"/>
+            <circle cx="9" cy="10" r="2"/>
+            <path d="M3 17l5-5 4 4 3-3 6 6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Add lifestyle photo here</span>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="rv-lifestyle__text">
+      <h2 class="rv-lifestyle__title">{{ section.settings.title }}</h2>
+      <div class="rv-lifestyle__body">{{ section.settings.body }}</div>
+      {% if section.settings.button_label != blank %}
+        <a
+          {% if section.settings.button_link != blank %}
+            href="{{ section.settings.button_link }}"
+          {% else %}
+            href="#"
+          {% endif %}
+          class="rv-btn rv-btn--outline"
+        >
+          {{ section.settings.button_label }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  #rv-lifestyle-{{ section.id }} {
+    background: #FFF9EF;
+    padding: 56px 20px;
+  }
+
+  #rv-lifestyle-{{ section.id }} .rv-lifestyle__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+
+  #rv-lifestyle-{{ section.id }} .rv-lifestyle__img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 20px;
+  }
+
+  #rv-lifestyle-{{ section.id }} .rv-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    aspect-ratio: 4 / 3;
+    border: 2px dashed #E7D6AF;
+    border-radius: 20px;
+    background: #FBF3E4;
+    color: #6B4F3B;
+    font-size: 14px;
+    text-align: center;
+    padding: 24px;
+  }
+
+  #rv-lifestyle-{{ section.id }} .rv-placeholder__icon {
+    width: 44px;
+    height: 44px;
+    opacity: 0.6;
+  }
+
+  #rv-lifestyle-{{ section.id }} .rv-lifestyle__title {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 800;
+    color: #3E2A1E;
+    margin: 0 0 16px;
+    letter-spacing: -0.4px;
+  }
+
+  #rv-lifestyle-{{ section.id }} .rv-lifestyle__body {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: #6B4F3B;
+    margin-bottom: 24px;
+  }
+
+  #rv-lifestyle-{{ section.id }} .rv-lifestyle__body p {
+    margin: 0 0 12px;
+  }
+
+  #rv-lifestyle-{{ section.id }} .rv-btn--outline {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 13px 28px;
+    border-radius: 999px;
+    border: 2px solid #C69B3B;
+    color: #A87F2A;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  #rv-lifestyle-{{ section.id }} .rv-btn--outline:hover {
+    background: #C69B3B;
+    color: #FFF9EF;
+  }
+
+  @media screen and (min-width: 990px) {
+    #rv-lifestyle-{{ section.id }} {
+      padding: 88px 40px;
+    }
+    #rv-lifestyle-{{ section.id }} .rv-lifestyle__inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+    #rv-lifestyle-{{ section.id }} .rv-lifestyle__media {
+      order: {% if section.settings.image_position == 'right' %}2{% else %}1{% endif %};
+    }
+    #rv-lifestyle-{{ section.id }} .rv-lifestyle__text {
+      order: {% if section.settings.image_position == 'right' %}1{% else %}2{% endif %};
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Lifestyle",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position (desktop)",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Confidence Starts With Daily Care"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text",
+      "default": "<p>Hair fall isn't just about hair — it's about how you feel every time you look in the mirror. Reniva fits into the routine you already have, working quietly in the background so you can focus on showing up as your most confident self.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Lifestyle"
+    }
+  ]
+}
+{% endschema %}

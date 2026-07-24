@@ -1,0 +1,127 @@
+{% comment %} reniva-benefits.liquid {% endcomment %}
+<section class="rv-benefits" id="rv-benefits-{{ section.id }}">
+  <div class="rv-benefits__inner">
+    {% if section.settings.title != blank %}
+      <h2 class="rv-benefits__title">{{ section.settings.title }}</h2>
+    {% endif %}
+
+    <ul class="rv-benefits__list">
+      {% for block in section.blocks %}
+        <li class="rv-benefits__item" {{ block.shopify_attributes }}>
+          <span class="rv-benefits__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12.5l4.5 4.5L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="rv-benefits__text">{{ block.settings.text }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% style %}
+  #rv-benefits-{{ section.id }} {
+    background: #FBF3E4;
+    padding: 56px 20px;
+  }
+
+  #rv-benefits-{{ section.id }} .rv-benefits__inner {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  #rv-benefits-{{ section.id }} .rv-benefits__title {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 800;
+    color: #3E2A1E;
+    text-align: center;
+    margin: 0 0 32px;
+    letter-spacing: -0.4px;
+  }
+
+  #rv-benefits-{{ section.id }} .rv-benefits__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  #rv-benefits-{{ section.id }} .rv-benefits__item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  #rv-benefits-{{ section.id }} .rv-benefits__icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #C69B3B;
+    color: #FFF9EF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #rv-benefits-{{ section.id }} .rv-benefits__icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  #rv-benefits-{{ section.id }} .rv-benefits__text {
+    font-size: 16px;
+    font-weight: 700;
+    color: #3E2A1E;
+    line-height: 1.4;
+  }
+
+  @media screen and (min-width: 750px) {
+    #rv-benefits-{{ section.id }} {
+      padding: 72px 40px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Benefits",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Why It Works"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Reduces hair fall from the very first wash"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Benefits",
+      "blocks": [
+        { "type": "benefit", "settings": { "text": "Reduces hair fall from the very first wash" } },
+        { "type": "benefit", "settings": { "text": "Strengthens roots for thicker-feeling hair over time" } },
+        { "type": "benefit", "settings": { "text": "Calms an itchy, irritated scalp" } },
+        { "type": "benefit", "settings": { "text": "No sulfates, parabens, or harsh chemicals" } },
+        { "type": "benefit", "settings": { "text": "Suitable for daily use, all hair types" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

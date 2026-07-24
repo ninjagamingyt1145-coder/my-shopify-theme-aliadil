@@ -1,0 +1,109 @@
+{% comment %} reniva-final-cta.liquid {% endcomment %}
+<section class="rv-final-cta" id="rv-final-cta-{{ section.id }}">
+  <div class="rv-final-cta__inner">
+    <h2 class="rv-final-cta__title">{{ section.settings.title }}</h2>
+    {% if section.settings.subtitle != blank %}
+      <p class="rv-final-cta__subtitle">{{ section.settings.subtitle }}</p>
+    {% endif %}
+    <a
+      {% if section.settings.button_link != blank %}
+        href="{{ section.settings.button_link }}"
+      {% else %}
+        href="#"
+      {% endif %}
+      class="rv-final-cta__btn"
+    >
+      {{ section.settings.button_label }}
+    </a>
+  </div>
+</section>
+
+{% style %}
+  #rv-final-cta-{{ section.id }} {
+    background: #3E2A1E;
+    padding: 56px 20px;
+    text-align: center;
+  }
+
+  #rv-final-cta-{{ section.id }} .rv-final-cta__inner {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  #rv-final-cta-{{ section.id }} .rv-final-cta__title {
+    font-size: clamp(26px, 4.5vw, 40px);
+    font-weight: 800;
+    color: #F3E4C8;
+    margin: 0 0 14px;
+    letter-spacing: -0.4px;
+  }
+
+  #rv-final-cta-{{ section.id }} .rv-final-cta__subtitle {
+    font-size: 16px;
+    color: #D8C39C;
+    line-height: 1.6;
+    margin: 0 0 28px;
+  }
+
+  #rv-final-cta-{{ section.id }} .rv-final-cta__btn {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 17px;
+    padding: 17px 38px;
+    border-radius: 999px;
+    background: #C69B3B;
+    color: #FFF9EF;
+    transition: transform 0.15s ease, background 0.2s ease;
+  }
+
+  #rv-final-cta-{{ section.id }} .rv-final-cta__btn:hover {
+    background: #E4C874;
+    color: #3E2A1E;
+    transform: translateY(-1px);
+  }
+
+  @media screen and (min-width: 750px) {
+    #rv-final-cta-{{ section.id }} {
+      padding: 88px 40px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Final CTA",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "For Your Scalp's Future"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Don't wait for more hair to fall. Give your roots what they need, starting today."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Get My Reniva Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Final CTA"
+    }
+  ]
+}
+{% endschema %}

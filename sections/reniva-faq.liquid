@@ -1,0 +1,197 @@
+{% comment %} reniva-faq.liquid {% endcomment %}
+<section class="rv-faq" id="rv-faq-{{ section.id }}">
+  <div class="rv-faq__inner">
+    <h2 class="rv-faq__title">{{ section.settings.title }}</h2>
+
+    <div class="rv-faq__list">
+      {% for block in section.blocks %}
+        <details class="rv-faq__item" {{ block.shopify_attributes }}>
+          <summary class="rv-faq__question">
+            <span>{{ block.settings.question }}</span>
+            <span class="rv-faq__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </summary>
+          <div class="rv-faq__answer">{{ block.settings.answer }}</div>
+        </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  #rv-faq-{{ section.id }} {
+    background: #FBF3E4;
+    padding: 56px 20px;
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__title {
+    font-size: clamp(26px, 4.5vw, 38px);
+    font-weight: 800;
+    color: #3E2A1E;
+    text-align: center;
+    margin: 0 0 32px;
+    letter-spacing: -0.4px;
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__item {
+    background: #FFFFFF;
+    border: 1px solid #EEDFC0;
+    border-radius: 14px;
+    padding: 4px 20px;
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__item[open] {
+    background: #FFFDF8;
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__question {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 0;
+    cursor: pointer;
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #3E2A1E;
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #A87F2A;
+    transition: transform 0.25s ease;
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__item[open] .rv-faq__icon {
+    transform: rotate(180deg);
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__answer {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: #6B4F3B;
+    padding: 0 0 20px;
+  }
+
+  #rv-faq-{{ section.id }} .rv-faq__answer p {
+    margin: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    #rv-faq-{{ section.id }} {
+      padding: 80px 40px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva FAQ",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Frequently Asked Questions"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Answer</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva FAQ",
+      "blocks": [
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Is Reniva safe for color-treated or chemically treated hair?",
+            "answer": "<p>Yes. Reniva is formulated without harsh sulfates, so it's gentle enough for color-treated, keratin-treated, or chemically processed hair. As with any new product, we recommend a small patch test first if you have particularly sensitive skin.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How long until I see results?",
+            "answer": "<p>Most people notice reduced hair fall within 2–4 weeks of consistent use. Visible improvements in thickness and strength typically build over 8–12 weeks, since hair growth cycles take time.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Is Reniva suitable for both men and women?",
+            "answer": "<p>Absolutely. Reniva's botanical formula is designed to work for all genders and hair types, addressing hair fall and scalp health regardless of who's using it.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Will Reniva help with dandruff too?",
+            "answer": "<p>Yes. Ingredients like Thuja Orientalis and Ginger Extract help calm an irritated, flaky scalp, so many customers see improvements in dandruff alongside reduced hair fall.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "What's inside each pouch?",
+            "answer": "<p>Each pouch contains 300ml of shampoo formulated with Thuja Orientalis, Hydrolyzed Oat Protein, Ginger Extract, Ginseng Extract, and Jojoba Oil — free from harsh sulfates and parabens.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Is this a one-time purchase or a subscription?",
+            "answer": "<p>Reniva is available as a simple one-time purchase, so you're never locked into a recurring plan. You can reorder whenever you're ready for your next pouch.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

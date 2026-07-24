@@ -1,0 +1,147 @@
+{% comment %} reniva-problem.liquid {% endcomment %}
+<section class="rv-problem" id="rv-problem-{{ section.id }}">
+  <div class="rv-problem__inner">
+    <h2 class="rv-problem__title">{{ section.settings.title }}</h2>
+    {% if section.settings.subtitle != blank %}
+      <p class="rv-problem__subtitle">{{ section.settings.subtitle }}</p>
+    {% endif %}
+
+    <ul class="rv-problem__list">
+      {% for block in section.blocks %}
+        <li class="rv-problem__item" {{ block.shopify_attributes }}>
+          <span class="rv-problem__check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12.5l4.5 4.5L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="rv-problem__text">{{ block.settings.text }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% style %}
+  #rv-problem-{{ section.id }} {
+    background: #FBF3E4;
+    padding: 56px 20px;
+  }
+
+  #rv-problem-{{ section.id }} .rv-problem__inner {
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  #rv-problem-{{ section.id }} .rv-problem__title {
+    font-size: clamp(26px, 4.5vw, 38px);
+    font-weight: 800;
+    color: #3E2A1E;
+    margin: 0 0 12px;
+    letter-spacing: -0.4px;
+  }
+
+  #rv-problem-{{ section.id }} .rv-problem__subtitle {
+    font-size: 16px;
+    color: #6B4F3B;
+    margin: 0 0 32px;
+    line-height: 1.6;
+  }
+
+  #rv-problem-{{ section.id }} .rv-problem__list {
+    list-style: none;
+    margin: 32px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: left;
+  }
+
+  #rv-problem-{{ section.id }} .rv-problem__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: #FFFFFF;
+    border: 1px solid #EEDFC0;
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+
+  #rv-problem-{{ section.id }} .rv-problem__check {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #C69B3B;
+    color: #FFF9EF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #rv-problem-{{ section.id }} .rv-problem__check svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  #rv-problem-{{ section.id }} .rv-problem__text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #3E2A1E;
+    line-height: 1.5;
+    padding-top: 2px;
+  }
+
+  @media screen and (min-width: 750px) {
+    #rv-problem-{{ section.id }} {
+      padding: 80px 40px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Problem",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Does This Sound Familiar?"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "If you're nodding along to any of these, your scalp is asking for help."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "pain_point",
+      "name": "Pain point",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Excessive hair fall every time you shower or brush"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Problem",
+      "blocks": [
+        { "type": "pain_point", "settings": { "text": "Excessive hair fall every time you shower or brush" } },
+        { "type": "pain_point", "settings": { "text": "A hairline that keeps creeping backward" } },
+        { "type": "pain_point", "settings": { "text": "Noticeable thinning at the crown" } },
+        { "type": "pain_point", "settings": { "text": "Dry, brittle strands that snap easily" } },
+        { "type": "pain_point", "settings": { "text": "More hair in the drain than you'd like to admit" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
