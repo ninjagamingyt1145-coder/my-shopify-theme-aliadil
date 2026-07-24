@@ -23,6 +23,7 @@
     },
     "faqshome_fHQtqY": {
       "type": "faqshome",
+      "disabled": true,
       "name": "FAQ Sectionhom",
       "settings": {
         "title": "We’re serious about clean health, ask away",
