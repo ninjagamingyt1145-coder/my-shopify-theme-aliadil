@@ -1,0 +1,229 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "disabled": true,
+      "settings": {}
+    },
+    "reniva_hero_product": {
+      "type": "reniva-hero-product",
+      "settings": {
+        "image_position": "right",
+        "eyebrow": "RENIVA · ANTI-HAIR FALL SHAMPOO",
+        "headline": "Stop the Fall. Start the Regrowth.",
+        "subheadline": "A botanical-powered formula that strengthens roots, calms an irritated scalp, and helps you hold onto the hair you have — one wash at a time.",
+        "button_label": "Shop Reniva — 300ml",
+        "show_size_badge": true,
+        "size_badge_text": "300ml Pouch"
+      }
+    },
+    "reniva_trust": {
+      "type": "reniva-trust-badges",
+      "blocks": {
+        "badge-1": {
+          "type": "badge",
+          "settings": { "icon": "leaf", "label": "Rich Botanical Extracts" }
+        },
+        "badge-2": {
+          "type": "badge",
+          "settings": { "icon": "shield", "label": "Dermatologically Formulated" }
+        },
+        "badge-3": {
+          "type": "badge",
+          "settings": { "icon": "no-drop", "label": "No Harsh Sulfates" }
+        },
+        "badge-4": {
+          "type": "badge",
+          "settings": { "icon": "flask", "label": "Backed by Studies" }
+        }
+      },
+      "block_order": ["badge-1", "badge-2", "badge-3", "badge-4"],
+      "settings": {}
+    },
+    "reniva_problem": {
+      "type": "reniva-problem",
+      "blocks": {
+        "pain-1": {
+          "type": "pain_point",
+          "settings": { "text": "Excessive hair fall every time you shower or brush" }
+        },
+        "pain-2": {
+          "type": "pain_point",
+          "settings": { "text": "A hairline that keeps creeping backward" }
+        },
+        "pain-3": {
+          "type": "pain_point",
+          "settings": { "text": "Noticeable thinning at the crown" }
+        },
+        "pain-4": {
+          "type": "pain_point",
+          "settings": { "text": "Dry, brittle strands that snap easily" }
+        },
+        "pain-5": {
+          "type": "pain_point",
+          "settings": { "text": "More hair in the drain than you'd like to admit" }
+        }
+      },
+      "block_order": ["pain-1", "pain-2", "pain-3", "pain-4", "pain-5"],
+      "settings": {
+        "title": "Does This Sound Familiar?",
+        "subtitle": "If you're nodding along to any of these, your scalp is asking for help."
+      }
+    },
+    "reniva_ingredients": {
+      "type": "reniva-ingredients",
+      "blocks": {
+        "ing-1": {
+          "type": "ingredient",
+          "settings": {
+            "icon": "leaf",
+            "name": "Thuja Orientalis",
+            "description": "Traditionally used to help calm scalp irritation and support a healthier follicle environment."
+          }
+        },
+        "ing-2": {
+          "type": "ingredient",
+          "settings": {
+            "icon": "seed",
+            "name": "Hydrolyzed Oat Protein",
+            "description": "Penetrates the hair shaft to reinforce strands and reduce breakage from root to tip."
+          }
+        },
+        "ing-3": {
+          "type": "ingredient",
+          "settings": {
+            "icon": "root",
+            "name": "Ginger Extract",
+            "description": "Stimulates circulation at the scalp to help nourish follicles from within."
+          }
+        },
+        "ing-4": {
+          "type": "ingredient",
+          "settings": {
+            "icon": "drop",
+            "name": "Ginseng Extract",
+            "description": "Rich in antioxidants that support stronger, more resilient hair growth cycles."
+          }
+        },
+        "ing-5": {
+          "type": "ingredient",
+          "settings": {
+            "icon": "oil",
+            "name": "Jojoba Oil",
+            "description": "Mimics natural scalp oils to moisturize without clogging follicles."
+          }
+        }
+      },
+      "block_order": ["ing-1", "ing-2", "ing-3", "ing-4", "ing-5"],
+      "settings": {
+        "title": "Five Botanicals. One Mission: Stop the Fall.",
+        "subtitle": "Every ingredient in Reniva is chosen for one job: helping you keep the hair you have."
+      }
+    },
+    "reniva_benefits": {
+      "type": "reniva-benefits",
+      "blocks": {
+        "ben-1": { "type": "benefit", "settings": { "text": "Reduces hair fall from the very first wash" } },
+        "ben-2": { "type": "benefit", "settings": { "text": "Strengthens roots for thicker-feeling hair over time" } },
+        "ben-3": { "type": "benefit", "settings": { "text": "Calms an itchy, irritated scalp" } },
+        "ben-4": { "type": "benefit", "settings": { "text": "No sulfates, parabens, or harsh chemicals" } },
+        "ben-5": { "type": "benefit", "settings": { "text": "Suitable for daily use, all hair types" } }
+      },
+      "block_order": ["ben-1", "ben-2", "ben-3", "ben-4", "ben-5"],
+      "settings": {
+        "title": "Why It Works"
+      }
+    },
+    "reniva_lifestyle": {
+      "type": "reniva-lifestyle",
+      "settings": {
+        "image_position": "left",
+        "title": "Confidence Starts With Daily Care",
+        "body": "<p>Hair fall isn't just about hair — it's about how you feel every time you look in the mirror. Reniva fits into the routine you already have, working quietly in the background so you can focus on showing up as your most confident self.</p>",
+        "button_label": "",
+        "button_link": ""
+      }
+    },
+    "reniva_promo": {
+      "type": "reniva-promo-banner",
+      "settings": {
+        "text": "Buy 1, Get 1 Free — Limited Time",
+        "subtext": "While supplies last.",
+        "button_label": "Claim Offer",
+        "button_link": ""
+      }
+    },
+    "reniva_faq": {
+      "type": "reniva-faq",
+      "blocks": {
+        "faq-1": {
+          "type": "faq",
+          "settings": {
+            "question": "Is Reniva safe for color-treated or chemically treated hair?",
+            "answer": "<p>Yes. Reniva is formulated without harsh sulfates, so it's gentle enough for color-treated, keratin-treated, or chemically processed hair. As with any new product, we recommend a small patch test first if you have particularly sensitive skin.</p>"
+          }
+        },
+        "faq-2": {
+          "type": "faq",
+          "settings": {
+            "question": "How long until I see results?",
+            "answer": "<p>Most people notice reduced hair fall within 2–4 weeks of consistent use. Visible improvements in thickness and strength typically build over 8–12 weeks, since hair growth cycles take time.</p>"
+          }
+        },
+        "faq-3": {
+          "type": "faq",
+          "settings": {
+            "question": "Is Reniva suitable for both men and women?",
+            "answer": "<p>Absolutely. Reniva's botanical formula is designed to work for all genders and hair types, addressing hair fall and scalp health regardless of who's using it.</p>"
+          }
+        },
+        "faq-4": {
+          "type": "faq",
+          "settings": {
+            "question": "Will Reniva help with dandruff too?",
+            "answer": "<p>Yes. Ingredients like Thuja Orientalis and Ginger Extract help calm an irritated, flaky scalp, so many customers see improvements in dandruff alongside reduced hair fall.</p>"
+          }
+        },
+        "faq-5": {
+          "type": "faq",
+          "settings": {
+            "question": "What's inside each pouch?",
+            "answer": "<p>Each pouch contains 300ml of shampoo formulated with Thuja Orientalis, Hydrolyzed Oat Protein, Ginger Extract, Ginseng Extract, and Jojoba Oil — free from harsh sulfates and parabens.</p>"
+          }
+        },
+        "faq-6": {
+          "type": "faq",
+          "settings": {
+            "question": "Is this a one-time purchase or a subscription?",
+            "answer": "<p>Reniva is available as a simple one-time purchase, so you're never locked into a recurring plan. You can reorder whenever you're ready for your next pouch.</p>"
+          }
+        }
+      },
+      "block_order": ["faq-1", "faq-2", "faq-3", "faq-4", "faq-5", "faq-6"],
+      "settings": {
+        "title": "Frequently Asked Questions"
+      }
+    },
+    "reniva_final_cta": {
+      "type": "reniva-final-cta",
+      "settings": {
+        "title": "For Your Scalp's Future",
+        "subtitle": "Don't wait for more hair to fall. Give your roots what they need, starting today.",
+        "button_label": "Get My Reniva Now",
+        "button_link": ""
+      }
+    }
+  },
+  "order": [
+    "main",
+    "reniva_hero_product",
+    "reniva_trust",
+    "reniva_problem",
+    "reniva_ingredients",
+    "reniva_benefits",
+    "reniva_lifestyle",
+    "reniva_promo",
+    "reniva_faq",
+    "reniva_final_cta"
+  ]
+}

@@ -1,0 +1,476 @@
+{% comment %}
+  reniva-hero-product.liquid
+  Product-bound hero for the Reniva product template. Uses the real product's
+  featured image, price, variant picker, quantity selector and native Shopify
+  product form so Add to Cart works with the theme's cart drawer.
+{% endcomment %}
+{%- assign product_form_id = 'product-form-' | append: section.id -%}
+
+<section class="rv-hero" id="rv-hero-{{ section.id }}">
+  <div class="rv-hero__inner">
+    <div class="rv-hero__text">
+      {% if section.settings.eyebrow != blank %}
+        <p class="rv-hero__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      <h1 class="rv-hero__headline">{{ section.settings.headline }}</h1>
+      {% if section.settings.subheadline != blank %}
+        <p class="rv-hero__subheadline">{{ section.settings.subheadline }}</p>
+      {% endif %}
+
+      <product-info
+        id="ProductInfo-{{ section.id }}"
+        class="rv-hero__product-info"
+        data-section="{{ section.id }}"
+        data-url="{{ product.url }}"
+      >
+        <p class="rv-hero__product-name">{{ product.title }}</p>
+
+        <div class="rv-hero__price no-js-hidden" id="price-{{ section.id }}" role="status">
+          {%- render 'price',
+            product: product,
+            use_variant: true,
+            show_badges: true,
+            price_class: 'rv-hero__price-el',
+            main_price: true
+          -%}
+        </div>
+
+        {%- render 'product-variant-picker', product: product, product_form_id: product_form_id, update_url: false -%}
+
+        <product-form
+          id="ProductForm-{{ section.id }}"
+          class="product-form main-product-form rv-hero__form"
+          data-section="{{ section.id }}"
+          data-options="{{ product.options | join: ',' }}"
+        >
+          <div class="product-form__error-message-wrapper" role="alert" hidden>
+            <span class="product-form__error-message"></span>
+          </div>
+
+          {%- form 'product',
+            product,
+            id: product_form_id,
+            class: 'form',
+            novalidate: 'novalidate',
+            data-type: 'add-to-cart-form'
+          -%}
+            <input
+              type="hidden"
+              name="id"
+              value="{{ product.selected_or_first_available_variant.id }}"
+              class="product-variant-id"
+            >
+
+            <div class="product-form__quantity-and-btn product-form__quantity-and-btn--left rv-hero__qty-btn-row">
+              <div id="Quantity-Form-{{ section.id }}" class="product-form__input product-form__quantity rv-hero__quantity">
+                <label class="quantity__label form__label visually-hidden" for="Quantity-{{ section.id }}">
+                  {{ 'products.product.quantity.label' | t }}
+                </label>
+                <quantity-input class="quantity main-quantity rv-hero__quantity-input" data-section="{{ section.id }}">
+                  <button class="quantity__button" name="minus" type="button">
+                    <span class="visually-hidden">
+                      {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+                    </span>
+                    {% render 'icon-minus' %}
+                  </button>
+                  <input
+                    class="quantity__input"
+                    type="number"
+                    name="quantity"
+                    id="Quantity-{{ section.id }}"
+                    min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                    {% if product.selected_or_first_available_variant.quantity_rule.max != null %}
+                      max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                    {% endif %}
+                    step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
+                    value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                    form="{{ product_form_id }}"
+                  >
+                  <button class="quantity__button" name="plus" type="button">
+                    <span class="visually-hidden">
+                      {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+                    </span>
+                    {% render 'icon-plus' %}
+                  </button>
+                </quantity-input>
+              </div>
+
+              <button
+                id="ProductSubmitButton-{{ section.id }}"
+                type="submit"
+                name="add"
+                class="atc-button product-form__submit button button--full-width rv-btn rv-btn--primary rv-hero__atc"
+                {% if product.selected_or_first_available_variant.available == false %}
+                  disabled
+                  data-unavailable="true"
+                {% endif %}
+              >
+                <span class="rv-hero__atc-label">
+                  {%- if product.selected_or_first_available_variant.available == false -%}
+                    {{ 'products.product.sold_out' | t }}
+                  {%- else -%}
+                    {{ section.settings.button_label }}
+                  {%- endif -%}
+                </span>
+                <div class="loading-overlay__spinner hidden">
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    class="spinner"
+                    viewBox="0 0 66 66"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                  </svg>
+                </div>
+              </button>
+            </div>
+          {%- endform -%}
+        </product-form>
+
+        {% if section.settings.show_size_badge %}
+          <span class="rv-hero__badge">{{ section.settings.size_badge_text }}</span>
+        {% endif %}
+      </product-info>
+    </div>
+
+    <div class="rv-hero__media">
+      {% if product.featured_image != blank %}
+        {{
+          product.featured_image
+          | image_url: width: 1400
+          | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            class: 'rv-hero__img',
+            sizes: '(min-width: 990px) 560px, 90vw',
+            widths: '400, 600, 800, 1000, 1400',
+            alt: product.featured_image.alt | default: product.title
+        }}
+      {% else %}
+        <div class="rv-placeholder" role="img" aria-label="Product image placeholder">
+          <svg viewBox="0 0 24 24" class="rv-placeholder__icon" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M8 3h8l1 3v2a5 5 0 0 1-2 4v6a3 3 0 0 1-3 3h-0a3 3 0 0 1-3-3v-6a5 5 0 0 1-2-4V6l1-3Z" stroke-linejoin="round"/>
+            <path d="M9 8h6" stroke-linecap="round"/>
+          </svg>
+          <span>Add a featured image to this product</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  #rv-hero-{{ section.id }} {
+    --rv-cream: #FBF3E4;
+    --rv-cream-deep: #F3E4C8;
+    --rv-gold: #C69B3B;
+    --rv-gold-dark: #A87F2A;
+    --rv-brown: #3E2A1E;
+    --rv-brown-soft: #6B4F3B;
+    --rv-border: #E7D6AF;
+
+    background: linear-gradient(180deg, var(--rv-cream) 0%, var(--rv-cream-deep) 100%);
+    padding: 48px 20px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__text {
+    order: 1;
+    text-align: center;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__media {
+    order: 2;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rv-gold-dark);
+    margin: 0 0 14px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__headline {
+    font-size: clamp(30px, 6vw, 52px);
+    line-height: 1.12;
+    font-weight: 800;
+    color: var(--rv-brown);
+    margin: 0 0 12px;
+    letter-spacing: -0.5px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__subheadline {
+    font-size: clamp(15px, 2vw, 18px);
+    line-height: 1.6;
+    color: var(--rv-brown-soft);
+    max-width: 520px;
+    margin: 0 auto 24px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__product-info {
+    display: block;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__product-name {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--rv-brown-soft);
+    margin: 0 0 6px;
+    text-align: left;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__price {
+    text-align: left;
+    margin: 0 0 18px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__price .price-item {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--rv-brown);
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__price .price__compare-price .price-item {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--rv-brown-soft);
+  }
+
+  #rv-hero-{{ section.id }} variant-selects {
+    display: block;
+    margin: 0 0 20px;
+    text-align: left;
+  }
+
+  #rv-hero-{{ section.id }} .product-form__input {
+    margin: 0 0 14px;
+  }
+
+  #rv-hero-{{ section.id }} .form__label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--rv-brown);
+    margin-bottom: 6px;
+    display: inline-block;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__qty-btn-row {
+    margin-top: 8px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__quantity-input {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid var(--rv-border);
+    border-radius: 999px;
+    background: #FFFDF8;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__quantity-input .quantity__button {
+    border: none;
+    background: transparent;
+    color: var(--rv-brown);
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__quantity-input .quantity__button svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__quantity-input .quantity__input {
+    border: none;
+    background: transparent;
+    width: 44px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--rv-brown);
+    -moz-appearance: textfield;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__quantity-input .quantity__input::-webkit-outer-spin-button,
+  #rv-hero-{{ section.id }} .rv-hero__quantity-input .quantity__input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__atc {
+    flex: 1 1 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 999px;
+    background: var(--rv-gold);
+    color: #FFF9EF;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.2s ease;
+    min-height: 52px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__atc:hover {
+    background: var(--rv-gold-dark);
+    transform: translateY(-1px);
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__atc[disabled] {
+    background: var(--rv-border);
+    color: var(--rv-brown-soft);
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__badge {
+    display: inline-block;
+    margin-top: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--rv-brown-soft);
+    background: #FFF;
+    border: 1px solid var(--rv-border);
+    padding: 6px 14px;
+    border-radius: 999px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(62, 42, 30, 0.15);
+  }
+
+  #rv-hero-{{ section.id }} .rv-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    aspect-ratio: 4 / 5;
+    max-width: 420px;
+    margin: 0 auto;
+    border: 2px dashed var(--rv-border);
+    border-radius: 24px;
+    background: #FFFDF8;
+    color: var(--rv-brown-soft);
+    font-size: 14px;
+    text-align: center;
+    padding: 24px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-placeholder__icon {
+    width: 48px;
+    height: 48px;
+    opacity: 0.6;
+  }
+
+  @media screen and (min-width: 990px) {
+    #rv-hero-{{ section.id }} {
+      padding: 80px 40px;
+    }
+    #rv-hero-{{ section.id }} .rv-hero__inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      text-align: left;
+    }
+    #rv-hero-{{ section.id }} .rv-hero__text {
+      text-align: left;
+      order: {% if section.settings.image_position == 'left' %}2{% else %}1{% endif %};
+    }
+    #rv-hero-{{ section.id }} .rv-hero__media {
+      order: {% if section.settings.image_position == 'left' %}1{% else %}2{% endif %};
+    }
+    #rv-hero-{{ section.id }} .rv-hero__subheadline,
+    #rv-hero-{{ section.id }} .rv-hero__product-info {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Hero (Product)",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position (desktop)",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "RENIVA · ANTI-HAIR FALL SHAMPOO"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Stop the Fall. Start the Regrowth."
+    },
+    {
+      "type": "textarea",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "A botanical-powered formula that strengthens roots, calms an irritated scalp, and helps you hold onto the hair you have — one wash at a time."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Add to cart button label",
+      "default": "Shop Reniva — 300ml"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_size_badge",
+      "label": "Show size badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "size_badge_text",
+      "label": "Size badge text",
+      "default": "300ml Pouch"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Hero (Product)"
+    }
+  ]
+}
+{% endschema %}
