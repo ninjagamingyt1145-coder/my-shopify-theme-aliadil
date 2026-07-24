@@ -677,7 +677,7 @@
       "type": "annocemnet",
       "name": "Announcement Bar",
       "settings": {
-        "bg_color": "#9C923C",
+        "bg_color": "#9c923c",
         "text_color": "#ffffff",
         "icon": "⚡",
         "title": "Summer Shred Sale",
@@ -695,7 +695,7 @@
         "color_scheme": "background-1",
         "logo_link": "/",
         "logo_position": "middle-center",
-        "menu": "",
+        "menu": "customer-account-main-menu",
         "menu_type_desktop": "drawer",
         "highlight_active_link": true,
         "highlighted_link_color_scheme": "accent-1",
