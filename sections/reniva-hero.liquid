@@ -9,21 +9,25 @@
       {% if section.settings.subheadline != blank %}
         <p class="rv-hero__subheadline">{{ section.settings.subheadline }}</p>
       {% endif %}
-      <div class="rv-hero__cta-row">
-        <a
-          {% if section.settings.button_link != blank %}
-            href="{{ section.settings.button_link }}"
-          {% else %}
-            href="#"
+      {% if section.settings.button_label != blank or section.settings.show_size_badge %}
+        <div class="rv-hero__cta-row">
+          {% if section.settings.button_label != blank %}
+            <a
+              {% if section.settings.button_link != blank %}
+                href="{{ section.settings.button_link }}"
+              {% else %}
+                href="#"
+              {% endif %}
+              class="rv-btn rv-btn--primary"
+            >
+              {{ section.settings.button_label }}
+            </a>
           {% endif %}
-          class="rv-btn rv-btn--primary"
-        >
-          {{ section.settings.button_label }}
-        </a>
-        {% if section.settings.show_size_badge %}
-          <span class="rv-hero__badge">{{ section.settings.size_badge_text }}</span>
-        {% endif %}
-      </div>
+          {% if section.settings.show_size_badge %}
+            <span class="rv-hero__badge">{{ section.settings.size_badge_text }}</span>
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
 
     <div class="rv-hero__media">

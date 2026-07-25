@@ -1,6 +1,10 @@
 {% comment %} reniva-trust-badges.liquid {% endcomment %}
 <section class="rv-trust" id="rv-trust-{{ section.id }}">
   <div class="rv-trust__inner">
+    {% if section.settings.title != blank %}
+      <h2 class="rv-trust__title">{{ section.settings.title }}</h2>
+    {% endif %}
+    <div class="rv-trust__grid">
     {% for block in section.blocks %}
       <div class="rv-trust__item" {{ block.shopify_attributes }}>
         <span class="rv-trust__icon">
@@ -20,6 +24,7 @@
         <span class="rv-trust__label">{{ block.settings.label }}</span>
       </div>
     {% endfor %}
+    </div>
   </div>
 </section>
 
@@ -34,6 +39,18 @@
   #rv-trust-{{ section.id }} .rv-trust__inner {
     max-width: 1140px;
     margin: 0 auto;
+  }
+
+  #rv-trust-{{ section.id }} .rv-trust__title {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 800;
+    color: #3E2A1E;
+    text-align: center;
+    margin: 0 0 28px;
+    letter-spacing: -0.4px;
+  }
+
+  #rv-trust-{{ section.id }} .rv-trust__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 24px 16px;
@@ -72,7 +89,7 @@
   }
 
   @media screen and (min-width: 750px) {
-    #rv-trust-{{ section.id }} .rv-trust__inner {
+    #rv-trust-{{ section.id }} .rv-trust__grid {
       grid-template-columns: repeat(4, 1fr);
       gap: 20px;
     }
@@ -88,6 +105,14 @@
   "name": "Reniva Trust Badges",
   "tag": "section",
   "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "info": "Optional heading shown above the icon row."
+    }
+  ],
   "blocks": [
     {
       "type": "badge",

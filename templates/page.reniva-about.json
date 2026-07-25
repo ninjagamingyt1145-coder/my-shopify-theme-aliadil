@@ -1,0 +1,93 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "reniva_about_hero": {
+      "type": "reniva-hero",
+      "settings": {
+        "image_position": "right",
+        "eyebrow": "ABOUT RENIVA",
+        "headline": "Rooted in Nature. Built for Real Results.",
+        "subheadline": "",
+        "button_label": "",
+        "button_link": "",
+        "show_size_badge": false
+      }
+    },
+    "reniva_about_intro": {
+      "type": "reniva-content-block",
+      "settings": {
+        "heading": "",
+        "body": "<p>Reniva was born from a simple frustration — watching people struggle with hair fall and turn to harsh chemical treatments that promised the world and delivered irritation instead. We believed there had to be a better way.</p>",
+        "background": "white"
+      }
+    },
+    "reniva_about_story": {
+      "type": "reniva-content-block",
+      "settings": {
+        "eyebrow": "",
+        "heading": "Our Story",
+        "body": "<p>We spent time researching traditional botanical remedies used for centuries alongside modern clinical ingredients — and found that the two, combined thoughtfully, could do more together than either could alone. That's how Reniva's formula came to be: five plant-powered ingredients, each chosen for a specific job, working together to calm the scalp, strengthen roots, and bring back the hair people thought they'd lost.</p>",
+        "background": "cream"
+      }
+    },
+    "reniva_about_mission": {
+      "type": "reniva-content-block",
+      "settings": {
+        "eyebrow": "",
+        "heading": "Our Mission",
+        "body": "<p>To give people a gentle, effective, botanical-first alternative to harsh hair-loss treatments — formulated for real, sustainable results, not quick fixes.</p>",
+        "background": "white"
+      }
+    },
+    "reniva_about_why": {
+      "type": "reniva-trust-badges",
+      "blocks": {
+        "why-1": {
+          "type": "badge",
+          "settings": { "icon": "leaf", "label": "Plant-powered, not chemical-loaded" }
+        },
+        "why-2": {
+          "type": "badge",
+          "settings": { "icon": "no-drop", "label": "Formulated for daily use without irritation" }
+        },
+        "why-3": {
+          "type": "badge",
+          "settings": { "icon": "flask", "label": "Backed by traditional use and real ingredient research" }
+        },
+        "why-4": {
+          "type": "badge",
+          "settings": { "icon": "shield", "label": "Built for real people dealing with real hair fall" }
+        }
+      },
+      "block_order": ["why-1", "why-2", "why-3", "why-4"],
+      "settings": {
+        "title": "Why Reniva"
+      }
+    },
+    "reniva_about_cta": {
+      "type": "reniva-final-cta",
+      "settings": {
+        "title": "Your hair's story doesn't have to end at the shower drain.",
+        "subtitle": "We're here to help you write a different one.",
+        "button_label": "Shop Reniva",
+        "button_link": ""
+      }
+    }
+  },
+  "order": [
+    "main",
+    "reniva_about_hero",
+    "reniva_about_intro",
+    "reniva_about_story",
+    "reniva_about_mission",
+    "reniva_about_why",
+    "reniva_about_cta"
+  ]
+}
