@@ -1,0 +1,177 @@
+{% comment %} reniva-shipping-timeline.liquid — simple 3-step shipping status graphic {% endcomment %}
+<section class="rv-shiptl" id="rv-shiptl-{{ section.id }}">
+  <div class="rv-shiptl__inner">
+    {% if section.settings.title != blank %}
+      <h2 class="rv-shiptl__title">{{ section.settings.title }}</h2>
+    {% endif %}
+
+    <div class="rv-shiptl__steps">
+      {% for block in section.blocks %}
+        <div class="rv-shiptl__step" {{ block.shopify_attributes }}>
+          <span class="rv-shiptl__icon">
+            {% case block.settings.icon %}
+              {% when 'package' %}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8l-9-5-9 5 9 5 9-5Z" stroke-linejoin="round"/><path d="M3 8v8l9 5 9-5V8" stroke-linejoin="round"/><path d="M12 13v8" stroke-linecap="round"/></svg>
+              {% when 'truck' %}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 7h13v9H2z"/><path d="M15 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>
+              {% when 'check' %}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              {% else %}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/></svg>
+            {% endcase %}
+          </span>
+          <span class="rv-shiptl__label">{{ block.settings.label }}</span>
+          {% unless forloop.last %}
+            <span class="rv-shiptl__connector" aria-hidden="true"></span>
+          {% endunless %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  #rv-shiptl-{{ section.id }} {
+    background: #FFF9EF;
+    padding: 32px 20px 48px;
+  }
+
+  #rv-shiptl-{{ section.id }} .rv-shiptl__inner {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  #rv-shiptl-{{ section.id }} .rv-shiptl__title {
+    font-size: clamp(18px, 3vw, 22px);
+    font-weight: 800;
+    color: #3E2A1E;
+    text-align: center;
+    margin: 0 0 28px;
+    letter-spacing: -0.3px;
+  }
+
+  #rv-shiptl-{{ section.id }} .rv-shiptl__steps {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  #rv-shiptl-{{ section.id }} .rv-shiptl__step {
+    position: relative;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+  }
+
+  #rv-shiptl-{{ section.id }} .rv-shiptl__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #C69B3B;
+    color: #FFF9EF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  #rv-shiptl-{{ section.id }} .rv-shiptl__icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  #rv-shiptl-{{ section.id }} .rv-shiptl__label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #3E2A1E;
+    line-height: 1.3;
+    padding: 0 4px;
+  }
+
+  #rv-shiptl-{{ section.id }} .rv-shiptl__connector {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: #E7D6AF;
+    z-index: 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    #rv-shiptl-{{ section.id }} {
+      padding: 40px 40px 64px;
+    }
+    #rv-shiptl-{{ section.id }} .rv-shiptl__icon {
+      width: 56px;
+      height: 56px;
+    }
+    #rv-shiptl-{{ section.id }} .rv-shiptl__icon svg {
+      width: 26px;
+      height: 26px;
+    }
+    #rv-shiptl-{{ section.id }} .rv-shiptl__label {
+      font-size: 14px;
+    }
+    #rv-shiptl-{{ section.id }} .rv-shiptl__connector {
+      top: 28px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Shipping Timeline",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Your Order Journey"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "package", "label": "Package" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "check", "label": "Check" }
+          ],
+          "default": "package"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Order Placed"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Shipping Timeline",
+      "blocks": [
+        { "type": "step", "settings": { "icon": "package", "label": "Order Placed" } },
+        { "type": "step", "settings": { "icon": "truck", "label": "Shipped" } },
+        { "type": "step", "settings": { "icon": "check", "label": "Delivered" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

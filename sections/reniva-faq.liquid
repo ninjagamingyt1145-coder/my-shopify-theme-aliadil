@@ -1,7 +1,7 @@
 {% comment %} reniva-faq.liquid {% endcomment %}
 <section class="rv-faq" id="rv-faq-{{ section.id }}">
   <div class="rv-faq__inner">
-    <h2 class="rv-faq__title">{{ section.settings.title }}</h2>
+    <h2 class="rv-faq__title" id="rv-faq">{{ section.settings.title }}</h2>
 
     <div class="rv-faq__list">
       {% for block in section.blocks %}
@@ -37,6 +37,7 @@
     text-align: center;
     margin: 0 0 32px;
     letter-spacing: -0.4px;
+    scroll-margin-top: 100px;
   }
 
   #rv-faq-{{ section.id }} .rv-faq__list {

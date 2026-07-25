@@ -1,0 +1,97 @@
+{% comment %} reniva-page-header.liquid — simple centered header for interior Reniva pages {% endcomment %}
+<section class="rv-pageheader" id="rv-pageheader-{{ section.id }}">
+  <div class="rv-pageheader__inner">
+    {% if section.settings.eyebrow != blank %}
+      <p class="rv-pageheader__eyebrow">{{ section.settings.eyebrow }}</p>
+    {% endif %}
+    <h1 class="rv-pageheader__headline">{{ section.settings.headline }}</h1>
+    {% if section.settings.subheadline != blank %}
+      <p class="rv-pageheader__subheadline">{{ section.settings.subheadline }}</p>
+    {% endif %}
+  </div>
+</section>
+
+{% style %}
+  #rv-pageheader-{{ section.id }} {
+    --rv-cream: #FBF3E4;
+    --rv-cream-deep: #F3E4C8;
+    --rv-gold: #C69B3B;
+    --rv-gold-dark: #A87F2A;
+    --rv-brown: #3E2A1E;
+    --rv-brown-soft: #6B4F3B;
+    --rv-border: #E7D6AF;
+
+    background: linear-gradient(180deg, var(--rv-cream) 0%, var(--rv-cream-deep) 100%);
+    padding: 56px 20px;
+    text-align: center;
+  }
+
+  #rv-pageheader-{{ section.id }} .rv-pageheader__inner {
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  #rv-pageheader-{{ section.id }} .rv-pageheader__eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--rv-gold-dark);
+    margin: 0 0 14px;
+  }
+
+  #rv-pageheader-{{ section.id }} .rv-pageheader__headline {
+    font-size: clamp(28px, 5vw, 44px);
+    line-height: 1.15;
+    font-weight: 800;
+    color: var(--rv-brown);
+    margin: 0 0 14px;
+    letter-spacing: -0.4px;
+  }
+
+  #rv-pageheader-{{ section.id }} .rv-pageheader__subheadline {
+    font-size: clamp(15px, 2vw, 17px);
+    line-height: 1.6;
+    color: var(--rv-brown-soft);
+    margin: 0;
+  }
+
+  @media screen and (min-width: 990px) {
+    #rv-pageheader-{{ section.id }} {
+      padding: 80px 40px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Page Header",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "RENIVA"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "We're Here to Help"
+    },
+    {
+      "type": "textarea",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "Questions about your order, our ingredients, or anything else? Reach out — we typically respond within 24 hours."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Page Header"
+    }
+  ]
+}
+{% endschema %}
