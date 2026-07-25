@@ -43,6 +43,42 @@
       }
     }
   {% endif %}
+
+  #shopify-section-{{ section.id }} .footer-block__heading {
+    color: {{ section.settings.accent_color }};
+  }
+
+  #shopify-section-{{ section.id }} .footer-block a:not(.footer__disclosure a):hover,
+  #shopify-section-{{ section.id }} .footer__list-social .list-social__link:hover,
+  #shopify-section-{{ section.id }} .footer__copyright a:hover {
+    color: {{ section.settings.accent_color }};
+  }
+
+  #shopify-section-{{ section.id }} .footer__list-social .list-social__link:hover svg {
+    fill: {{ section.settings.accent_color }};
+  }
+
+  #shopify-section-{{ section.id }} .footer__content-bottom-wrapper--split {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem 2rem;
+    text-align: left;
+  }
+
+  #shopify-section-{{ section.id }} .footer__disclosure {
+    opacity: 0.75;
+    max-width: 48rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .footer__content-bottom-wrapper--split {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
 {%- endstyle -%}
 
 <footer class="footer color-scheme-{{ section.id }} color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding animate-section animate--hidden" data-animations='{{ section.settings.display_animations }}' data-type='{{ settings.animations_type }}'> 
@@ -100,6 +136,23 @@
                         {%- endfor -%}
                       </ul>
                     {%- endif -%}
+                  {%- when 'customer_care' -%}
+                    <ul class="footer-block__details-content list-unstyled">
+                      <li>
+                        <a href="{{ block.settings.faq_link | default: '#' }}" class="link link--text list-menu__item list-menu__item--link">
+                          {{ block.settings.faq_label }}
+                        </a>
+                      </li>
+                      {%- for policy in shop.policies -%}
+                        {%- if policy != blank -%}
+                          <li>
+                            <a href="{{ policy.url }}" class="link link--text list-menu__item list-menu__item--link">
+                              {{ policy.title }}
+                            </a>
+                          </li>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </ul>
                   {%- when 'brand_information' -%}
                     <div class="footer-block__brand-info">
                       {%- if settings.brand_image != blank -%}
@@ -442,11 +495,8 @@
         {%- endif -%}
       </div>
     </div>
-    <div class="footer__content-bottom-wrapper page-width{% if section.settings.enable_country_selector == false and section.settings.enable_language_selector == false %} footer__content-bottom-wrapper--center{% endif %}">
+    <div class="footer__content-bottom-wrapper footer__content-bottom-wrapper--split page-width">
       <div class="footer__copyright caption">
-        <small class="copyright__content">
-          &copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url -}}
-        </small>
         {% unless section.settings.branding_text == blank %}
           <small class="copyright__content">{{ section.settings.branding_text }}</small>
         {% endunless %}
@@ -464,6 +514,11 @@
           </ul>
         {%- endif -%}
       </div>
+      {% unless section.settings.disclosure_text == blank %}
+        <div class="footer__disclosure caption">
+          <small class="copyright__content">{{ section.settings.disclosure_text }}</small>
+        </div>
+      {% endunless %}
     </div>
   </div>
 </footer>
@@ -593,6 +648,63 @@
           "default": true,
           "label": "t:sections.footer.blocks.brand_information.settings.show_social.label",
           "info": "t:sections.footer.blocks.brand_information.settings.show_social.info"
+        },
+        {
+          "type": "header",
+          "content": "Layout"
+        },
+        {
+          "type": "range",
+          "id": "width_desktop",
+          "max": 12,
+          "min": 1,
+          "step": 1,
+          "default": 3,
+          "label": "Column desktop width"
+        },
+        {
+          "type": "select",
+          "id": "width_mobile",
+          "options": [
+            {
+              "value": "1",
+              "label": "1"
+            },
+            {
+              "value": "2",
+              "label": "2"
+            }
+          ],
+          "default": "2",
+          "label": "Column mobile width"
+        }
+      ]
+    },
+    {
+      "type": "customer_care",
+      "name": "Customer care",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Customer Care",
+          "label": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "faq_label",
+          "default": "FAQ",
+          "label": "FAQ link label"
+        },
+        {
+          "type": "url",
+          "id": "faq_link",
+          "label": "FAQ link",
+          "info": "Defaults to # if left blank."
+        },
+        {
+          "type": "paragraph",
+          "content": "Shipping, Refund, Privacy, and Terms of Service links are pulled automatically from Settings > Legal in your Shopify admin."
         },
         {
           "type": "header",
@@ -1069,6 +1181,13 @@
       "info": "Custom color scheme is edited at the bottom of section settings."
     },
     {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "info": "Used for column headings and link hover states.",
+      "default": "#C69B3B"
+    },
+    {
       "type": "header",
       "content": "t:sections.footer.settings.header__9.content",
       "info": "t:sections.footer.settings.header__9.info"
@@ -1141,13 +1260,19 @@
     },
     {
       "type": "header",
-      "content": "Branding"
+      "content": "Copyright & disclosure"
     },
     {
       "type": "inline_richtext",
       "id": "branding_text",
-      "label": "Branding text",
-      "default": "Powered by Shrine"
+      "label": "Copyright text",
+      "default": "© 2026 Reniva. All rights reserved."
+    },
+    {
+      "type": "textarea",
+      "id": "disclosure_text",
+      "label": "Disclosure text",
+      "default": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease."
     },
     {
       "type": "header",

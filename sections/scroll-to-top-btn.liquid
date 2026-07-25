@@ -9,6 +9,17 @@
       --offset-y: {{ section.settings.offset_y | times: 0.75 | divided_by: 10.0 }}rem;
     }
   }
+
+  .scroll-to-top-btn.scroll-to-top-btn-{{ section.id }} {
+    background-color: #3E2A1E !important;
+    color: #C69B3B !important;
+    border-color: #3E2A1E !important;
+  }
+
+  .scroll-to-top-btn.scroll-to-top-btn-{{ section.id }}:hover {
+    background-color: #C69B3B !important;
+    color: #3E2A1E !important;
+  }
 {% endstyle %}
 
 {% if section.settings.enable_scroll_btn %}
