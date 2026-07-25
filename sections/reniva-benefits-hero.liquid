@@ -1,0 +1,307 @@
+{% comment %} reniva-benefits-hero.liquid — dark hero-style benefits callout {% endcomment %}
+<section class="rv-bh" id="rv-bh-{{ section.id }}">
+  <div class="rv-bh__inner">
+    <div class="rv-bh__text">
+      <h2 class="rv-bh__headline">{{ section.settings.headline }}</h2>
+      {% if section.settings.subheadline != blank %}
+        <p class="rv-bh__subheadline">{{ section.settings.subheadline }}</p>
+      {% endif %}
+
+      <div class="rv-bh__grid">
+        {% for block in section.blocks %}
+          <div class="rv-bh__item" {{ block.shopify_attributes }}>
+            <span class="rv-bh__icon">
+              {% case block.settings.icon %}
+                {% when 'reduce-fall' %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3c4 5 6 8.5 6 11.5A6 6 0 0 1 6 14.5C6 11.5 8 8 12 3Z" stroke-linejoin="round"/><path d="M4 4l16 16" stroke-linecap="round"/></svg>
+                {% when 'scalp' %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20c8-1 13-6 15-15-9 1-14 6-15 15Z" stroke-linejoin="round"/><path d="M6 18c3-4 6-7 12-11" stroke-linecap="round"/></svg>
+                {% when 'anti-dandruff' %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3h6" stroke-linecap="round"/><path d="M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3" stroke-linejoin="round"/><path d="M8 15h8" stroke-linecap="round"/></svg>
+                {% when 'shine' %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" stroke-linecap="round"/><circle cx="12" cy="12" r="3.2"/></svg>
+                {% else %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/></svg>
+              {% endcase %}
+            </span>
+            <span class="rv-bh__label">{{ block.settings.label }}</span>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if section.settings.footnote != blank %}
+        <p class="rv-bh__footnote">{{ section.settings.footnote }}</p>
+      {% endif %}
+    </div>
+
+    <div class="rv-bh__media">
+      <div class="rv-bh__rings" aria-hidden="true">
+        <span class="rv-bh__ring rv-bh__ring--1"></span>
+        <span class="rv-bh__ring rv-bh__ring--2"></span>
+        <span class="rv-bh__ring rv-bh__ring--3"></span>
+      </div>
+      {% if section.settings.image != blank %}
+        {{
+          section.settings.image
+          | image_url: width: 900
+          | image_tag:
+            loading: 'lazy',
+            class: 'rv-bh__img',
+            sizes: '(min-width: 990px) 420px, 70vw',
+            widths: '300, 450, 600, 900'
+        }}
+      {% else %}
+        <div class="rv-bh__placeholder" role="img" aria-label="Product image placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M8 3h8l1 3v2a5 5 0 0 1-2 4v6a3 3 0 0 1-3 3h-0a3 3 0 0 1-3-3v-6a5 5 0 0 1-2-4V6l1-3Z" stroke-linejoin="round"/>
+            <path d="M9 8h6" stroke-linecap="round"/>
+          </svg>
+          <span>Add a product image</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  #rv-bh-{{ section.id }} {
+    background: #3E2A1E;
+    padding: 56px 20px;
+    overflow: hidden;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__media {
+    order: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__text {
+    order: 2;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__rings {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 0;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(198, 155, 59, 0.35);
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__ring--1 {
+    width: 220px;
+    height: 220px;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__ring--2 {
+    width: 320px;
+    height: 320px;
+    border-color: rgba(198, 155, 59, 0.22);
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__ring--3 {
+    width: 420px;
+    height: 420px;
+    border-color: rgba(198, 155, 59, 0.12);
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__img {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+    display: block;
+    border-radius: 20px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__placeholder {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 4 / 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 2px dashed rgba(198, 155, 59, 0.4);
+    border-radius: 20px;
+    color: #D8C39C;
+    font-size: 13px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__placeholder svg {
+    width: 40px;
+    height: 40px;
+    opacity: 0.7;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__headline {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 800;
+    color: #F3E4C8;
+    margin: 0 0 14px;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__subheadline {
+    font-size: 16px;
+    color: #D8C39C;
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 0 32px;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 16px;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__icon {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(198, 155, 59, 0.16);
+    border: 1px solid rgba(198, 155, 59, 0.4);
+    color: #C69B3B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__label {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #F3E4C8;
+    line-height: 1.3;
+  }
+
+  #rv-bh-{{ section.id }} .rv-bh__footnote {
+    margin: 28px 0 0;
+    font-size: 11.5px;
+    color: rgba(216, 195, 156, 0.75);
+  }
+
+  @media screen and (min-width: 990px) {
+    #rv-bh-{{ section.id }} {
+      padding: 96px 40px;
+    }
+    #rv-bh-{{ section.id }} .rv-bh__inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+    #rv-bh-{{ section.id }} .rv-bh__media {
+      order: 2;
+    }
+    #rv-bh-{{ section.id }} .rv-bh__text {
+      order: 1;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Benefits (Hero)",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Healthier Hair. Every Wash."
+    },
+    {
+      "type": "textarea",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "From root strength to scalp comfort, here's what Reniva does every time you wash."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Product image"
+    },
+    {
+      "type": "text",
+      "id": "footnote",
+      "label": "Footnote",
+      "default": "†These statements have not been evaluated by the Food and Drug Administration."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "callout",
+      "name": "Callout",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "reduce-fall", "label": "Reduces hair fall" },
+            { "value": "scalp", "label": "Scalp nourishment" },
+            { "value": "anti-dandruff", "label": "Anti-dandruff" },
+            { "value": "shine", "label": "Shine & strength" }
+          ],
+          "default": "reduce-fall"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Reduces Hair Fall†"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Benefits (Hero)",
+      "blocks": [
+        { "type": "callout", "settings": { "icon": "reduce-fall", "label": "Reduces Hair Fall†" } },
+        { "type": "callout", "settings": { "icon": "scalp", "label": "Scalp Nourishment†" } },
+        { "type": "callout", "settings": { "icon": "anti-dandruff", "label": "Anti-Dandruff Care†" } },
+        { "type": "callout", "settings": { "icon": "shine", "label": "Shine & Strength†" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

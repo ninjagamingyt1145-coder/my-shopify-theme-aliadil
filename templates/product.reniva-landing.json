@@ -7,14 +7,53 @@
     },
     "reniva_hero_product": {
       "type": "reniva-hero-product",
+      "blocks": {
+        "tier-1": {
+          "type": "bundle_tier",
+          "settings": {
+            "quantity": 1,
+            "price": 39.99,
+            "compare_at_price": 49.99,
+            "badge_label": "",
+            "free_shipping": false,
+            "preselected": false
+          }
+        },
+        "tier-2": {
+          "type": "bundle_tier",
+          "settings": {
+            "quantity": 2,
+            "price": 71.99,
+            "compare_at_price": 99.98,
+            "badge_label": "Most Popular",
+            "free_shipping": true,
+            "preselected": true
+          }
+        },
+        "tier-3": {
+          "type": "bundle_tier",
+          "settings": {
+            "quantity": 3,
+            "price": 95.98,
+            "compare_at_price": 149.97,
+            "badge_label": "Best Value",
+            "free_shipping": true,
+            "preselected": false
+          }
+        }
+      },
+      "block_order": ["tier-1", "tier-2", "tier-3"],
       "settings": {
         "image_position": "right",
         "eyebrow": "RENIVA · ANTI-HAIR FALL SHAMPOO",
         "headline": "Stop the Fall. Start the Regrowth.",
         "subheadline": "A botanical-powered formula that strengthens roots, calms an irritated scalp, and helps you hold onto the hair you have — one wash at a time.",
-        "button_label": "Shop Reniva — 300ml",
+        "button_label": "Add to Cart",
         "show_size_badge": true,
-        "size_badge_text": "300ml Pouch"
+        "size_badge_text": "300ml Pouch",
+        "delivery_days": 5,
+        "ships_from": "Los Angeles, CA",
+        "guarantee_text": "30-Day Guarantee"
       }
     },
     "reniva_trust": {
@@ -76,62 +115,157 @@
         "ing-1": {
           "type": "ingredient",
           "settings": {
-            "icon": "leaf",
-            "name": "Thuja Orientalis",
-            "description": "Traditionally used to help calm scalp irritation and support a healthier follicle environment."
+            "name": "Thuja Orientalis Extract",
+            "description": "A traditional botanical extract used for centuries in scalp care, concentrated to help calm irritation and reduce excessive hair fall at the root.†"
           }
         },
         "ing-2": {
           "type": "ingredient",
           "settings": {
-            "icon": "seed",
             "name": "Hydrolyzed Oat Protein",
-            "description": "Penetrates the hair shaft to reinforce strands and reduce breakage from root to tip."
+            "description": "A clinically-studied protein compound that penetrates the hair shaft to strengthen roots and improve resistance to breakage with continued use.†"
           }
         },
         "ing-3": {
           "type": "ingredient",
           "settings": {
-            "icon": "root",
             "name": "Ginger Extract",
-            "description": "Stimulates circulation at the scalp to help nourish follicles from within."
+            "description": "Known for stimulating microcirculation at the scalp level, helping deliver nutrients to hair follicles for healthier, more active growth cycles.†"
           }
         },
         "ing-4": {
           "type": "ingredient",
           "settings": {
-            "icon": "drop",
             "name": "Ginseng Extract",
-            "description": "Rich in antioxidants that support stronger, more resilient hair growth cycles."
+            "description": "A revitalizing botanical shown to support follicle health and nourish the scalp, helping maintain a stronger foundation for hair growth.†"
           }
         },
         "ing-5": {
           "type": "ingredient",
           "settings": {
-            "icon": "oil",
             "name": "Jojoba Oil",
-            "description": "Mimics natural scalp oils to moisturize without clogging follicles."
+            "description": "Structurally similar to the scalp's natural oils, jojoba oil deeply hydrates and softens hair while helping reduce breakage and split ends.†"
           }
         }
       },
       "block_order": ["ing-1", "ing-2", "ing-3", "ing-4", "ing-5"],
       "settings": {
-        "title": "Five Botanicals. One Mission: Stop the Fall.",
-        "subtitle": "Every ingredient in Reniva is chosen for one job: helping you keep the hair you have."
+        "title": "5 Botanical Ingredients Working Together",
+        "subtitle": "Every ingredient in Reniva is chosen for one job: helping you keep the hair you have.",
+        "footnote": "†These statements have not been evaluated by the Food and Drug Administration."
       }
     },
-    "reniva_benefits": {
-      "type": "reniva-benefits",
+    "reniva_benefits_hero": {
+      "type": "reniva-benefits-hero",
       "blocks": {
-        "ben-1": { "type": "benefit", "settings": { "text": "Reduces hair fall from the very first wash" } },
-        "ben-2": { "type": "benefit", "settings": { "text": "Strengthens roots for thicker-feeling hair over time" } },
-        "ben-3": { "type": "benefit", "settings": { "text": "Calms an itchy, irritated scalp" } },
-        "ben-4": { "type": "benefit", "settings": { "text": "No sulfates, parabens, or harsh chemicals" } },
-        "ben-5": { "type": "benefit", "settings": { "text": "Suitable for daily use, all hair types" } }
+        "ben-1": { "type": "callout", "settings": { "icon": "reduce-fall", "label": "Reduces Hair Fall†" } },
+        "ben-2": { "type": "callout", "settings": { "icon": "scalp", "label": "Scalp Nourishment†" } },
+        "ben-3": { "type": "callout", "settings": { "icon": "anti-dandruff", "label": "Anti-Dandruff Care†" } },
+        "ben-4": { "type": "callout", "settings": { "icon": "shine", "label": "Shine & Strength†" } }
       },
-      "block_order": ["ben-1", "ben-2", "ben-3", "ben-4", "ben-5"],
+      "block_order": ["ben-1", "ben-2", "ben-3", "ben-4"],
       "settings": {
-        "title": "Why It Works"
+        "headline": "Healthier Hair. Every Wash.",
+        "subheadline": "From root strength to scalp comfort, here's what Reniva does every time you wash.",
+        "footnote": "†These statements have not been evaluated by the Food and Drug Administration."
+      }
+    },
+    "reniva_benefits_accordion": {
+      "type": "reniva-benefits-accordion",
+      "blocks": {
+        "acc-1": {
+          "type": "accordion_item",
+          "settings": {
+            "title": "Hair Fall",
+            "tagline": "Your daily line of defense.",
+            "expanded_text": "Reduces hair fall with consistent use by calming the scalp and strengthening roots at the follicle level."
+          }
+        },
+        "acc-2": {
+          "type": "accordion_item",
+          "settings": {
+            "title": "Scalp Health",
+            "tagline": "Nourished, not irritated.",
+            "expanded_text": "Botanical extracts work to soothe an irritated scalp while supporting a healthier environment for hair growth."
+          }
+        },
+        "acc-3": {
+          "type": "accordion_item",
+          "settings": {
+            "title": "Dandruff",
+            "tagline": "Balance without stripping.",
+            "expanded_text": "Helps control dandruff and excess oil without harsh sulfates that dry out your scalp."
+          }
+        },
+        "acc-4": {
+          "type": "accordion_item",
+          "settings": {
+            "title": "Shine & Strength",
+            "tagline": "Soft, not brittle.",
+            "expanded_text": "Jojoba oil and oat protein work together to leave hair soft, shiny, and more resistant to breakage."
+          }
+        }
+      },
+      "block_order": ["acc-1", "acc-2", "acc-3", "acc-4"],
+      "settings": {
+        "headline": "Real Benefits. Rooted in Botanicals.",
+        "subheadline": "Five plant extracts. One daily ritual. Traditional ingredients backed by real results.",
+        "footnote": "†These statements have not been evaluated by the Food and Drug Administration."
+      }
+    },
+    "reniva_journey": {
+      "type": "reniva-journey",
+      "blocks": {
+        "stage-1": {
+          "type": "stage",
+          "settings": {
+            "week_label": "Week 1",
+            "title": "Early Shifts",
+            "checklist_item_1": "Scalp starts to feel calmer†",
+            "checklist_item_2": "Less irritation with each wash†",
+            "checklist_item_3": "Hair feels cleaner, lighter†"
+          }
+        },
+        "stage-2": {
+          "type": "stage",
+          "settings": {
+            "week_label": "Week 2",
+            "title": "Reduced Fall",
+            "checklist_item_1": "Noticeably less hair in the shower drain†",
+            "checklist_item_2": "Roots start to feel stronger†",
+            "checklist_item_3": "Scalp oil production feels more balanced†"
+          }
+        },
+        "stage-3": {
+          "type": "stage",
+          "settings": {
+            "week_label": "Week 3",
+            "title": "Strength & Shine",
+            "checklist_item_1": "Hair feels softer and more resilient†",
+            "checklist_item_2": "Breakage starts to visibly reduce†",
+            "checklist_item_3": "Natural shine begins to return†"
+          }
+        },
+        "stage-4": {
+          "type": "stage",
+          "settings": {
+            "week_label": "Week 4+",
+            "title": "Long-Term Balance",
+            "checklist_item_1": "Fuller-feeling hair becomes your new normal†",
+            "checklist_item_2": "Scalp stays consistently healthy and calm†",
+            "checklist_item_3": "Reniva becomes part of your routine, not just a fix†"
+          }
+        }
+      },
+      "block_order": ["stage-1", "stage-2", "stage-3", "stage-4"],
+      "settings": {
+        "wordmark": "RENIVA",
+        "headline": "Your Wellness Journey with Reniva",
+        "subheadline": "Reniva® is built for daily care, not overnight miracles. Here's how your hair tends to change once it becomes part of your routine.",
+        "cta_label": "Start My Journey →",
+        "cta_link": "#rv-add-to-cart",
+        "guarantee_text": "🛡 30-Day Money-Back Guarantee",
+        "footnote": "†These statements have not been evaluated by the Food and Drug Administration."
       }
     },
     "reniva_lifestyle": {
@@ -220,7 +354,9 @@
     "reniva_trust",
     "reniva_problem",
     "reniva_ingredients",
-    "reniva_benefits",
+    "reniva_benefits_hero",
+    "reniva_benefits_accordion",
+    "reniva_journey",
     "reniva_lifestyle",
     "reniva_promo",
     "reniva_faq",

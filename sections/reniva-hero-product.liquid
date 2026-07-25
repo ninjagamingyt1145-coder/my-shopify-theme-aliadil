@@ -1,10 +1,33 @@
 {% comment %}
   reniva-hero-product.liquid
   Product-bound hero for the Reniva product template. Uses the real product's
-  featured image, price, variant picker, quantity selector and native Shopify
-  product form so Add to Cart works with the theme's cart drawer.
+  featured image and variant id so Add to Cart works with the theme's cart drawer.
+  Add to cart area is a tiered bundle-pricing picker (Buy 1 / Buy 2 / Buy 3):
+  selecting a tier sets the native "quantity" field submitted with the product
+  form, so the correct quantity of the real product variant is added to cart.
 {% endcomment %}
 {%- assign product_form_id = 'product-form-' | append: section.id -%}
+{%- assign selected_variant = product.selected_or_first_available_variant -%}
+
+{%- liquid
+  assign preselected_block = null
+  assign preselected_block_id = null
+  for block in section.blocks
+    if block.type == 'bundle_tier' and block.settings.preselected and preselected_block_id == null
+      assign preselected_block = block
+      assign preselected_block_id = block.id
+    endif
+  endfor
+  if preselected_block_id == null
+    for block in section.blocks
+      if block.type == 'bundle_tier'
+        assign preselected_block = block
+        assign preselected_block_id = block.id
+        break
+      endif
+    endfor
+  endif
+-%}
 
 <section class="rv-hero" id="rv-hero-{{ section.id }}">
   <div class="rv-hero__inner">
@@ -24,18 +47,6 @@
         data-url="{{ product.url }}"
       >
         <p class="rv-hero__product-name">{{ product.title }}</p>
-
-        <div class="rv-hero__price no-js-hidden" id="price-{{ section.id }}" role="status">
-          {%- render 'price',
-            product: product,
-            use_variant: true,
-            show_badges: true,
-            price_class: 'rv-hero__price-el',
-            main_price: true
-          -%}
-        </div>
-
-        {%- render 'product-variant-picker', product: product, product_form_id: product_form_id, update_url: false -%}
 
         <product-form
           id="ProductForm-{{ section.id }}"
@@ -57,74 +68,121 @@
             <input
               type="hidden"
               name="id"
-              value="{{ product.selected_or_first_available_variant.id }}"
+              value="{{ selected_variant.id }}"
               class="product-variant-id"
             >
 
-            <div class="product-form__quantity-and-btn product-form__quantity-and-btn--left rv-hero__qty-btn-row">
-              <div id="Quantity-Form-{{ section.id }}" class="product-form__input product-form__quantity rv-hero__quantity">
-                <label class="quantity__label form__label visually-hidden" for="Quantity-{{ section.id }}">
-                  {{ 'products.product.quantity.label' | t }}
-                </label>
-                <quantity-input class="quantity main-quantity rv-hero__quantity-input" data-section="{{ section.id }}">
-                  <button class="quantity__button" name="minus" type="button">
-                    <span class="visually-hidden">
-                      {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
-                    </span>
-                    {% render 'icon-minus' %}
-                  </button>
-                  <input
-                    class="quantity__input"
-                    type="number"
-                    name="quantity"
-                    id="Quantity-{{ section.id }}"
-                    min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
-                    {% if product.selected_or_first_available_variant.quantity_rule.max != null %}
-                      max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
-                    {% endif %}
-                    step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
-                    value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
-                    form="{{ product_form_id }}"
-                  >
-                  <button class="quantity__button" name="plus" type="button">
-                    <span class="visually-hidden">
-                      {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
-                    </span>
-                    {% render 'icon-plus' %}
-                  </button>
-                </quantity-input>
+            <rv-bundle-tiers
+              class="rv-bundle"
+              id="rv-add-to-cart"
+              data-delivery-days="{{ section.settings.delivery_days }}"
+            >
+              <div class="rv-bundle__tiers" role="radiogroup" aria-label="Choose your bundle size">
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'bundle_tier' -%}
+                    {%- liquid
+                      assign is_checked = false
+                      if block.id == preselected_block_id
+                        assign is_checked = true
+                      endif
+                      assign tier_savings = block.settings.compare_at_price | minus: block.settings.price
+                    -%}
+                    <input
+                      type="radio"
+                      name="quantity"
+                      id="RvTier-{{ block.id }}"
+                      class="rv-bundle__radio visually-hidden"
+                      value="{{ block.settings.quantity }}"
+                      form="{{ product_form_id }}"
+                      data-total-price="{{ block.settings.price | times: 100 | money }}"
+                      {% if is_checked %}checked{% endif %}
+                      {{ block.shopify_attributes }}
+                    >
+                    <label
+                      for="RvTier-{{ block.id }}"
+                      class="rv-bundle__tier{% if is_checked %} is-selected{% endif %}"
+                    >
+                      {% if block.settings.badge_label != blank %}
+                        <span class="rv-bundle__tier-badge">{{ block.settings.badge_label }}</span>
+                      {% endif %}
+                      <span class="rv-bundle__tier-check" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                      <span class="rv-bundle__tier-qty">
+                        {{ block.settings.quantity }}
+                        <span class="rv-bundle__tier-qty-word">
+                          {%- if block.settings.quantity == 1 -%}Bottle{%- else -%}Bottles{%- endif -%}
+                        </span>
+                      </span>
+                      <span class="rv-bundle__tier-prices">
+                        <span class="rv-bundle__tier-price">{{ block.settings.price | times: 100 | money }}</span>
+                        {% if block.settings.compare_at_price > block.settings.price %}
+                          <s class="rv-bundle__tier-compare">{{ block.settings.compare_at_price | times: 100 | money }}</s>
+                        {% endif %}
+                      </span>
+                      {% if tier_savings > 0 %}
+                        <span class="rv-bundle__tier-save">You save {{ tier_savings | times: 100 | money_without_trailing_zeros }}</span>
+                      {% endif %}
+                      {% if block.settings.free_shipping %}
+                        <span class="rv-bundle__tier-shipping">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 7h13v9H2z"/><path d="M15 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>
+                          Free Shipping
+                        </span>
+                      {% endif %}
+                    </label>
+                  {%- endif -%}
+                {%- endfor -%}
               </div>
 
-              <button
-                id="ProductSubmitButton-{{ section.id }}"
-                type="submit"
-                name="add"
-                class="atc-button product-form__submit button button--full-width rv-btn rv-btn--primary rv-hero__atc"
-                {% if product.selected_or_first_available_variant.available == false %}
-                  disabled
-                  data-unavailable="true"
-                {% endif %}
-              >
-                <span class="rv-hero__atc-label">
-                  {%- if product.selected_or_first_available_variant.available == false -%}
-                    {{ 'products.product.sold_out' | t }}
-                  {%- else -%}
-                    {{ section.settings.button_label }}
-                  {%- endif -%}
+              <p class="rv-bundle__delivery">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18" stroke-linecap="round"/><path d="M8 2v4M16 2v4" stroke-linecap="round"/></svg>
+                <span>
+                  Order today for delivery by <strong data-rv-delivery-date>soon</strong>
+                  {% if section.settings.ships_from != blank %}
+                    · Ships from {{ section.settings.ships_from }}
+                  {% endif %}
                 </span>
-                <div class="loading-overlay__spinner hidden">
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    class="spinner"
-                    viewBox="0 0 66 66"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
-                  </svg>
-                </div>
-              </button>
-            </div>
+              </p>
+
+              <div class="rv-bundle__sticky">
+                <button
+                  id="ProductSubmitButton-{{ section.id }}"
+                  type="submit"
+                  name="add"
+                  class="atc-button product-form__submit button rv-bundle__atc"
+                  {% if selected_variant.available == false %}
+                    disabled
+                    data-unavailable="true"
+                  {% endif %}
+                >
+                  <span class="rv-bundle__atc-label">
+                    {%- if selected_variant.available == false -%}
+                      {{ 'products.product.sold_out' | t }}
+                    {%- else -%}
+                      {{ section.settings.button_label }} —
+                      <span data-rv-total-price>
+                        {% if preselected_block %}{{ preselected_block.settings.price | times: 100 | money }}{% endif %}
+                      </span>
+                    {%- endif -%}
+                  </span>
+                  <div class="loading-overlay__spinner hidden">
+                    <svg
+                      aria-hidden="true"
+                      focusable="false"
+                      class="spinner"
+                      viewBox="0 0 66 66"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                    </svg>
+                  </div>
+                </button>
+                <p class="rv-bundle__guarantee">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3Z" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  {{ section.settings.guarantee_text }}
+                </p>
+              </div>
+            </rv-bundle-tiers>
           {%- endform -%}
         </product-form>
 
@@ -180,7 +238,7 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 32px;
-    align-items: center;
+    align-items: start;
   }
 
   #rv-hero-{{ section.id }} .rv-hero__text {
@@ -230,94 +288,191 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--rv-brown-soft);
-    margin: 0 0 6px;
-    text-align: left;
-  }
-
-  #rv-hero-{{ section.id }} .rv-hero__price {
-    text-align: left;
-    margin: 0 0 18px;
-  }
-
-  #rv-hero-{{ section.id }} .rv-hero__price .price-item {
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--rv-brown);
-  }
-
-  #rv-hero-{{ section.id }} .rv-hero__price .price__compare-price .price-item {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--rv-brown-soft);
-  }
-
-  #rv-hero-{{ section.id }} variant-selects {
-    display: block;
-    margin: 0 0 20px;
-    text-align: left;
-  }
-
-  #rv-hero-{{ section.id }} .product-form__input {
     margin: 0 0 14px;
+    text-align: left;
   }
 
-  #rv-hero-{{ section.id }} .form__label {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--rv-brown);
-    margin-bottom: 6px;
-    display: inline-block;
+  /* Bundle tiers */
+  #rv-hero-{{ section.id }} .rv-bundle {
+    display: block;
+    text-align: left;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__qty-btn-row {
-    margin-top: 8px;
+  #rv-hero-{{ section.id }} .rv-bundle__tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 18px;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__quantity-input {
-    display: inline-flex;
-    align-items: stretch;
-    border: 1px solid var(--rv-border);
-    border-radius: 999px;
+  #rv-hero-{{ section.id }} .rv-bundle__tier {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 6px;
     background: #FFFDF8;
-    overflow: hidden;
-    flex-shrink: 0;
+    border: 2px solid var(--rv-border);
+    border-radius: 16px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__quantity-input .quantity__button {
-    border: none;
-    background: transparent;
-    color: var(--rv-brown);
-    width: 40px;
+  #rv-hero-{{ section.id }} .rv-bundle__tier:hover {
+    border-color: var(--rv-gold);
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__radio:focus-visible + .rv-bundle__tier {
+    outline: 2px solid var(--rv-gold-dark);
+    outline-offset: 2px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier.is-selected {
+    border-color: var(--rv-gold);
+    background: #FFF9EC;
+    box-shadow: 0 6px 18px rgba(198, 155, 59, 0.22);
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-check {
+    grid-row: 1 / 3;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px solid var(--rv-border);
+    color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__quantity-input .quantity__button svg {
+  #rv-hero-{{ section.id }} .rv-bundle__tier-check svg {
     width: 12px;
     height: 12px;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__quantity-input .quantity__input {
-    border: none;
-    background: transparent;
-    width: 44px;
-    text-align: center;
-    font-size: 15px;
-    font-weight: 700;
+  #rv-hero-{{ section.id }} .rv-bundle__tier.is-selected .rv-bundle__tier-check {
+    background: var(--rv-gold);
+    border-color: var(--rv-gold);
+    color: #FFF9EF;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-qty {
+    font-size: 20px;
+    font-weight: 800;
     color: var(--rv-brown);
-    -moz-appearance: textfield;
+    line-height: 1.2;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__quantity-input .quantity__input::-webkit-outer-spin-button,
-  #rv-hero-{{ section.id }} .rv-hero__quantity-input .quantity__input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  #rv-hero-{{ section.id }} .rv-bundle__tier-qty-word {
+    font-size: 12.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--rv-brown-soft);
+    margin-left: 4px;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__atc {
-    flex: 1 1 auto;
+  #rv-hero-{{ section.id }} .rv-bundle__tier-prices {
+    grid-column: 3;
+    grid-row: 1;
+    text-align: right;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-price {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--rv-brown);
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-compare {
+    font-size: 14px;
+    color: var(--rv-brown-soft);
+    opacity: 0.8;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-save {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #6E8F5A;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-badge {
+    position: absolute;
+    top: -11px;
+    left: 16px;
+    background: var(--rv-gold);
+    color: #FFF9EF;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-shipping {
+    grid-column: 2 / 4;
+    grid-row: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    width: fit-content;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--rv-gold-dark);
+    background: var(--rv-cream-deep);
+    padding: 3px 9px;
+    border-radius: 999px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-shipping svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__delivery {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--rv-brown-soft);
+    background: var(--rv-cream-deep);
+    border: 1px solid var(--rv-border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin: 0 0 18px;
+    line-height: 1.5;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__delivery svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--rv-gold-dark);
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__delivery strong {
+    color: var(--rv-brown);
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__sticky {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__atc {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -331,19 +486,43 @@
     color: #FFF9EF;
     cursor: pointer;
     transition: transform 0.15s ease, background 0.2s ease;
-    min-height: 52px;
+    min-height: 56px;
+    width: 100%;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__atc:hover {
+  #rv-hero-{{ section.id }} .rv-bundle__atc-label {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__atc:hover {
     background: var(--rv-gold-dark);
     transform: translateY(-1px);
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__atc[disabled] {
+  #rv-hero-{{ section.id }} .rv-bundle__atc[disabled] {
     background: var(--rv-border);
     color: var(--rv-brown-soft);
     cursor: not-allowed;
     transform: none;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__guarantee {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--rv-brown-soft);
+    margin: 0;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__guarantee svg {
+    width: 15px;
+    height: 15px;
+    color: var(--rv-gold-dark);
   }
 
   #rv-hero-{{ section.id }} .rv-hero__badge {
@@ -414,6 +593,75 @@
   }
 {% endstyle %}
 
+<script>
+  (function () {
+    function initRvBundle(root) {
+      if (!root || root.dataset.rvInit === 'true') return;
+      root.dataset.rvInit = 'true';
+
+      var radios = root.querySelectorAll('.rv-bundle__radio');
+      var totalPriceEls = root.querySelectorAll('[data-rv-total-price]');
+
+      function selectTier(radio) {
+        radios.forEach(function (r) {
+          var label = root.querySelector('label[for="' + r.id + '"]');
+          if (label) label.classList.toggle('is-selected', r === radio);
+        });
+        var price = radio.getAttribute('data-total-price');
+        if (price) {
+          totalPriceEls.forEach(function (el) {
+            el.textContent = price;
+          });
+        }
+      }
+
+      radios.forEach(function (radio) {
+        radio.addEventListener('change', function () {
+          if (radio.checked) selectTier(radio);
+        });
+      });
+
+      var checked = root.querySelector('.rv-bundle__radio:checked');
+      if (checked) selectTier(checked);
+
+      var dateEl = root.querySelector('[data-rv-delivery-date]');
+      if (dateEl) {
+        var days = parseInt(root.getAttribute('data-delivery-days'), 10);
+        if (isNaN(days) || days < 0) days = 5;
+        var deliveryDate = new Date();
+        deliveryDate.setDate(deliveryDate.getDate() + days);
+        try {
+          dateEl.textContent = new Intl.DateTimeFormat('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
+          }).format(deliveryDate);
+        } catch (e) {
+          dateEl.textContent = deliveryDate.toDateString();
+        }
+      }
+    }
+
+    function initAll() {
+      document.querySelectorAll('rv-bundle-tiers').forEach(initRvBundle);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+      initAll();
+    }
+
+    document.addEventListener('shopify:section:load', function (event) {
+      var bundle = event.target.querySelector('rv-bundle-tiers');
+      if (bundle) {
+        bundle.dataset.rvInit = 'false';
+        initRvBundle(bundle);
+      }
+    });
+  })();
+</script>
+
 {% schema %}
 {
   "name": "Reniva Hero (Product)",
@@ -452,7 +700,7 @@
       "type": "text",
       "id": "button_label",
       "label": "Add to cart button label",
-      "default": "Shop Reniva — 300ml"
+      "default": "Add to Cart"
     },
     {
       "type": "checkbox",
@@ -465,11 +713,91 @@
       "id": "size_badge_text",
       "label": "Size badge text",
       "default": "300ml Pouch"
+    },
+    {
+      "type": "header",
+      "content": "Delivery & guarantee"
+    },
+    {
+      "type": "number",
+      "id": "delivery_days",
+      "label": "Estimated delivery (days from today)",
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "ships_from",
+      "label": "Ships from location",
+      "default": "Los Angeles, CA"
+    },
+    {
+      "type": "text",
+      "id": "guarantee_text",
+      "label": "Guarantee badge text",
+      "default": "30-Day Guarantee"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "bundle_tier",
+      "name": "Bundle tier",
+      "settings": [
+        {
+          "type": "number",
+          "id": "quantity",
+          "label": "Quantity (bottles)",
+          "default": 1
+        },
+        {
+          "type": "number",
+          "id": "price",
+          "label": "Bundle price ($)",
+          "default": 39.99
+        },
+        {
+          "type": "number",
+          "id": "compare_at_price",
+          "label": "Compare-at price ($)",
+          "default": 49.99
+        },
+        {
+          "type": "text",
+          "id": "badge_label",
+          "label": "Badge label (optional)",
+          "info": "e.g. Most Popular, Best Value"
+        },
+        {
+          "type": "checkbox",
+          "id": "free_shipping",
+          "label": "Show free shipping badge",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "preselected",
+          "label": "Selected by default",
+          "default": false
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Reniva Hero (Product)"
+      "name": "Reniva Hero (Product)",
+      "blocks": [
+        {
+          "type": "bundle_tier",
+          "settings": { "quantity": 1, "price": 39.99, "compare_at_price": 49.99, "free_shipping": false, "preselected": false }
+        },
+        {
+          "type": "bundle_tier",
+          "settings": { "quantity": 2, "price": 71.99, "compare_at_price": 99.98, "badge_label": "Most Popular", "free_shipping": true, "preselected": true }
+        },
+        {
+          "type": "bundle_tier",
+          "settings": { "quantity": 3, "price": 95.98, "compare_at_price": 149.97, "badge_label": "Best Value", "free_shipping": true, "preselected": false }
+        }
+      ]
     }
   ]
 }

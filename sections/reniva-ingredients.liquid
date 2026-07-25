@@ -8,28 +8,36 @@
 
     <div class="rv-ingredients__grid">
       {% for block in section.blocks %}
-        <div class="rv-ingredients__item" {{ block.shopify_attributes }}>
-          <span class="rv-ingredients__icon">
-            {% case block.settings.icon %}
-              {% when 'leaf' %}
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20c8-1 13-6 15-15-9 1-14 6-15 15Z" stroke-linejoin="round"/><path d="M6 18c3-4 6-7 12-11" stroke-linecap="round"/></svg>
-              {% when 'drop' %}
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3c4 5 6 8.5 6 11.5A6 6 0 0 1 6 14.5C6 11.5 8 8 12 3Z" stroke-linejoin="round"/></svg>
-              {% when 'root' %}
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v7" stroke-linecap="round"/><path d="M12 10c-2 2-3 4-3 7M12 10c2 2 3 4 3 7M12 10c-4 1-6 3-7 6M12 10c4 1 6 3 7 6" stroke-linecap="round"/></svg>
-              {% when 'seed' %}
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21c4-1 7-5 7-10a7 7 0 0 0-14 0c0 5 3 9 7 10Z" stroke-linejoin="round"/></svg>
-              {% when 'oil' %}
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3h6" stroke-linecap="round"/><path d="M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3" stroke-linejoin="round"/></svg>
-              {% else %}
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/></svg>
-            {% endcase %}
-          </span>
+        <div class="rv-ingredients__card" {{ block.shopify_attributes }}>
+          <div class="rv-ingredients__image">
+            {% if block.settings.image != blank %}
+              {{
+                block.settings.image
+                | image_url: width: 500
+                | image_tag:
+                  loading: 'lazy',
+                  class: 'rv-ingredients__img',
+                  sizes: '(min-width: 990px) 200px, 40vw',
+                  widths: '200, 300, 400, 500'
+              }}
+            {% else %}
+              <div class="rv-ingredients__placeholder" role="img" aria-label="Ingredient image placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M4 20c8-1 13-6 15-15-9 1-14 6-15 15Z" stroke-linejoin="round"/>
+                  <path d="M6 18c3-4 6-7 12-11" stroke-linecap="round"/>
+                </svg>
+              </div>
+            {% endif %}
+          </div>
           <h3 class="rv-ingredients__name">{{ block.settings.name }}</h3>
           <p class="rv-ingredients__desc">{{ block.settings.description }}</p>
         </div>
       {% endfor %}
     </div>
+
+    {% if section.settings.footnote != blank %}
+      <p class="rv-ingredients__footnote">{{ section.settings.footnote }}</p>
+    {% endif %}
   </div>
 </section>
 
@@ -40,7 +48,7 @@
   }
 
   #rv-ingredients-{{ section.id }} .rv-ingredients__inner {
-    max-width: 1140px;
+    max-width: 1180px;
     margin: 0 auto;
     text-align: center;
   }
@@ -68,31 +76,48 @@
     margin-top: 36px;
   }
 
-  #rv-ingredients-{{ section.id }} .rv-ingredients__item {
+  #rv-ingredients-{{ section.id }} .rv-ingredients__card {
     background: #FBF3E4;
     border: 1px solid #EEDFC0;
-    border-radius: 18px;
-    padding: 26px 18px;
+    border-radius: 20px;
+    padding: 20px 18px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  #rv-ingredients-{{ section.id }} .rv-ingredients__icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: #C69B3B;
-    color: #FFF9EF;
+  #rv-ingredients-{{ section.id }} .rv-ingredients__image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-width: 140px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: #FFFDF8;
+  }
+
+  #rv-ingredients-{{ section.id }} .rv-ingredients__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #rv-ingredients-{{ section.id }} .rv-ingredients__placeholder {
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 14px;
+    color: #C69B3B;
+    border: 2px dashed #E7D6AF;
+    border-radius: 16px;
   }
 
-  #rv-ingredients-{{ section.id }} .rv-ingredients__icon svg {
-    width: 26px;
-    height: 26px;
+  #rv-ingredients-{{ section.id }} .rv-ingredients__placeholder svg {
+    width: 36px;
+    height: 36px;
+    opacity: 0.6;
   }
 
   #rv-ingredients-{{ section.id }} .rv-ingredients__name {
@@ -109,12 +134,22 @@
     margin: 0;
   }
 
+  #rv-ingredients-{{ section.id }} .rv-ingredients__footnote {
+    margin: 32px 0 0;
+    font-size: 11.5px;
+    color: #9C8367;
+    text-align: center;
+  }
+
+  @media screen and (min-width: 600px) {
+    #rv-ingredients-{{ section.id }} .rv-ingredients__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
   @media screen and (min-width: 750px) {
     #rv-ingredients-{{ section.id }} {
       padding: 80px 40px;
-    }
-    #rv-ingredients-{{ section.id }} .rv-ingredients__grid {
-      grid-template-columns: repeat(3, 1fr);
     }
   }
 
@@ -136,13 +171,19 @@
       "type": "text",
       "id": "title",
       "label": "Title",
-      "default": "Five Botanicals. One Mission: Stop the Fall."
+      "default": "5 Botanical Ingredients Working Together"
     },
     {
       "type": "textarea",
       "id": "subtitle",
       "label": "Subtitle",
       "default": "Every ingredient in Reniva is chosen for one job: helping you keep the hair you have."
+    },
+    {
+      "type": "text",
+      "id": "footnote",
+      "label": "Footnote",
+      "default": "†These statements have not been evaluated by the Food and Drug Administration."
     }
   ],
   "blocks": [
@@ -151,17 +192,9 @@
       "name": "Ingredient",
       "settings": [
         {
-          "type": "select",
-          "id": "icon",
-          "label": "Icon",
-          "options": [
-            { "value": "leaf", "label": "Leaf" },
-            { "value": "drop", "label": "Drop" },
-            { "value": "root", "label": "Root" },
-            { "value": "seed", "label": "Seed" },
-            { "value": "oil", "label": "Oil" }
-          ],
-          "default": "leaf"
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
         },
         {
           "type": "text",
@@ -185,41 +218,36 @@
         {
           "type": "ingredient",
           "settings": {
-            "icon": "leaf",
-            "name": "Thuja Orientalis",
-            "description": "Traditionally used to help calm scalp irritation and support a healthier follicle environment."
+            "name": "Thuja Orientalis Extract",
+            "description": "A traditional botanical extract used for centuries in scalp care, concentrated to help calm irritation and reduce excessive hair fall at the root.†"
           }
         },
         {
           "type": "ingredient",
           "settings": {
-            "icon": "seed",
             "name": "Hydrolyzed Oat Protein",
-            "description": "Penetrates the hair shaft to reinforce strands and reduce breakage from root to tip."
+            "description": "A clinically-studied protein compound that penetrates the hair shaft to strengthen roots and improve resistance to breakage with continued use.†"
           }
         },
         {
           "type": "ingredient",
           "settings": {
-            "icon": "root",
             "name": "Ginger Extract",
-            "description": "Stimulates circulation at the scalp to help nourish follicles from within."
+            "description": "Known for stimulating microcirculation at the scalp level, helping deliver nutrients to hair follicles for healthier, more active growth cycles.†"
           }
         },
         {
           "type": "ingredient",
           "settings": {
-            "icon": "drop",
             "name": "Ginseng Extract",
-            "description": "Rich in antioxidants that support stronger, more resilient hair growth cycles."
+            "description": "A revitalizing botanical shown to support follicle health and nourish the scalp, helping maintain a stronger foundation for hair growth.†"
           }
         },
         {
           "type": "ingredient",
           "settings": {
-            "icon": "oil",
             "name": "Jojoba Oil",
-            "description": "Mimics natural scalp oils to moisturize without clogging follicles."
+            "description": "Structurally similar to the scalp's natural oils, jojoba oil deeply hydrates and softens hair while helping reduce breakage and split ends.†"
           }
         }
       ]
