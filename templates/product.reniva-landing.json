@@ -1,9 +1,67 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "main-product",
       "disabled": true,
-      "settings": {}
+      "settings": {
+        "display_id": false,
+        "enable_sticky_info": true,
+        "display_variant_image_first": false,
+        "disable_prepend": false,
+        "hide_variants": false,
+        "variant_image_filtering": "none",
+        "image_zoom": "none",
+        "thumbnails_ratio": "square",
+        "arrows_color_scheme": "inverse",
+        "transparent_arrows": false,
+        "dots_color_scheme": "inverse",
+        "video_player": "play_btn",
+        "enable_video_looping": false,
+        "autoplay_videos_pause_btn": false,
+        "video_sound_btn": false,
+        "video_timeline": false,
+        "play_btn_color_scheme": "accent-1",
+        "sound_btn_color_scheme": "inverse",
+        "timeline_color": "accent-1",
+        "media_size": "medium",
+        "media_position": "left",
+        "gallery_layout": "thumbnail_slider",
+        "desktop_thumbnails_position": "bottom",
+        "desktop_thumbnails_count": 5,
+        "desktop_vertical_thumbnails_width": 16,
+        "desktop_vertical_thumbnails_hide_arrows": false,
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "desktop_arrows_position": "hidden",
+        "mobile_media_corner_radius": 12,
+        "mobile_spacing_pixels": 0,
+        "mobile_arrows_position": "sides",
+        "mobile_pagination": "dots_overlay",
+        "mobile_thumbnails_position": "hidden",
+        "mobile_thumbnails_count": 5,
+        "mobile_vertical_thumbnails_width": 22,
+        "mobile_vertical_thumbnails_hide_arrows": true,
+        "mobile_scroll_padding_percentage": 0,
+        "mobile_scroll_padding_pixels": 16,
+        "enable_mobile_outher_spacing": false,
+        "mobile_slides_container_width": 100,
+        "mobile_slides_inner_width": 100,
+        "trust_badge_position": "top-right",
+        "trust_badge_size": "medium",
+        "mobile_padding_top": 0,
+        "mobile_padding_bottom": 16,
+        "desktop_padding_top": 36,
+        "desktop_padding_bottom": 36
+      }
     },
     "reniva_hero_product": {
       "type": "reniva-hero-product",
@@ -61,22 +119,39 @@
       "blocks": {
         "badge-1": {
           "type": "badge",
-          "settings": { "icon": "leaf", "label": "Rich Botanical Extracts" }
+          "settings": {
+            "icon": "leaf",
+            "label": "Rich Botanical Extracts"
+          }
         },
         "badge-2": {
           "type": "badge",
-          "settings": { "icon": "shield", "label": "Dermatologically Formulated" }
+          "settings": {
+            "icon": "shield",
+            "label": "Dermatologically Formulated"
+          }
         },
         "badge-3": {
           "type": "badge",
-          "settings": { "icon": "no-drop", "label": "No Harsh Sulfates" }
+          "settings": {
+            "icon": "no-drop",
+            "label": "No Harsh Sulfates"
+          }
         },
         "badge-4": {
           "type": "badge",
-          "settings": { "icon": "flask", "label": "Backed by Studies" }
+          "settings": {
+            "icon": "flask",
+            "label": "Backed by Studies"
+          }
         }
       },
-      "block_order": ["badge-1", "badge-2", "badge-3", "badge-4"],
+      "block_order": [
+        "badge-1",
+        "badge-2",
+        "badge-3",
+        "badge-4"
+      ],
       "settings": {}
     },
     "reniva_problem": {
@@ -84,26 +159,42 @@
       "blocks": {
         "pain-1": {
           "type": "pain_point",
-          "settings": { "text": "Excessive hair fall every time you shower or brush" }
+          "settings": {
+            "text": "Excessive hair fall every time you shower or brush"
+          }
         },
         "pain-2": {
           "type": "pain_point",
-          "settings": { "text": "A hairline that keeps creeping backward" }
+          "settings": {
+            "text": "A hairline that keeps creeping backward"
+          }
         },
         "pain-3": {
           "type": "pain_point",
-          "settings": { "text": "Noticeable thinning at the crown" }
+          "settings": {
+            "text": "Noticeable thinning at the crown"
+          }
         },
         "pain-4": {
           "type": "pain_point",
-          "settings": { "text": "Dry, brittle strands that snap easily" }
+          "settings": {
+            "text": "Dry, brittle strands that snap easily"
+          }
         },
         "pain-5": {
           "type": "pain_point",
-          "settings": { "text": "More hair in the drain than you'd like to admit" }
+          "settings": {
+            "text": "More hair in the drain than you'd like to admit"
+          }
         }
       },
-      "block_order": ["pain-1", "pain-2", "pain-3", "pain-4", "pain-5"],
+      "block_order": [
+        "pain-1",
+        "pain-2",
+        "pain-3",
+        "pain-4",
+        "pain-5"
+      ],
       "settings": {
         "title": "Does This Sound Familiar?",
         "subtitle": "If you're nodding along to any of these, your scalp is asking for help."
@@ -148,7 +239,13 @@
           }
         }
       },
-      "block_order": ["ing-1", "ing-2", "ing-3", "ing-4", "ing-5"],
+      "block_order": [
+        "ing-1",
+        "ing-2",
+        "ing-3",
+        "ing-4",
+        "ing-5"
+      ],
       "settings": {
         "title": "5 Botanical Ingredients Working Together",
         "subtitle": "Every ingredient in Reniva is chosen for one job: helping you keep the hair you have.",
@@ -271,6 +368,7 @@
     "reniva_lifestyle": {
       "type": "reniva-lifestyle",
       "settings": {
+        "image": "shopify://shop_images/WhatsAppImage2026-07-24at8.08.33PM.jpg",
         "image_position": "left",
         "title": "Confidence Starts With Daily Care",
         "body": "<p>Hair fall isn't just about hair — it's about how you feel every time you look in the mirror. Reniva fits into the routine you already have, working quietly in the background so you can focus on showing up as your most confident self.</p>",
@@ -333,7 +431,14 @@
           }
         }
       },
-      "block_order": ["faq-1", "faq-2", "faq-3", "faq-4", "faq-5", "faq-6"],
+      "block_order": [
+        "faq-1",
+        "faq-2",
+        "faq-3",
+        "faq-4",
+        "faq-5",
+        "faq-6"
+      ],
       "settings": {
         "title": "Frequently Asked Questions"
       }
