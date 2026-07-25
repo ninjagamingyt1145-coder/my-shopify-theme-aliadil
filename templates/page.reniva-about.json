@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -11,18 +20,21 @@
     "reniva_about_hero": {
       "type": "reniva-hero",
       "settings": {
+        "image": "shopify://shop_images/WhatsAppImage2026-07-24at8.08.31PM_1.jpg",
         "image_position": "right",
         "eyebrow": "ABOUT RENIVA",
         "headline": "Rooted in Nature. Built for Real Results.",
         "subheadline": "",
         "button_label": "",
         "button_link": "",
-        "show_size_badge": false
+        "show_size_badge": false,
+        "size_badge_text": "300ml Pouch"
       }
     },
     "reniva_about_intro": {
       "type": "reniva-content-block",
       "settings": {
+        "eyebrow": "",
         "heading": "",
         "body": "<p>Reniva was born from a simple frustration — watching people struggle with hair fall and turn to harsh chemical treatments that promised the world and delivered irritation instead. We believed there had to be a better way.</p>",
         "background": "white"
@@ -51,22 +63,39 @@
       "blocks": {
         "why-1": {
           "type": "badge",
-          "settings": { "icon": "leaf", "label": "Plant-powered, not chemical-loaded" }
+          "settings": {
+            "icon": "leaf",
+            "label": "Plant-powered, not chemical-loaded"
+          }
         },
         "why-2": {
           "type": "badge",
-          "settings": { "icon": "no-drop", "label": "Formulated for daily use without irritation" }
+          "settings": {
+            "icon": "no-drop",
+            "label": "Formulated for daily use without irritation"
+          }
         },
         "why-3": {
           "type": "badge",
-          "settings": { "icon": "flask", "label": "Backed by traditional use and real ingredient research" }
+          "settings": {
+            "icon": "flask",
+            "label": "Backed by traditional use and real ingredient research"
+          }
         },
         "why-4": {
           "type": "badge",
-          "settings": { "icon": "shield", "label": "Built for real people dealing with real hair fall" }
+          "settings": {
+            "icon": "shield",
+            "label": "Built for real people dealing with real hair fall"
+          }
         }
       },
-      "block_order": ["why-1", "why-2", "why-3", "why-4"],
+      "block_order": [
+        "why-1",
+        "why-2",
+        "why-3",
+        "why-4"
+      ],
       "settings": {
         "title": "Why Reniva"
       }
