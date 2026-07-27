@@ -1,10 +1,11 @@
 {% comment %}
   reniva-hero-product.liquid
-  Product-bound hero for the Reniva product template. Uses the real product's
-  featured image and variant id so Add to Cart works with the theme's cart drawer.
-  Add to cart area is a tiered bundle-pricing picker (Buy 1 / Buy 2 / Buy 3):
-  selecting a tier sets the native "quantity" field submitted with the product
-  form, so the correct quantity of the real product variant is added to cart.
+  Merged hero + tiered bundle pricing for the Reniva product template, so the
+  full buying experience (gallery, price, tiers, add to cart) is visible
+  together without scrolling to a separate section. Uses the real product's
+  variant id so Add to Cart works with the theme's cart drawer — selecting a
+  bundle tier sets the native "quantity" field submitted with the product
+  form, so the correct quantity of the real product variant is added.
 {% endcomment %}
 {%- assign product_form_id = 'product-form-' | append: section.id -%}
 {%- assign selected_variant = product.selected_or_first_available_variant -%}
@@ -27,18 +28,171 @@
       endif
     endfor
   endif
+
+  assign main_gallery_image = null
+  for block in section.blocks
+    if block.type == 'gallery_image' and block.settings.image != blank and main_gallery_image == null
+      assign main_gallery_image = block.settings.image
+    endif
+  endfor
+
+  assign real_price = selected_variant.price
+  assign real_compare = selected_variant.compare_at_price
+  assign has_sale = false
+  assign real_savings = 0
+  if real_compare > real_price
+    assign has_sale = true
+    assign real_savings = real_compare | minus: real_price
+  endif
 -%}
 
 <section class="rv-hero" id="rv-hero-{{ section.id }}">
   <div class="rv-hero__inner">
-    <div class="rv-hero__text">
-      {% if section.settings.eyebrow != blank %}
-        <p class="rv-hero__eyebrow">{{ section.settings.eyebrow }}</p>
+
+    <div class="rv-hero__gallery">
+      <div class="rv-hero__main-media">
+        {% if section.settings.badge_text != blank %}
+          <span class="rv-hero__ribbon">{{ section.settings.badge_text }}</span>
+        {% endif %}
+
+        {% if main_gallery_image != blank %}
+          {{
+            main_gallery_image
+            | image_url: width: 1400
+            | image_tag:
+              id: 'RvMainImage-' | append: section.id,
+              loading: 'eager',
+              fetchpriority: 'high',
+              class: 'rv-hero__img',
+              sizes: '(min-width: 990px) 560px, 90vw',
+              widths: '400, 600, 800, 1000, 1400',
+              alt: main_gallery_image.alt | default: product.title
+          }}
+        {% elsif product.featured_image != blank %}
+          {{
+            product.featured_image
+            | image_url: width: 1400
+            | image_tag:
+              id: 'RvMainImage-' | append: section.id,
+              loading: 'eager',
+              fetchpriority: 'high',
+              class: 'rv-hero__img',
+              sizes: '(min-width: 990px) 560px, 90vw',
+              widths: '400, 600, 800, 1000, 1400',
+              alt: product.featured_image.alt | default: product.title
+          }}
+        {% else %}
+          <div class="rv-placeholder" id="RvMainImage-{{ section.id }}" role="img" aria-label="Product image placeholder">
+            <svg viewBox="0 0 24 24" class="rv-placeholder__icon" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M8 3h8l1 3v2a5 5 0 0 1-2 4v6a3 3 0 0 1-3 3h-0a3 3 0 0 1-3-3v-6a5 5 0 0 1-2-4V6l1-3Z" stroke-linejoin="round"/>
+              <path d="M9 8h6" stroke-linecap="round"/>
+            </svg>
+            <span>Add a featured image to this product</span>
+          </div>
+        {% endif %}
+      </div>
+
+      {%- assign gallery_thumb_count = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'gallery_image' and block.settings.image != blank -%}
+          {%- assign gallery_thumb_count = gallery_thumb_count | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {% if gallery_thumb_count > 1 %}
+        <div class="rv-hero__thumbs" role="list" data-rv-thumbs>
+          {%- assign rv_thumb_index = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'gallery_image' and block.settings.image != blank -%}
+              {%- assign rv_thumb_index = rv_thumb_index | plus: 1 -%}
+              <button
+                type="button"
+                class="rv-hero__thumb{% if rv_thumb_index == 1 %} is-active{% endif %}"
+                data-full="{{ block.settings.image | image_url: width: 1400 }}"
+                data-alt="{{ block.settings.image.alt | default: product.title | escape }}"
+                aria-label="Show image {{ rv_thumb_index }}"
+                {{ block.shopify_attributes }}
+              >
+                {{
+                  block.settings.image
+                  | image_url: width: 200
+                  | image_tag: loading: 'lazy', widths: '100, 150, 200', alt: ''
+                }}
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
       {% endif %}
+    </div>
+
+    <div class="rv-hero__content">
+      <div class="rv-hero__rating">
+        <span class="rv-hero__avatars" aria-hidden="true">
+          <span class="rv-hero__avatar rv-hero__avatar--1"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></span>
+          <span class="rv-hero__avatar rv-hero__avatar--2"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></span>
+          <span class="rv-hero__avatar rv-hero__avatar--3"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></span>
+        </span>
+        <span class="rv-hero__rating-text">
+          <span class="rv-hero__stars" aria-hidden="true">★★★★★</span>
+          Rated {{ section.settings.rating_score }} · {{ section.settings.review_count_label }}
+        </span>
+      </div>
+
+      {% if section.settings.category_tag != blank %}
+        <p class="rv-hero__tag">{{ section.settings.category_tag }}</p>
+      {% endif %}
+
       <h1 class="rv-hero__headline">{{ section.settings.headline }}</h1>
       {% if section.settings.subheadline != blank %}
         <p class="rv-hero__subheadline">{{ section.settings.subheadline }}</p>
       {% endif %}
+
+      {%- assign has_benefit_blocks = false -%}
+      <div class="rv-hero__benefits">
+        {% for block in section.blocks %}
+          {% if block.type == 'benefit_icon' %}
+            {%- assign has_benefit_blocks = true -%}
+            <div class="rv-hero__benefit" {{ block.shopify_attributes }}>
+              <span class="rv-hero__benefit-icon" aria-hidden="true">
+                {% case block.settings.icon %}
+                  {% when 'reduce-fall' %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3c4 5 6 8.5 6 11.5A6 6 0 0 1 6 14.5C6 11.5 8 8 12 3Z" stroke-linejoin="round"/><path d="M4 4l16 16" stroke-linecap="round"/></svg>
+                  {% when 'scalp' %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20c8-1 13-6 15-15-9 1-14 6-15 15Z" stroke-linejoin="round"/><path d="M6 18c3-4 6-7 12-11" stroke-linecap="round"/></svg>
+                  {% when 'anti-dandruff' %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3h6" stroke-linecap="round"/><path d="M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3" stroke-linejoin="round"/><path d="M8 15h8" stroke-linecap="round"/></svg>
+                  {% when 'root-strength' %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v6" stroke-linecap="round"/><path d="M12 9c-3 0-5 3-5.5 7.5" stroke-linecap="round"/><path d="M12 9c3 0 5 3 5.5 7.5" stroke-linecap="round"/><path d="M12 9c-1.3 2.3-1.3 5.2 0 9" stroke-linecap="round"/></svg>
+                  {% else %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/></svg>
+                {% endcase %}
+              </span>
+              <span class="rv-hero__benefit-label">{{ block.settings.label }}</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% if section.settings.progress_percentage > 0 %}
+        <div class="rv-hero__progress">
+          <div class="rv-hero__progress-track">
+            <div class="rv-hero__progress-fill" style="width: {{ section.settings.progress_percentage }}%;"></div>
+          </div>
+          <p class="rv-hero__progress-label">
+            <strong>{{ section.settings.progress_percentage }}%</strong> {{ section.settings.progress_label }}
+          </p>
+        </div>
+      {% endif %}
+
+      <div class="rv-hero__price-row">
+        <span class="rv-hero__price">{{ real_price | money }}</span>
+        {% if has_sale %}
+          <s class="rv-hero__compare">{{ real_compare | money }}</s>
+          <span class="rv-hero__sale-badge">
+            {{ section.settings.sale_badge_prefix }} — Save {{ real_savings | money_without_trailing_zeros }}
+          </span>
+        {% endif %}
+      </div>
 
       <product-info
         id="ProductInfo-{{ section.id }}"
@@ -46,8 +200,6 @@
         data-section="{{ section.id }}"
         data-url="{{ product.url }}"
       >
-        <p class="rv-hero__product-name">{{ product.title }}</p>
-
         <product-form
           id="ProductForm-{{ section.id }}"
           class="product-form main-product-form rv-hero__form"
@@ -72,11 +224,7 @@
               class="product-variant-id"
             >
 
-            <rv-bundle-tiers
-              class="rv-bundle"
-              id="rv-add-to-cart"
-              data-delivery-days="{{ section.settings.delivery_days }}"
-            >
+            <rv-bundle-tiers class="rv-bundle" id="rv-add-to-cart">
               <div class="rv-bundle__tiers" role="radiogroup" aria-label="Choose your bundle size">
                 {%- for block in section.blocks -%}
                   {%- if block.type == 'bundle_tier' -%}
@@ -95,6 +243,9 @@
                       value="{{ block.settings.quantity }}"
                       form="{{ product_form_id }}"
                       data-total-price="{{ block.settings.price | times: 100 | money }}"
+                      data-free-shipping="{{ block.settings.free_shipping }}"
+                      data-bonus-gift="{{ block.settings.bonus_gift_included }}"
+                      data-bonus-gift-label="{{ block.settings.bonus_gift_label | escape }}"
                       {% if is_checked %}checked{% endif %}
                       {{ block.shopify_attributes }}
                     >
@@ -105,44 +256,66 @@
                       {% if block.settings.badge_label != blank %}
                         <span class="rv-bundle__tier-badge">{{ block.settings.badge_label }}</span>
                       {% endif %}
-                      <span class="rv-bundle__tier-check" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+                      <span class="rv-bundle__tier-thumb" aria-hidden="true">
+                        {% if block.settings.thumbnail_image != blank %}
+                          {{ block.settings.thumbnail_image | image_url: width: 140 | image_tag: loading: 'lazy', widths: '70, 100, 140', alt: '' }}
+                        {% else %}
+                          <span class="rv-bundle__tier-thumb-placeholder">{{ block.settings.quantity }}×</span>
+                        {% endif %}
                       </span>
-                      <span class="rv-bundle__tier-qty">
-                        {{ block.settings.quantity }}
-                        <span class="rv-bundle__tier-qty-word">
-                          {%- if block.settings.quantity == 1 -%}Bottle{%- else -%}Bottles{%- endif -%}
+
+                      <span class="rv-bundle__tier-main">
+                        <span class="rv-bundle__tier-top">
+                          <span class="rv-bundle__tier-check" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          </span>
+                          <span class="rv-bundle__tier-qty">
+                            {{ block.settings.quantity }}
+                            <span class="rv-bundle__tier-qty-word">
+                              {%- if block.settings.quantity == 1 -%}Pouch{%- else -%}Pouches{%- endif -%}
+                            </span>
+                          </span>
                         </span>
+                        {% if tier_savings > 0 %}
+                          <span class="rv-bundle__tier-save">You save {{ tier_savings | times: 100 | money_without_trailing_zeros }}</span>
+                        {% endif %}
+                        {% if block.settings.free_shipping %}
+                          <span class="rv-bundle__tier-shipping">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 7h13v9H2z"/><path d="M15 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>
+                            Free Shipping
+                          </span>
+                        {% endif %}
                       </span>
+
                       <span class="rv-bundle__tier-prices">
                         <span class="rv-bundle__tier-price">{{ block.settings.price | times: 100 | money }}</span>
                         {% if block.settings.compare_at_price > block.settings.price %}
                           <s class="rv-bundle__tier-compare">{{ block.settings.compare_at_price | times: 100 | money }}</s>
                         {% endif %}
                       </span>
-                      {% if tier_savings > 0 %}
-                        <span class="rv-bundle__tier-save">You save {{ tier_savings | times: 100 | money_without_trailing_zeros }}</span>
-                      {% endif %}
-                      {% if block.settings.free_shipping %}
-                        <span class="rv-bundle__tier-shipping">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 7h13v9H2z"/><path d="M15 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>
-                          Free Shipping
-                        </span>
-                      {% endif %}
                     </label>
                   {%- endif -%}
                 {%- endfor -%}
               </div>
 
-              <p class="rv-bundle__delivery">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18" stroke-linecap="round"/><path d="M8 2v4M16 2v4" stroke-linecap="round"/></svg>
-                <span>
-                  Order today for delivery by <strong data-rv-delivery-date>soon</strong>
-                  {% if section.settings.ships_from != blank %}
-                    · Ships from {{ section.settings.ships_from }}
-                  {% endif %}
-                </span>
-              </p>
+              <div class="rv-bundle__gifts" data-rv-gifts>
+                <p class="rv-bundle__gifts-title">Gifts Unlocked</p>
+                <div class="rv-bundle__gifts-row">
+                  <div class="rv-bundle__gift" data-gift="shipping">
+                    <span class="rv-bundle__gift-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 7h13v9H2z"/><path d="M15 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>
+                    </span>
+                    <span class="rv-bundle__gift-label">Free Shipping</span>
+                  </div>
+                  <div class="rv-bundle__gift" data-gift="bonus">
+                    <span class="rv-bundle__gift-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="18" height="13" rx="1.5"/><path d="M3 8h18v4H3z"/><path d="M12 8v13" stroke-linecap="round"/><path d="M12 8c-1.4-4-6-4-6-1.4C6 8 9 8 12 8Z" stroke-linejoin="round"/><path d="M12 8c1.4-4 6-4 6-1.4C18 8 15 8 12 8Z" stroke-linejoin="round"/></svg>
+                    </span>
+                    <span class="rv-bundle__gift-label" data-gift-label>Bonus Gift</span>
+                  </div>
+                </div>
+              </div>
 
               <div class="rv-bundle__sticky">
                 <button
@@ -185,34 +358,10 @@
             </rv-bundle-tiers>
           {%- endform -%}
         </product-form>
-
-        {% if section.settings.show_size_badge %}
-          <span class="rv-hero__badge">{{ section.settings.size_badge_text }}</span>
-        {% endif %}
       </product-info>
-    </div>
 
-    <div class="rv-hero__media">
-      {% if product.featured_image != blank %}
-        {{
-          product.featured_image
-          | image_url: width: 1400
-          | image_tag:
-            loading: 'eager',
-            fetchpriority: 'high',
-            class: 'rv-hero__img',
-            sizes: '(min-width: 990px) 560px, 90vw',
-            widths: '400, 600, 800, 1000, 1400',
-            alt: product.featured_image.alt | default: product.title
-        }}
-      {% else %}
-        <div class="rv-placeholder" role="img" aria-label="Product image placeholder">
-          <svg viewBox="0 0 24 24" class="rv-placeholder__icon" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M8 3h8l1 3v2a5 5 0 0 1-2 4v6a3 3 0 0 1-3 3h-0a3 3 0 0 1-3-3v-6a5 5 0 0 1-2-4V6l1-3Z" stroke-linejoin="round"/>
-            <path d="M9 8h6" stroke-linecap="round"/>
-          </svg>
-          <span>Add a featured image to this product</span>
-        </div>
+      {% if section.settings.footnote != blank %}
+        <p class="rv-hero__footnote">{{ section.settings.footnote }}</p>
       {% endif %}
     </div>
   </div>
@@ -227,13 +376,14 @@
     --rv-brown: #3E2A1E;
     --rv-brown-soft: #6B4F3B;
     --rv-border: #E7D6AF;
+    --rv-green: #6E8F5A;
 
     background: linear-gradient(180deg, var(--rv-cream) 0%, var(--rv-cream-deep) 100%);
-    padding: 48px 20px;
+    padding: 28px 16px 40px;
   }
 
   #rv-hero-{{ section.id }} .rv-hero__inner {
-    max-width: 1140px;
+    max-width: 1180px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr;
@@ -241,26 +391,175 @@
     align-items: start;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__text {
-    order: 1;
+  /* Gallery */
+  #rv-hero-{{ section.id }} .rv-hero__gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__main-media {
+    position: relative;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__ribbon {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    background: var(--rv-gold);
+    color: #FFF9EF;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-radius: 999px;
+    box-shadow: 0 6px 14px rgba(62, 42, 30, 0.2);
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(62, 42, 30, 0.15);
+  }
+
+  #rv-hero-{{ section.id }} .rv-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    aspect-ratio: 4 / 5;
+    max-width: 420px;
+    margin: 0 auto;
+    border: 2px dashed var(--rv-border);
+    border-radius: 24px;
+    background: #FFFDF8;
+    color: var(--rv-brown-soft);
+    font-size: 14px;
     text-align: center;
+    padding: 24px;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__media {
-    order: 2;
+  #rv-hero-{{ section.id }} .rv-placeholder__icon {
+    width: 48px;
+    height: 48px;
+    opacity: 0.6;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__eyebrow {
+  #rv-hero-{{ section.id }} .rv-hero__thumbs {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 2px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__thumb {
+    flex: 0 0 auto;
+    width: 68px;
+    height: 68px;
+    padding: 0;
+    border-radius: 14px;
+    border: 2px solid var(--rv-border);
+    background: #FFFDF8;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__thumb:hover {
+    border-color: var(--rv-gold);
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__thumb.is-active {
+    border-color: var(--rv-gold);
+    box-shadow: 0 0 0 2px var(--rv-gold-dark) inset;
+  }
+
+  /* Content column */
+  #rv-hero-{{ section.id }} .rv-hero__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__avatars {
+    display: flex;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--rv-cream);
+    margin-left: -8px;
+    background: var(--rv-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF9EF;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__avatar svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__avatar:first-child {
+    margin-left: 0;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__avatar--1 { background: #C69B3B; }
+  #rv-hero-{{ section.id }} .rv-hero__avatar--2 { background: #A87F2A; }
+  #rv-hero-{{ section.id }} .rv-hero__avatar--3 { background: #6B4F3B; }
+
+  #rv-hero-{{ section.id }} .rv-hero__rating-text {
     font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
+    font-weight: 600;
+    color: var(--rv-brown-soft);
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__stars {
+    color: var(--rv-gold);
+    letter-spacing: 1px;
+    margin-right: 4px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__tag {
+    display: inline-block;
+    width: fit-content;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--rv-gold-dark);
-    margin: 0 0 14px;
+    background: var(--rv-cream-deep);
+    border: 1px solid var(--rv-border);
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin: 0 0 12px;
   }
 
   #rv-hero-{{ section.id }} .rv-hero__headline {
-    font-size: clamp(30px, 6vw, 52px);
+    font-size: clamp(28px, 6vw, 46px);
     line-height: 1.12;
     font-weight: 800;
     color: var(--rv-brown);
@@ -269,27 +568,111 @@
   }
 
   #rv-hero-{{ section.id }} .rv-hero__subheadline {
-    font-size: clamp(15px, 2vw, 18px);
+    font-size: clamp(15px, 2vw, 17px);
     line-height: 1.6;
     color: var(--rv-brown-soft);
     max-width: 520px;
-    margin: 0 auto 24px;
+    margin: 0 0 20px;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__product-info {
-    display: block;
-    max-width: 460px;
-    margin: 0 auto;
+  #rv-hero-{{ section.id }} .rv-hero__benefits {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 14px;
+    margin-bottom: 20px;
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__product-name {
-    font-size: 13px;
+  #rv-hero-{{ section.id }} .rv-hero__benefit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__benefit-icon {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--rv-cream-deep);
+    color: var(--rv-gold-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__benefit-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__benefit-label {
+    font-size: 12.5px;
     font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    color: var(--rv-brown);
+    line-height: 1.3;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__progress {
+    margin-bottom: 20px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__progress-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--rv-cream-deep);
+    border: 1px solid var(--rv-border);
+    overflow: hidden;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--rv-gold-dark), var(--rv-gold));
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__progress-label {
+    margin: 8px 0 0;
+    font-size: 12.5px;
+    font-weight: 600;
     color: var(--rv-brown-soft);
-    margin: 0 0 14px;
-    text-align: left;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__progress-label strong {
+    color: var(--rv-brown);
+    font-weight: 800;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__price-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__price {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--rv-brown);
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__compare {
+    font-size: 17px;
+    color: var(--rv-brown-soft);
+    opacity: 0.75;
+  }
+
+  #rv-hero-{{ section.id }} .rv-hero__sale-badge {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #FFF9EF;
+    background: linear-gradient(135deg, var(--rv-green), #8FAE7B);
+    padding: 5px 12px;
+    border-radius: 999px;
   }
 
   /* Bundle tiers */
@@ -302,20 +685,18 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
 
   #rv-hero-{{ section.id }} .rv-bundle__tier {
     position: relative;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
     align-items: center;
-    column-gap: 14px;
-    row-gap: 6px;
+    gap: 14px;
     background: #FFFDF8;
     border: 2px solid var(--rv-border);
     border-radius: 16px;
-    padding: 16px 18px;
+    padding: 14px 16px;
     cursor: pointer;
     transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   }
@@ -335,10 +716,49 @@
     box-shadow: 0 6px 18px rgba(198, 155, 59, 0.22);
   }
 
+  #rv-hero-{{ section.id }} .rv-bundle__tier-thumb {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--rv-cream-deep);
+    border: 1px solid var(--rv-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-thumb-placeholder {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--rv-gold-dark);
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   #rv-hero-{{ section.id }} .rv-bundle__tier-check {
-    grid-row: 1 / 3;
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
     border-radius: 50%;
     border: 2px solid var(--rv-border);
@@ -350,8 +770,8 @@
   }
 
   #rv-hero-{{ section.id }} .rv-bundle__tier-check svg {
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
   }
 
   #rv-hero-{{ section.id }} .rv-bundle__tier.is-selected .rv-bundle__tier-check {
@@ -361,14 +781,14 @@
   }
 
   #rv-hero-{{ section.id }} .rv-bundle__tier-qty {
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 800;
     color: var(--rv-brown);
     line-height: 1.2;
   }
 
   #rv-hero-{{ section.id }} .rv-bundle__tier-qty-word {
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -376,34 +796,10 @@
     margin-left: 4px;
   }
 
-  #rv-hero-{{ section.id }} .rv-bundle__tier-prices {
-    grid-column: 3;
-    grid-row: 1;
-    text-align: right;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    white-space: nowrap;
-  }
-
-  #rv-hero-{{ section.id }} .rv-bundle__tier-price {
-    font-size: 19px;
-    font-weight: 800;
-    color: var(--rv-brown);
-  }
-
-  #rv-hero-{{ section.id }} .rv-bundle__tier-compare {
-    font-size: 14px;
-    color: var(--rv-brown-soft);
-    opacity: 0.8;
-  }
-
   #rv-hero-{{ section.id }} .rv-bundle__tier-save {
-    grid-column: 2 / 4;
-    grid-row: 2;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 700;
-    color: #6E8F5A;
+    color: var(--rv-green);
   }
 
   #rv-hero-{{ section.id }} .rv-bundle__tier-badge {
@@ -421,13 +817,11 @@
   }
 
   #rv-hero-{{ section.id }} .rv-bundle__tier-shipping {
-    grid-column: 2 / 4;
-    grid-row: 3;
     display: inline-flex;
     align-items: center;
     gap: 5px;
     width: fit-content;
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--rv-gold-dark);
     background: var(--rv-cream-deep);
@@ -436,33 +830,91 @@
   }
 
   #rv-hero-{{ section.id }} .rv-bundle__tier-shipping svg {
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
   }
 
-  #rv-hero-{{ section.id }} .rv-bundle__delivery {
+  #rv-hero-{{ section.id }} .rv-bundle__tier-prices {
+    flex-shrink: 0;
+    text-align: right;
     display: flex;
-    align-items: flex-start;
-    gap: 8px;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    white-space: nowrap;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-price {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--rv-brown);
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__tier-compare {
     font-size: 13px;
     color: var(--rv-brown-soft);
+    opacity: 0.8;
+  }
+
+  /* Gifts unlocked */
+  #rv-hero-{{ section.id }} .rv-bundle__gifts {
     background: var(--rv-cream-deep);
     border: 1px solid var(--rv-border);
-    border-radius: 12px;
-    padding: 10px 14px;
-    margin: 0 0 18px;
-    line-height: 1.5;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
   }
 
-  #rv-hero-{{ section.id }} .rv-bundle__delivery svg {
-    width: 17px;
-    height: 17px;
-    flex-shrink: 0;
-    margin-top: 1px;
+  #rv-hero-{{ section.id }} .rv-bundle__gifts-title {
+    margin: 0 0 10px;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--rv-brown-soft);
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__gifts-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__gift {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.4;
+    filter: grayscale(1);
+    transition: opacity 0.2s ease, filter 0.2s ease;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__gift.is-unlocked {
+    opacity: 1;
+    filter: grayscale(0);
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__gift-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #FFFDF8;
+    border: 1px solid var(--rv-border);
     color: var(--rv-gold-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
 
-  #rv-hero-{{ section.id }} .rv-bundle__delivery strong {
+  #rv-hero-{{ section.id }} .rv-bundle__gift-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  #rv-hero-{{ section.id }} .rv-bundle__gift-label {
+    font-size: 12px;
+    font-weight: 700;
     color: var(--rv-brown);
   }
 
@@ -488,6 +940,7 @@
     transition: transform 0.15s ease, background 0.2s ease;
     min-height: 56px;
     width: 100%;
+    box-shadow: 0 10px 26px rgba(62, 42, 30, 0.18);
   }
 
   #rv-hero-{{ section.id }} .rv-bundle__atc-label {
@@ -525,93 +978,80 @@
     color: var(--rv-gold-dark);
   }
 
-  #rv-hero-{{ section.id }} .rv-hero__badge {
-    display: inline-block;
-    margin-top: 18px;
-    font-size: 13px;
-    font-weight: 600;
+  #rv-hero-{{ section.id }} .rv-hero__footnote {
+    margin: 20px 0 0;
+    font-size: 11px;
     color: var(--rv-brown-soft);
-    background: #FFF;
-    border: 1px solid var(--rv-border);
-    padding: 6px 14px;
-    border-radius: 999px;
-  }
-
-  #rv-hero-{{ section.id }} .rv-hero__img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 24px;
-    box-shadow: 0 20px 40px rgba(62, 42, 30, 0.15);
-  }
-
-  #rv-hero-{{ section.id }} .rv-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    aspect-ratio: 4 / 5;
-    max-width: 420px;
-    margin: 0 auto;
-    border: 2px dashed var(--rv-border);
-    border-radius: 24px;
-    background: #FFFDF8;
-    color: var(--rv-brown-soft);
-    font-size: 14px;
-    text-align: center;
-    padding: 24px;
-  }
-
-  #rv-hero-{{ section.id }} .rv-placeholder__icon {
-    width: 48px;
-    height: 48px;
-    opacity: 0.6;
+    opacity: 0.8;
   }
 
   @media screen and (min-width: 990px) {
     #rv-hero-{{ section.id }} {
-      padding: 80px 40px;
+      padding: 56px 40px;
     }
     #rv-hero-{{ section.id }} .rv-hero__inner {
       grid-template-columns: 1fr 1fr;
       gap: 60px;
-      text-align: left;
-    }
-    #rv-hero-{{ section.id }} .rv-hero__text {
-      text-align: left;
-      order: {% if section.settings.image_position == 'left' %}2{% else %}1{% endif %};
-    }
-    #rv-hero-{{ section.id }} .rv-hero__media {
-      order: {% if section.settings.image_position == 'left' %}1{% else %}2{% endif %};
-    }
-    #rv-hero-{{ section.id }} .rv-hero__subheadline,
-    #rv-hero-{{ section.id }} .rv-hero__product-info {
-      margin-left: 0;
-      margin-right: 0;
     }
   }
 {% endstyle %}
 
 <script>
   (function () {
+    function initRvThumbs(root) {
+      var thumbWrap = root.querySelector('[data-rv-thumbs]');
+      if (!thumbWrap) return;
+      var mainImg = root.querySelector('.rv-hero__main-media img, .rv-hero__main-media .rv-placeholder');
+      var thumbs = thumbWrap.querySelectorAll('.rv-hero__thumb');
+
+      thumbs.forEach(function (thumb) {
+        thumb.addEventListener('click', function () {
+          thumbs.forEach(function (t) { t.classList.toggle('is-active', t === thumb); });
+          var full = thumb.getAttribute('data-full');
+          var alt = thumb.getAttribute('data-alt');
+          if (mainImg && mainImg.tagName === 'IMG' && full) {
+            mainImg.src = full;
+            mainImg.removeAttribute('srcset');
+            if (alt) mainImg.alt = alt;
+          }
+        });
+      });
+    }
+
     function initRvBundle(root) {
       if (!root || root.dataset.rvInit === 'true') return;
       root.dataset.rvInit = 'true';
 
       var radios = root.querySelectorAll('.rv-bundle__radio');
       var totalPriceEls = root.querySelectorAll('[data-rv-total-price]');
+      var giftsWrap = root.querySelector('[data-rv-gifts]');
 
       function selectTier(radio) {
         radios.forEach(function (r) {
           var label = root.querySelector('label[for="' + r.id + '"]');
           if (label) label.classList.toggle('is-selected', r === radio);
         });
+
         var price = radio.getAttribute('data-total-price');
         if (price) {
           totalPriceEls.forEach(function (el) {
             el.textContent = price;
           });
+        }
+
+        if (giftsWrap) {
+          var shippingGift = giftsWrap.querySelector('[data-gift="shipping"]');
+          var bonusGift = giftsWrap.querySelector('[data-gift="bonus"]');
+          if (shippingGift) {
+            shippingGift.classList.toggle('is-unlocked', radio.getAttribute('data-free-shipping') === 'true');
+          }
+          if (bonusGift) {
+            var unlocked = radio.getAttribute('data-bonus-gift') === 'true';
+            bonusGift.classList.toggle('is-unlocked', unlocked);
+            var label = bonusGift.querySelector('[data-gift-label]');
+            var bonusLabel = radio.getAttribute('data-bonus-gift-label');
+            if (label && bonusLabel) label.textContent = bonusLabel;
+          }
         }
       }
 
@@ -623,78 +1063,108 @@
 
       var checked = root.querySelector('.rv-bundle__radio:checked');
       if (checked) selectTier(checked);
-
-      var dateEl = root.querySelector('[data-rv-delivery-date]');
-      if (dateEl) {
-        var days = parseInt(root.getAttribute('data-delivery-days'), 10);
-        if (isNaN(days) || days < 0) days = 5;
-        var deliveryDate = new Date();
-        deliveryDate.setDate(deliveryDate.getDate() + days);
-        try {
-          dateEl.textContent = new Intl.DateTimeFormat('en-US', {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric'
-          }).format(deliveryDate);
-        } catch (e) {
-          dateEl.textContent = deliveryDate.toDateString();
-        }
-      }
     }
 
-    function initAll() {
-      document.querySelectorAll('rv-bundle-tiers').forEach(initRvBundle);
+    function initAll(scope) {
+      var root = scope || document;
+      root.querySelectorAll('.rv-hero__gallery').forEach(initRvThumbs);
+      root.querySelectorAll('rv-bundle-tiers').forEach(initRvBundle);
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initAll);
+      document.addEventListener('DOMContentLoaded', function () { initAll(document); });
     } else {
-      initAll();
+      initAll(document);
     }
 
     document.addEventListener('shopify:section:load', function (event) {
       var bundle = event.target.querySelector('rv-bundle-tiers');
-      if (bundle) {
-        bundle.dataset.rvInit = 'false';
-        initRvBundle(bundle);
-      }
+      if (bundle) bundle.dataset.rvInit = 'false';
+      initAll(event.target);
     });
   })();
 </script>
 
 {% schema %}
 {
-  "name": "Reniva Hero (Product)",
+  "name": "Reniva Hero + Pricing (Product)",
   "tag": "section",
   "class": "section",
   "settings": [
     {
-      "type": "select",
-      "id": "image_position",
-      "label": "Image position (desktop)",
-      "options": [
-        { "value": "left", "label": "Left" },
-        { "value": "right", "label": "Right" }
-      ],
-      "default": "right"
+      "type": "text",
+      "id": "badge_text",
+      "label": "Image badge text",
+      "default": "FREE SHIPPING"
+    },
+    {
+      "type": "header",
+      "content": "Rating row"
     },
     {
       "type": "text",
-      "id": "eyebrow",
-      "label": "Eyebrow text",
-      "default": "RENIVA · ANTI-HAIR FALL SHAMPOO"
+      "id": "rating_score",
+      "label": "Rating score",
+      "default": "4.8"
+    },
+    {
+      "type": "text",
+      "id": "review_count_label",
+      "label": "Review count label",
+      "default": "Thousands of Verified Reviews"
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "text",
+      "id": "category_tag",
+      "label": "Category tag",
+      "default": "Daily Hair Recovery"
     },
     {
       "type": "text",
       "id": "headline",
       "label": "Headline",
-      "default": "Stop the Fall. Start the Regrowth."
+      "default": "A Stronger Scalp Starts Here"
     },
     {
       "type": "textarea",
       "id": "subheadline",
       "label": "Subheadline",
-      "default": "A botanical-powered formula that strengthens roots, calms an irritated scalp, and helps you hold onto the hair you have — one wash at a time."
+      "default": "Made with clinically-inspired botanical extracts to help reduce hair fall and calm your scalp, naturally.†"
+    },
+    {
+      "type": "header",
+      "content": "Demand progress bar"
+    },
+    {
+      "type": "range",
+      "id": "progress_percentage",
+      "label": "Percentage claimed",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 87
+    },
+    {
+      "type": "text",
+      "id": "progress_label",
+      "label": "Progress label",
+      "default": "Claimed This Month"
+    },
+    {
+      "type": "header",
+      "content": "Pricing"
+    },
+    {
+      "type": "text",
+      "id": "sale_badge_prefix",
+      "label": "Sale badge prefix",
+      "default": "SUMMER SALE",
+      "info": "Savings amount is calculated automatically from the product's price vs. compare-at price."
     },
     {
       "type": "text",
@@ -703,49 +1173,76 @@
       "default": "Add to Cart"
     },
     {
-      "type": "checkbox",
-      "id": "show_size_badge",
-      "label": "Show size badge",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "size_badge_text",
-      "label": "Size badge text",
-      "default": "300ml Pouch"
-    },
-    {
       "type": "header",
-      "content": "Delivery & guarantee"
-    },
-    {
-      "type": "number",
-      "id": "delivery_days",
-      "label": "Estimated delivery (days from today)",
-      "default": 5
-    },
-    {
-      "type": "text",
-      "id": "ships_from",
-      "label": "Ships from location",
-      "default": "Los Angeles, CA"
+      "content": "Guarantee"
     },
     {
       "type": "text",
       "id": "guarantee_text",
       "label": "Guarantee badge text",
       "default": "30-Day Guarantee"
+    },
+    {
+      "type": "header",
+      "content": "Legal"
+    },
+    {
+      "type": "text",
+      "id": "footnote",
+      "label": "Footnote",
+      "default": "†These statements have not been evaluated by the Food and Drug Administration."
     }
   ],
   "blocks": [
+    {
+      "type": "gallery_image",
+      "name": "Gallery image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    },
+    {
+      "type": "benefit_icon",
+      "name": "Benefit icon",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "reduce-fall", "label": "Hair fall reduction" },
+            { "value": "scalp", "label": "Scalp nourishment" },
+            { "value": "anti-dandruff", "label": "Anti-dandruff" },
+            { "value": "root-strength", "label": "Root strength" }
+          ],
+          "default": "reduce-fall"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Hair Fall Reduction†"
+        }
+      ]
+    },
     {
       "type": "bundle_tier",
       "name": "Bundle tier",
       "settings": [
         {
+          "type": "image_picker",
+          "id": "thumbnail_image",
+          "label": "Bundle thumbnail image",
+          "info": "Shown on the tier card, e.g. matching pouch quantity."
+        },
+        {
           "type": "number",
           "id": "quantity",
-          "label": "Quantity (bottles)",
+          "label": "Quantity (pouches)",
           "default": 1
         },
         {
@@ -769,8 +1266,20 @@
         {
           "type": "checkbox",
           "id": "free_shipping",
-          "label": "Show free shipping badge",
+          "label": "Unlocks free shipping",
           "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "bonus_gift_included",
+          "label": "Unlocks bonus gift",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "bonus_gift_label",
+          "label": "Bonus gift label",
+          "default": "Bonus Gift"
         },
         {
           "type": "checkbox",
@@ -783,20 +1292,19 @@
   ],
   "presets": [
     {
-      "name": "Reniva Hero (Product)",
+      "name": "Reniva Hero + Pricing (Product)",
       "blocks": [
-        {
-          "type": "bundle_tier",
-          "settings": { "quantity": 1, "price": 39.99, "compare_at_price": 49.99, "free_shipping": false, "preselected": false }
-        },
-        {
-          "type": "bundle_tier",
-          "settings": { "quantity": 2, "price": 71.99, "compare_at_price": 99.98, "badge_label": "Most Popular", "free_shipping": true, "preselected": true }
-        },
-        {
-          "type": "bundle_tier",
-          "settings": { "quantity": 3, "price": 95.98, "compare_at_price": 149.97, "badge_label": "Best Value", "free_shipping": true, "preselected": false }
-        }
+        { "type": "gallery_image", "settings": {} },
+        { "type": "gallery_image", "settings": {} },
+        { "type": "gallery_image", "settings": {} },
+        { "type": "gallery_image", "settings": {} },
+        { "type": "benefit_icon", "settings": { "icon": "reduce-fall", "label": "Hair Fall Reduction†" } },
+        { "type": "benefit_icon", "settings": { "icon": "scalp", "label": "Scalp Nourishment†" } },
+        { "type": "benefit_icon", "settings": { "icon": "anti-dandruff", "label": "Anti-Dandruff Care†" } },
+        { "type": "benefit_icon", "settings": { "icon": "root-strength", "label": "Root Strength†" } },
+        { "type": "bundle_tier", "settings": { "quantity": 1, "price": 39.99, "compare_at_price": 49.99, "free_shipping": false, "bonus_gift_included": false, "preselected": false } },
+        { "type": "bundle_tier", "settings": { "quantity": 2, "price": 71.99, "compare_at_price": 99.98, "badge_label": "Most Popular", "free_shipping": true, "bonus_gift_included": true, "preselected": true } },
+        { "type": "bundle_tier", "settings": { "quantity": 3, "price": 95.98, "compare_at_price": 149.97, "badge_label": "Best Value", "free_shipping": true, "bonus_gift_included": true, "preselected": false } }
       ]
     }
   ]

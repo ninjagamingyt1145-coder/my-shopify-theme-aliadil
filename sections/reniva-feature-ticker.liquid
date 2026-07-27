@@ -1,0 +1,163 @@
+{% comment %}
+  reniva-feature-ticker.liquid
+  Continuously auto-scrolling marquee strip. Content is repeated enough times
+  to fill a full duplicate cycle so the CSS translateX(-50%) loop animation
+  has no visible start/end gap, then the same sequence is duplicated once
+  more in markup so the loop seams perfectly.
+{% endcomment %}
+{%- assign block_count = section.blocks.size -%}
+{%- assign rv_ticker_duration = block_count | times: 2.6 | at_least: 14 -%}
+
+<div class="rv-ticker" id="rv-ticker-{{ section.id }}">
+  <div class="rv-ticker__track" aria-hidden="false">
+    {%- for repeat in (1..2) -%}
+      <ul class="rv-ticker__group" {% if repeat == 2 %}aria-hidden="true"{% endif %}>
+        {%- for block in section.blocks -%}
+          <li class="rv-ticker__item" {{ block.shopify_attributes }}>
+            <span class="rv-ticker__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 3l2.2 6.8H21l-5.6 4.1 2.1 6.8L12 16.6l-5.5 4.1 2.1-6.8L3 9.8h6.8L12 3Z" stroke-linejoin="round" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="rv-ticker__text">{{ block.settings.text }}</span>
+            <span class="rv-ticker__dot" aria-hidden="true">•</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% style %}
+  #rv-ticker-{{ section.id }} {
+    --rv-cream: #FBF3E4;
+    --rv-gold: #C69B3B;
+    --rv-brown: #3E2A1E;
+
+    background: #FFFDF8;
+    border-bottom: 1px solid #EEDFC0;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  #rv-ticker-{{ section.id }} .rv-ticker__track {
+    display: flex;
+    width: max-content;
+    animation: rv-ticker-scroll-{{ section.id }} {{ rv_ticker_duration }}s linear infinite;
+  }
+
+  #rv-ticker-{{ section.id }} .rv-ticker__group {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  #rv-ticker-{{ section.id }} .rv-ticker__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    padding: 10px 16px;
+  }
+
+  #rv-ticker-{{ section.id }} .rv-ticker__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    color: var(--rv-gold);
+    flex-shrink: 0;
+  }
+
+  #rv-ticker-{{ section.id }} .rv-ticker__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  #rv-ticker-{{ section.id }} .rv-ticker__text {
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--rv-brown);
+    white-space: nowrap;
+  }
+
+  #rv-ticker-{{ section.id }} .rv-ticker__dot {
+    color: var(--rv-gold);
+    font-size: 12px;
+    margin-left: 8px;
+    line-height: 1;
+  }
+
+  #rv-ticker-{{ section.id }} .rv-ticker__item:last-child .rv-ticker__dot {
+    display: none;
+  }
+
+  @keyframes rv-ticker-scroll-{{ section.id }} {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #rv-ticker-{{ section.id }} .rv-ticker__track {
+      animation: none;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    #rv-ticker-{{ section.id }} .rv-ticker__item {
+      padding: 12px 22px;
+    }
+    #rv-ticker-{{ section.id }} .rv-ticker__text {
+      font-size: 13.5px;
+    }
+    #rv-ticker-{{ section.id }}:hover .rv-ticker__track {
+      animation-play-state: paused;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Feature Ticker",
+  "tag": "div",
+  "class": "section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "ticker_item",
+      "name": "Ticker item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Hair Fall Reduction†"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Feature Ticker",
+      "blocks": [
+        { "type": "ticker_item", "settings": { "text": "Hair Fall Reduction†" } },
+        { "type": "ticker_item", "settings": { "text": "Scalp Nourishment†" } },
+        { "type": "ticker_item", "settings": { "text": "Anti-Dandruff Care†" } },
+        { "type": "ticker_item", "settings": { "text": "Root Strength†" } },
+        { "type": "ticker_item", "settings": { "text": "Botanical Formula†" } },
+        { "type": "ticker_item", "settings": { "text": "No Harsh Sulfates†" } },
+        { "type": "ticker_item", "settings": { "text": "Shine & Softness†" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

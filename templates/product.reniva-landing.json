@@ -63,9 +63,31 @@
         "desktop_padding_bottom": 36
       }
     },
+    "reniva_ticker": {
+      "type": "reniva-feature-ticker",
+      "blocks": {
+        "item-1": { "type": "ticker_item", "settings": { "text": "Hair Fall Reduction†" } },
+        "item-2": { "type": "ticker_item", "settings": { "text": "Scalp Nourishment†" } },
+        "item-3": { "type": "ticker_item", "settings": { "text": "Anti-Dandruff Care†" } },
+        "item-4": { "type": "ticker_item", "settings": { "text": "Root Strength†" } },
+        "item-5": { "type": "ticker_item", "settings": { "text": "Botanical Formula†" } },
+        "item-6": { "type": "ticker_item", "settings": { "text": "No Harsh Sulfates†" } },
+        "item-7": { "type": "ticker_item", "settings": { "text": "Shine & Softness†" } }
+      },
+      "block_order": ["item-1", "item-2", "item-3", "item-4", "item-5", "item-6", "item-7"],
+      "settings": {}
+    },
     "reniva_hero_product": {
       "type": "reniva-hero-product",
       "blocks": {
+        "gallery-1": { "type": "gallery_image", "settings": {} },
+        "gallery-2": { "type": "gallery_image", "settings": {} },
+        "gallery-3": { "type": "gallery_image", "settings": {} },
+        "gallery-4": { "type": "gallery_image", "settings": {} },
+        "benefit-1": { "type": "benefit_icon", "settings": { "icon": "reduce-fall", "label": "Hair Fall Reduction†" } },
+        "benefit-2": { "type": "benefit_icon", "settings": { "icon": "scalp", "label": "Scalp Nourishment†" } },
+        "benefit-3": { "type": "benefit_icon", "settings": { "icon": "anti-dandruff", "label": "Anti-Dandruff Care†" } },
+        "benefit-4": { "type": "benefit_icon", "settings": { "icon": "root-strength", "label": "Root Strength†" } },
         "tier-1": {
           "type": "bundle_tier",
           "settings": {
@@ -74,6 +96,8 @@
             "compare_at_price": 49.99,
             "badge_label": "",
             "free_shipping": false,
+            "bonus_gift_included": false,
+            "bonus_gift_label": "Bonus Gift",
             "preselected": false
           }
         },
@@ -85,6 +109,8 @@
             "compare_at_price": 99.98,
             "badge_label": "Most Popular",
             "free_shipping": true,
+            "bonus_gift_included": true,
+            "bonus_gift_label": "Free Scalp Massager",
             "preselected": true
           }
         },
@@ -96,22 +122,30 @@
             "compare_at_price": 149.97,
             "badge_label": "Best Value",
             "free_shipping": true,
+            "bonus_gift_included": true,
+            "bonus_gift_label": "Free Scalp Massager",
             "preselected": false
           }
         }
       },
-      "block_order": ["tier-1", "tier-2", "tier-3"],
+      "block_order": [
+        "gallery-1", "gallery-2", "gallery-3", "gallery-4",
+        "benefit-1", "benefit-2", "benefit-3", "benefit-4",
+        "tier-1", "tier-2", "tier-3"
+      ],
       "settings": {
-        "image_position": "right",
-        "eyebrow": "RENIVA · ANTI-HAIR FALL SHAMPOO",
-        "headline": "Stop the Fall. Start the Regrowth.",
-        "subheadline": "A botanical-powered formula that strengthens roots, calms an irritated scalp, and helps you hold onto the hair you have — one wash at a time.",
+        "badge_text": "FREE SHIPPING",
+        "rating_score": "4.8",
+        "review_count_label": "Thousands of Verified Reviews",
+        "category_tag": "Daily Hair Recovery",
+        "headline": "A Stronger Scalp Starts Here",
+        "subheadline": "Made with clinically-inspired botanical extracts to help reduce hair fall and calm your scalp, naturally.†",
+        "progress_percentage": 87,
+        "progress_label": "Claimed This Month",
+        "sale_badge_prefix": "SUMMER SALE",
         "button_label": "Add to Cart",
-        "show_size_badge": true,
-        "size_badge_text": "300ml Pouch",
-        "delivery_days": 5,
-        "ships_from": "Los Angeles, CA",
-        "guarantee_text": "30-Day Guarantee"
+        "guarantee_text": "30-Day Guarantee",
+        "footnote": "†These statements have not been evaluated by the Food and Drug Administration."
       }
     },
     "reniva_trust": {
@@ -460,6 +494,7 @@
   },
   "order": [
     "main",
+    "reniva_ticker",
     "reniva_hero_product",
     "reniva_trust",
     "reniva_problem",
