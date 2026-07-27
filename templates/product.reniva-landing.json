@@ -84,6 +84,7 @@
         "gallery-2": { "type": "gallery_image", "settings": {} },
         "gallery-3": { "type": "gallery_image", "settings": {} },
         "gallery-4": { "type": "gallery_image", "settings": {} },
+        "gallery-5": { "type": "gallery_image", "settings": {} },
         "benefit-1": { "type": "benefit_icon", "settings": { "icon": "reduce-fall", "label": "Hair Fall Reduction†" } },
         "benefit-2": { "type": "benefit_icon", "settings": { "icon": "scalp", "label": "Scalp Nourishment†" } },
         "benefit-3": { "type": "benefit_icon", "settings": { "icon": "anti-dandruff", "label": "Anti-Dandruff Care†" } },
@@ -129,7 +130,7 @@
         }
       },
       "block_order": [
-        "gallery-1", "gallery-2", "gallery-3", "gallery-4",
+        "gallery-1", "gallery-2", "gallery-3", "gallery-4", "gallery-5",
         "benefit-1", "benefit-2", "benefit-3", "benefit-4",
         "tier-1", "tier-2", "tier-3"
       ],
