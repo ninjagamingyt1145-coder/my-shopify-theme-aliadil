@@ -11,16 +11,6 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
-    "homeproduct_nXQmMx": {
-      "type": "homeproduct",
-      "name": "Featured Product V2",
-      "settings": {
-        "heading": "Try our Award Winning Products!",
-        "featured_product": "liquid-l-carnitine-4000mg",
-        "featured_product_2": "hemo-flow",
-        "featured_product_3": "cuidado-capilar-natural-para-un-cabello-mas-fuerte-y-con-mas-volumen"
-      }
-    },
     "faqshome_fHQtqY": {
       "type": "faqshome",
       "disabled": true,
@@ -117,7 +107,6 @@
     }
   },
   "order": [
-    "homeproduct_nXQmMx",
     "faqshome_fHQtqY",
     "footer"
   ]

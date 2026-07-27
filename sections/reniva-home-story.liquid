@@ -1,0 +1,217 @@
+{% comment %}
+  reniva-home-story.liquid
+  Brand story teaser for the homepage. Falls back to the Reniva About Us
+  page URL when no explicit button link is set, so it works out of the box.
+{% endcomment %}
+{%- liquid
+  assign story_link = section.settings.button_link
+  if story_link == blank and pages['reniva-about'] != blank
+    assign story_link = pages['reniva-about'].url
+  endif
+-%}
+
+<section class="rv-hstory" id="rv-hstory-{{ section.id }}">
+  <div class="rv-hstory__inner">
+    <div class="rv-hstory__media">
+      {% if section.settings.image != blank %}
+        {{
+          section.settings.image
+          | image_url: width: 1200
+          | image_tag:
+            loading: 'lazy',
+            class: 'rv-hstory__img',
+            sizes: '(min-width: 990px) 480px, 90vw',
+            widths: '400, 600, 800, 1000, 1200',
+            alt: section.settings.image.alt | default: section.settings.heading
+        }}
+      {% else %}
+        <div class="rv-hstory__placeholder" role="img" aria-label="Brand image placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 20c8-1 13-6 15-15-9 1-14 6-15 15Z" stroke-linejoin="round"/>
+            <path d="M6 18c3-4 6-7 12-11" stroke-linecap="round"/>
+          </svg>
+          <span>Add a brand image</span>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="rv-hstory__content">
+      <h2 class="rv-hstory__heading">{{ section.settings.heading }}</h2>
+      {% if section.settings.body != blank %}
+        <div class="rv-hstory__body">{{ section.settings.body }}</div>
+      {% endif %}
+      {% if section.settings.button_label != blank %}
+        <a href="{{ story_link | default: '#' }}" class="rv-hstory__btn">
+          {{ section.settings.button_label }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  #rv-hstory-{{ section.id }} {
+    --rv-cream-deep: #F3E4C8;
+    --rv-gold: #C69B3B;
+    --rv-gold-dark: #A87F2A;
+    --rv-brown: #3E2A1E;
+    --rv-brown-soft: #6B4F3B;
+    --rv-border: #E7D6AF;
+
+    background: var(--rv-cream-deep);
+    padding: 48px 20px;
+  }
+
+  #rv-hstory-{{ section.id }} .rv-hstory__inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    align-items: center;
+  }
+
+  #rv-hstory-{{ section.id }} .rv-hstory__img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 22px;
+    box-shadow: 0 18px 36px rgba(62, 42, 30, 0.14);
+  }
+
+  #rv-hstory-{{ section.id }} .rv-hstory__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    aspect-ratio: 4 / 5;
+    border: 2px dashed var(--rv-border);
+    border-radius: 22px;
+    background: #FFFDF8;
+    color: var(--rv-brown-soft);
+    font-size: 14px;
+    text-align: center;
+    padding: 24px;
+  }
+
+  #rv-hstory-{{ section.id }} .rv-hstory__placeholder svg {
+    width: 44px;
+    height: 44px;
+    opacity: 0.6;
+  }
+
+  #rv-hstory-{{ section.id }} .rv-hstory__content {
+    text-align: center;
+  }
+
+  #rv-hstory-{{ section.id }} .rv-hstory__heading {
+    font-size: clamp(26px, 5vw, 36px);
+    font-weight: 800;
+    color: var(--rv-brown);
+    margin: 0 0 14px;
+    letter-spacing: -0.4px;
+  }
+
+  #rv-hstory-{{ section.id }} .rv-hstory__body {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--rv-brown-soft);
+    max-width: 460px;
+    margin: 0 auto 24px;
+  }
+
+  #rv-hstory-{{ section.id }} .rv-hstory__body p {
+    margin: 0 0 12px;
+  }
+
+  #rv-hstory-{{ section.id }} .rv-hstory__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  #rv-hstory-{{ section.id }} .rv-hstory__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 30px;
+    border-radius: 999px;
+    border: 2px solid var(--rv-brown);
+    color: var(--rv-brown);
+    background: transparent;
+    transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
+  }
+
+  #rv-hstory-{{ section.id }} .rv-hstory__btn:hover {
+    background: var(--rv-brown);
+    color: var(--rv-cream-deep);
+    transform: translateY(-1px);
+  }
+
+  @media screen and (min-width: 990px) {
+    #rv-hstory-{{ section.id }} {
+      padding: 80px 40px;
+    }
+    #rv-hstory-{{ section.id }} .rv-hstory__inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+    }
+    #rv-hstory-{{ section.id }} .rv-hstory__media {
+      order: 2;
+    }
+    #rv-hstory-{{ section.id }} .rv-hstory__content {
+      order: 1;
+      text-align: left;
+    }
+    #rv-hstory-{{ section.id }} .rv-hstory__body {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Brand Story",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Rooted in Nature. Built for Real Results."
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text",
+      "default": "<p>Reniva started with a simple frustration: hair care that promised the world but leaned on harsh chemicals to get there. So we went back to the roots — literally. Every formula pairs traditional botanical extracts with real formulation science, built for a routine you can stick with, not a quick fix you'll abandon.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Learn Our Story"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Defaults to the Reniva About Us page if left blank."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Brand Story"
+    }
+  ]
+}
+{% endschema %}

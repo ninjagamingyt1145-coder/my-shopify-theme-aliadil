@@ -1,0 +1,183 @@
+{% comment %}
+  reniva-home-hero.liquid
+  Full-width brand hero for the homepage. Not tied to any single product —
+  the CTA is a plain editable link so it keeps working as the catalog grows.
+{% endcomment %}
+<section class="rv-hhero" id="rv-hhero-{{ section.id }}">
+  {% if section.settings.image != blank %}
+    {{
+      section.settings.image
+      | image_url: width: 2400
+      | image_tag:
+        loading: 'eager',
+        fetchpriority: 'high',
+        class: 'rv-hhero__img',
+        sizes: '100vw',
+        widths: '750, 1100, 1500, 2000, 2400',
+        alt: section.settings.image.alt | default: section.settings.headline
+    }}
+  {% endif %}
+  <div class="rv-hhero__scrim" aria-hidden="true"></div>
+
+  <div class="rv-hhero__inner">
+    {% if section.settings.eyebrow != blank %}
+      <p class="rv-hhero__eyebrow">{{ section.settings.eyebrow }}</p>
+    {% endif %}
+    <h1 class="rv-hhero__headline">{{ section.settings.headline }}</h1>
+    {% if section.settings.subheadline != blank %}
+      <p class="rv-hhero__subheadline">{{ section.settings.subheadline }}</p>
+    {% endif %}
+    {% if section.settings.button_label != blank %}
+      <a
+        href="{{ section.settings.button_link | default: '#' }}"
+        class="rv-hhero__btn"
+      >
+        {{ section.settings.button_label }}
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+{% style %}
+  #rv-hhero-{{ section.id }} {
+    --rv-cream: #FBF3E4;
+    --rv-gold: #C69B3B;
+    --rv-gold-dark: #A87F2A;
+    --rv-brown: #3E2A1E;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 74svh;
+    overflow: hidden;
+    background: var(--rv-brown);
+  }
+
+  #rv-hhero-{{ section.id }} .rv-hhero__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  #rv-hhero-{{ section.id }} .rv-hhero__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(62, 42, 30, 0.55) 0%, rgba(62, 42, 30, 0.35) 45%, rgba(62, 42, 30, 0.65) 100%);
+  }
+
+  #rv-hhero-{{ section.id }} .rv-hhero__inner {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 100px 24px;
+    text-align: center;
+  }
+
+  #rv-hhero-{{ section.id }} .rv-hhero__eyebrow {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--rv-gold);
+    margin: 0 0 16px;
+  }
+
+  #rv-hhero-{{ section.id }} .rv-hhero__headline {
+    font-size: clamp(32px, 7vw, 58px);
+    line-height: 1.1;
+    font-weight: 800;
+    color: var(--rv-cream);
+    margin: 0 0 18px;
+    letter-spacing: -0.6px;
+  }
+
+  #rv-hhero-{{ section.id }} .rv-hhero__subheadline {
+    font-size: clamp(15px, 2.2vw, 18px);
+    line-height: 1.6;
+    color: rgba(251, 243, 228, 0.9);
+    max-width: 560px;
+    margin: 0 auto 32px;
+  }
+
+  #rv-hhero-{{ section.id }} .rv-hhero__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15.5px;
+    padding: 16px 34px;
+    border-radius: 999px;
+    background: var(--rv-gold);
+    color: #FFF9EF;
+    transition: transform 0.15s ease, background 0.2s ease;
+  }
+
+  #rv-hhero-{{ section.id }} .rv-hhero__btn:hover {
+    background: var(--rv-gold-dark);
+    transform: translateY(-1px);
+  }
+
+  @media screen and (min-width: 750px) {
+    #rv-hhero-{{ section.id }} {
+      min-height: 84svh;
+    }
+    #rv-hhero-{{ section.id }} .rv-hhero__inner {
+      padding: 140px 40px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Reniva Home Hero",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "RENIVA"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Botanical Hair Care That Actually Works"
+    },
+    {
+      "type": "textarea",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "Plant-powered formulas built for real results — not quick fixes. Meet the routine your scalp has been waiting for."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Reniva"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reniva Home Hero"
+    }
+  ]
+}
+{% endschema %}

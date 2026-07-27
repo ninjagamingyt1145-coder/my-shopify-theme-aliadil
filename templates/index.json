@@ -1,1 +1,90 @@
-{"sections":{"cfca4268-6358-426c-98ab-d292aeef11e5":{"type":"slideshow","settings":{"visibility":"always-display","layout":"full_bleed","slide_height":"medium","slider_visual":"dots","desktop_pagination_position":"over","auto_rotate":false,"change_slides_speed":5,"show_text_below":true,"mobile_pagination_position":"under","accessibility_info":"Slideshow about our brand"}},"blocks_J7CNVz":{"type":"_blocks","name":"Comparison split grid","settings":{}},"1781039450e83a19ec":{"type":"_blocks","settings":{}}},"order":["cfca4268-6358-426c-98ab-d292aeef11e5","blocks_J7CNVz","1781039450e83a19ec"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "reniva_home_hero": {
+      "type": "reniva-home-hero",
+      "settings": {
+        "eyebrow": "RENIVA",
+        "headline": "Botanical Hair Care That Actually Works",
+        "subheadline": "Plant-powered formulas built for real results — not quick fixes. Meet the routine your scalp has been waiting for.",
+        "button_label": "Shop Reniva",
+        "button_link": ""
+      }
+    },
+    "reniva_trust": {
+      "type": "reniva-trust-badges",
+      "blocks": {
+        "badge-1": {
+          "type": "badge",
+          "settings": {
+            "icon": "star",
+            "label": "★★★★★ 4.8/5 Rated"
+          }
+        },
+        "badge-2": {
+          "type": "badge",
+          "settings": {
+            "icon": "no-drop",
+            "label": "No Harsh Sulfates"
+          }
+        },
+        "badge-3": {
+          "type": "badge",
+          "settings": {
+            "icon": "shield",
+            "label": "Dermatologically Formulated"
+          }
+        },
+        "badge-4": {
+          "type": "badge",
+          "settings": {
+            "icon": "guarantee",
+            "label": "30-Day Guarantee"
+          }
+        }
+      },
+      "block_order": ["badge-1", "badge-2", "badge-3", "badge-4"],
+      "settings": {}
+    },
+    "reniva_home_featured": {
+      "type": "reniva-home-featured-product",
+      "settings": {
+        "heading": "Meet Reniva",
+        "blurb": "Our botanical anti-hair fall shampoo, formulated with five plant extracts to strengthen roots and calm your scalp.",
+        "button_label": "Shop Now"
+      }
+    },
+    "reniva_home_story": {
+      "type": "reniva-home-story",
+      "settings": {
+        "heading": "Rooted in Nature. Built for Real Results.",
+        "body": "<p>Reniva started with a simple frustration: hair care that promised the world but leaned on harsh chemicals to get there. So we went back to the roots — literally. Every formula pairs traditional botanical extracts with real formulation science, built for a routine you can stick with, not a quick fix you'll abandon.</p>",
+        "button_label": "Learn Our Story",
+        "button_link": ""
+      }
+    },
+    "reniva_home_newsletter": {
+      "type": "reniva-home-newsletter",
+      "settings": {
+        "heading": "Stay in the Loop",
+        "subtext": "<p>Get 10% off your first order plus hair care tips.</p>",
+        "button_label": "Subscribe"
+      }
+    }
+  },
+  "order": [
+    "reniva_home_hero",
+    "reniva_trust",
+    "reniva_home_featured",
+    "reniva_home_story",
+    "reniva_home_newsletter"
+  ]
+}
